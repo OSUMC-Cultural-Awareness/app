@@ -1,4 +1,4 @@
-import { Api, Token } from "./api";
+import { Api } from "./api";
 
 /**
  * A Wrapper around {@link Api} for Culture.
@@ -24,7 +24,7 @@ export class Culture {
    * @returns {Promise<Culture>}
    */
   static async Detailed(name: string): Promise<Culture> {
-    let json = Api.get(`culture/${name}/all`);
+    let json = Api.get(`/culture/${name}/all`);
 
     return new this(
       json["name"],
@@ -40,9 +40,9 @@ export class Culture {
    * @returns {Promise<Culture>}
    */
   static async Snapshot(name: string): Promise<Culture> {
-    let json = Api.get(`culture/${name}`);
+    let json = Api.get(`/culture/${name}`);
 
-    return new this(json["name"], json["general_insights"], []);
+    return new this(json["name"], json["general_insights"]);
   }
 
   /**
@@ -51,7 +51,7 @@ export class Culture {
    * @returns {Promise<string[]>}
    */
   static async List(): Promise<string[]> {
-    let json = Api.get("culture");
+    let json = Api.get("/culture");
 
     return json["cultures"];
   }
@@ -63,7 +63,15 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async Create(token: string): Promise<void> {
-    Api.post("culture", this, new Token(token));
+    Api.post(
+      "/culture",
+      {
+        name: this.name,
+        general_insights: this.generalInsights,
+        specialized_insights: this.specializeInsights,
+      },
+      token
+    );
   }
 
   /**
@@ -73,7 +81,7 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async Delete(token: string): Promise<void> {
-    Api.delete(`culture/${this.name}`, token);
+    Api.delete(`/culture/${this.name}`, token);
   }
 
   /**
@@ -83,6 +91,6 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async Update(token: string): Promise<void> {
-    Api.put(`culture/${this.name}`, this, token);
+    Api.put(`/culture/${this.name}`, this, token);
   }
 }

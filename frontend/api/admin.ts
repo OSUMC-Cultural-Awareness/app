@@ -42,7 +42,7 @@ export class Admin {
    * @returns {Promise<string>} JSON Web Token authenticating the admin
    */
   static async login(email: string, password: string): Promise<string> {
-    let json = Api.post("login", { email: email, password: password });
+    let json = Api.post("/login", { email: email, password: password });
     return json["token"];
   }
 
@@ -53,7 +53,7 @@ export class Admin {
    * @returns {Promise<string[]>}
    */
   static async list(token: string): Promise<string[]> {
-    let json = Api.getAuth("admin", token);
+    let json = Api.getAuth("/admin", token);
     return json["admins"];
   }
 
@@ -65,7 +65,7 @@ export class Admin {
    * @returns {Promise<void>}
    */
   static async invite(email: string, token: string): Promise<void> {
-    Api.post("admin/invite", { email: email }, token);
+    Api.post("/admin/invite", { email: email }, token);
   }
 
   /**
@@ -82,7 +82,7 @@ export class Admin {
     token: string
   ): Promise<void> {
     Api.put(
-      `admin/${this.email}`,
+      `/admin/${this.email}`,
       {
         email: this.email,
         name: this.name,
@@ -101,7 +101,7 @@ export class Admin {
    * @returns {Promise<void>}
    */
   static async delete(email: string, token: string): Promise<void> {
-    Api.delete(`admin/${email}`, token);
+    Api.delete(`/admin/${email}`, token);
   }
 
   /**
@@ -118,7 +118,7 @@ export class Admin {
     token: string
   ): Promise<string> {
     let json = Api.post(
-      "register",
+      "/register",
       {
         email: this.email,
         name: this.name,
