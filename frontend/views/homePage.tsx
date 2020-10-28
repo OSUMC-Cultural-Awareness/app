@@ -106,7 +106,7 @@ export function homePage({ navigation }) {
             <View style={styles.bottomFooterStyle}>
               <Button title="General Disclaimer" style="margin:50%" onPress={handleDisclaimer} />
               <TouchableOpacity style={styles.btn} onPress={handleAdminLogin}>
-              <Image source={require('./assets/admin_login.png')}  style={styles.img}/>
+              <Image source={require('../assets/admin_login.png')}  style={styles.img}/>
               </TouchableOpacity>
             </View>
           );
