@@ -5,6 +5,7 @@ import 'react-native-gesture-handler';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { registerRootComponent } from 'expo';
 import { useState } from "react";
 import Constants from 'expo-constants';
 import {homePage} from './views/homePage';
@@ -17,7 +18,7 @@ import {editInsight} from './views/editInsight';
 
 const Stack = createStackNavigator();
 
-export default function App() {
+function App() {
   return (
       <NavigationContainer>{
             <Stack.Navigator initialRouteName="Home Page">
@@ -32,6 +33,8 @@ export default function App() {
     }</NavigationContainer>
   );
 }
+
+export default registerRootComponent(App);
 
 const styles = StyleSheet.create({
       emptyListStyle: {

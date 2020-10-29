@@ -1,5 +1,6 @@
 {
   "expo": {
+    "entryPoint": "./frontend/App.tsx",
     "name": "web",
     "slug": "web",
     "version": "1.0.0",

@@ -28,7 +28,7 @@ export function adminLogin({ navigation }) {
 
                 <Button
                 title="Login"
-                onPress={() => navigation.navigate('homePage')}
+                onPress={() => navigation.navigate('Home Page')}
                 />
 
 
