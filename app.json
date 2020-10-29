@@ -1,12 +1,13 @@
 {
   "expo": {
+    "entryPoint": "./frontend/App.tsx",
     "name": "web",
     "slug": "web",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./frontend/assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./frontend/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -20,7 +21,7 @@
       "supportsTablet": true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./frontend/assets/favicon.png"
     }
   }
 }
