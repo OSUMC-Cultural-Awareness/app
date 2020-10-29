@@ -4,6 +4,13 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Button
 import 'react-native-gesture-handler';
 import * as React from 'react';
 
+const styles = StyleSheet.create({
+    container: {
+      padding: 10,
+      fontSize: 18,
+      textAlign: 'center',
+    }
+});
 
 export function adminDashboard({ navigation }) {
     return (
