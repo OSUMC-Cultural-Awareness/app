@@ -21,7 +21,7 @@ function App() {
           <Stack.Screen
             name="Culture"
             component={CultureView}
-            initialParams={{ cultureName: "African American" }}
+            initialParams={{ cultureName: "African Americans" }}
           />
           <Stack.Screen name="Home" component={homePage} />
           <Stack.Screen name="Dashboard" component={adminDashboard} />
