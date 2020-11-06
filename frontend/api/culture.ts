@@ -1,6 +1,24 @@
 import { Api } from "./api";
 
 /**
+ * Represents a GeneralInsight used by {@link Culture}.
+ *
+ * fields:
+ *   source: string
+ *   text: string
+ */
+export type GeneralInsight = {
+  source: string;
+  text: string;
+};
+
+/**
+ * Represents a SpecializedInsight used by {@link Culture}.
+ * A Map<string, GeneralInsight>.
+ */
+export type SpecializedInsight = Map<string, GeneralInsight[]>;
+
+/**
  * A Wrapper around {@link Api} for Culture.
  */
 export class Culture {
@@ -9,12 +27,12 @@ export class Culture {
    *
    * @param {string} name
    * @param {string[]} generalInsights
-   * @param {string[]} specializeInsights
+   * @param {string[]} specializedInsights
    */
   constructor(
     public name: string,
-    public generalInsights: string[],
-    public specializeInsights: string[] = []
+    public generalInsights: GeneralInsight[] = [],
+    public specializedInsights: SpecializedInsight = new Map()
   ) {}
 
   /**
@@ -24,7 +42,7 @@ export class Culture {
    * @returns {Promise<Culture>}
    */
   static async detailed(name: string): Promise<Culture> {
-    let json = Api.get(`/culture/${name}/all`);
+    let json = await Api.get(`/culture/${escape(name)}/all`);
 
     return new this(
       json["name"],
@@ -40,7 +58,7 @@ export class Culture {
    * @returns {Promise<Culture>}
    */
   static async snapshot(name: string): Promise<Culture> {
-    let json = Api.get(`/culture/${name}`);
+    let json = await Api.get(`/culture/${escape(name)}`);
 
     return new this(json["name"], json["general_insights"]);
   }
@@ -51,7 +69,7 @@ export class Culture {
    * @returns {Promise<string[]>}
    */
   static async List(): Promise<string[]> {
-    let json = Api.get("/culture");
+    let json = await Api.get("/culture");
 
     return json["cultures"];
   }
@@ -68,7 +86,7 @@ export class Culture {
       {
         name: this.name,
         general_insights: this.generalInsights,
-        specialized_insights: this.specializeInsights,
+        specialized_insights: this.specializedInsights,
       },
       token
     );
@@ -81,7 +99,7 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async delete(token: string): Promise<void> {
-    Api.delete(`/culture/${this.name}`, token);
+    Api.delete(`/culture/${escape(this.name)}`, token);
   }
 
   /**
@@ -91,6 +109,6 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async update(token: string): Promise<void> {
-    Api.put(`/culture/${this.name}`, this, token);
+    Api.put(`/culture/${escape(this.name)}`, this, token);
   }
 }
