@@ -5,7 +5,16 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-import { Card, ActivityIndicator, Colors, FAB, List } from "react-native-paper";
+import {
+  Card,
+  ActivityIndicator,
+  TextInput,
+  FAB,
+  List,
+  Paragraph,
+  Title,
+  Button,
+} from "react-native-paper";
 
 import { Culture, GeneralInsight, SpecializedInsight } from "../api/culture";
 import { Routes } from "../routes";
@@ -22,12 +31,11 @@ type TabProps = {
 
 const Tab = createMaterialTopTabNavigator<TabProps>();
 
-const SpinnerColor = Colors.blue600;
 const Styles = StyleSheet.create({
   spinner: { top: "50%", position: "relative" },
 
   fab: {
-    position: "absolute",
+    position: "fixed",
     margin: 16,
     right: 0,
     bottom: 0,
@@ -51,7 +59,7 @@ const Styles = StyleSheet.create({
  */
 export function CultureView(props: Props) {
   const { cultureName } = props.route.params;
-  const [culture, setCulture] = useState<Culture>(null);
+  const [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
 
   useEffect(() => {
@@ -70,12 +78,7 @@ export function CultureView(props: Props) {
 
   if (!culture) {
     return (
-      <ActivityIndicator
-        animating={true}
-        color={SpinnerColor}
-        size="large"
-        style={Styles.spinner}
-      />
+      <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
     );
   }
 
@@ -104,14 +107,9 @@ export function CultureView(props: Props) {
 function GeneralInsightsView(props: { insights: GeneralInsight[] }) {
   const { insights } = props;
 
-  if (!insights || insights.length === 0) {
+  if (!insights) {
     return (
-      <ActivityIndicator
-        animating={true}
-        color={SpinnerColor}
-        size="large"
-        style={Styles.spinner}
-      />
+      <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
     );
   }
 
@@ -119,7 +117,18 @@ function GeneralInsightsView(props: { insights: GeneralInsight[] }) {
     <SafeAreaView>
       <FlatList
         data={insights}
-        renderItem={({ item }) => <Card.Title title={item.text}></Card.Title>}
+        keyExtractor={(item) => item.text}
+        renderItem={({ item }) => (
+          <List.Item
+            title={
+              <TextInput
+                value={item.text}
+                style={{ width: "100%" }}
+                multiline={true}
+              />
+            }
+          />
+        )}
       />
     </SafeAreaView>
   );
@@ -128,14 +137,9 @@ function GeneralInsightsView(props: { insights: GeneralInsight[] }) {
 function SpecializedInsightView(props: { insights: SpecializedInsight }) {
   const { insights } = props;
 
-  if (!insights || insights.size === 0) {
+  if (!insights) {
     return (
-      <ActivityIndicator
-        animating={true}
-        color={SpinnerColor}
-        size="large"
-        style={Styles.spinner}
-      />
+      <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
     );
   }
 
@@ -161,7 +165,10 @@ function SpecializedInsightView(props: { insights: SpecializedInsight }) {
         return (
           <List.Accordion title={key}>
             {value.map((item) => (
-              <Card.Title title={item.text}></Card.Title>
+              <Card.Content>
+                <Title>{item.source}</Title>
+                <Paragraph>{item.text}</Paragraph>
+              </Card.Content>
             ))}
           </List.Accordion>
         );

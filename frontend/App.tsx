@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React from "react";
+import * as React from "react";
 
 import { Provider as PaperProvider, Button, Avatar } from "react-native-paper";
 

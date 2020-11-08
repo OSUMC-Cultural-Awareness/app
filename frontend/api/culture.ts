@@ -31,8 +31,8 @@ export class Culture {
    */
   constructor(
     public name: string,
-    public generalInsights: GeneralInsight[] = [],
-    public specializedInsights: SpecializedInsight = new Map()
+    public generalInsights: GeneralInsight[],
+    public specializedInsights: SpecializedInsight
   ) {}
 
   /**
