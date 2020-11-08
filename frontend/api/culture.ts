@@ -23,7 +23,7 @@ export class Culture {
    * @param {string} name
    * @returns {Promise<Culture>}
    */
-  static async Detailed(name: string): Promise<Culture> {
+  static async get(name: string): Promise<Culture> {
     let json = Api.get(`/culture/${name}/all`);
 
     return new this(
@@ -39,7 +39,7 @@ export class Culture {
    * @param {string} name
    * @returns {Promise<Culture>}
    */
-  static async Snapshot(name: string): Promise<Culture> {
+  static async snapshot(name: string): Promise<Culture> {
     let json = Api.get(`/culture/${name}`);
 
     return new this(json["name"], json["general_insights"]);
@@ -48,9 +48,9 @@ export class Culture {
   /**
    * List all cultures by name.
    *
-   * @returns {Promise<string[]>}
+   * @returns {Promise<{ name: string; modified: number }[]>}
    */
-  static async List(): Promise<string[]> {
+  static async list(): Promise<{ name: string; modified: number }[]> {
     let json = Api.get("/culture");
 
     return json["cultures"];
@@ -62,7 +62,7 @@ export class Culture {
    * @param {string} token
    * @returns {Promise<void>}
    */
-  async Create(token: string): Promise<void> {
+  async create(token: string): Promise<void> {
     Api.post(
       "/culture",
       {
@@ -80,7 +80,7 @@ export class Culture {
    * @param {string} token
    * @returns {Promise<void>}
    */
-  async Delete(token: string): Promise<void> {
+  async delete(token: string): Promise<void> {
     Api.delete(`/culture/${this.name}`, token);
   }
 
@@ -90,7 +90,7 @@ export class Culture {
    * @param {string} token
    * @returns {Promise<void>}
    */
-  async Update(token: string): Promise<void> {
+  async update(token: string): Promise<void> {
     Api.put(`/culture/${this.name}`, this, token);
   }
 }
