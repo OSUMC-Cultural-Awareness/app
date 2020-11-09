@@ -24,7 +24,7 @@ export class Culture {
    * @returns {Promise<Culture>}
    */
   static async get(name: string): Promise<Culture> {
-    let json = Api.get(`/culture/${name}`);
+    let json = await Api.get(`/culture/${name}`);
 
     return new this(
       json["name"],
@@ -34,12 +34,25 @@ export class Culture {
   }
 
   /**
+<<<<<<< HEAD
+   * Snapshot information about a {@link Culture}.
+   *
+   * @param {string} name
+   * @returns {Promise<Culture>}
+   */
+  static async snapshot(name: string): Promise<Culture> {
+    let json = Api.get(`/culture/${name}`);
+
+    return new this(json["name"], json["general_insights"]);
+  }
+
+  /**
    * List all cultures by name.
    *
-   * @returns {Promise<string[]>}
+   * @returns {Promise<{ name: string; modified: number }[]>}
    */
-  static async list(): Promise<string[]> {
-    let json = Api.get("/culture");
+  static async list(): Promise<{ name: string; modified: number }[]> {
+    let json = await Api.get("/culture");
 
     return json["cultures"];
   }
