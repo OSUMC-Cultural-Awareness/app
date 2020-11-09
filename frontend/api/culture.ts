@@ -51,7 +51,7 @@ export class Culture {
    * @returns {Promise<string[]>}
    */
   static async List(): Promise<string[]> {
-    let json = Api.get("/culture");
+    let json = await Api.get("/culture");
 
     return json["cultures"];
   }
@@ -80,8 +80,8 @@ export class Culture {
    * @param {string} token
    * @returns {Promise<void>}
    */
-  async Delete(token: string): Promise<void> {
-    Api.delete(`/culture/${this.name}`, token);
+  static async Delete(name: string, token: string): Promise<void> {
+    Api.delete(`/culture/${name}`, token);
   }
 
   /**
