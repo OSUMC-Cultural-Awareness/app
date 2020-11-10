@@ -66,13 +66,12 @@ export function CultureView(props: Props): React.ReactElement {
     props.navigation.setOptions({ title: cultureName });
   }, []);
 
-  useEffect(() => {
-    const fetchCulture = async (): Promise<void> => {
-      const culture = await Culture.get(cultureName);
-      console.log(culture);
-      setCulture(culture);
-    };
+  const fetchCulture = async (): Promise<void> => {
+    const culture = await Culture.get(cultureName);
+    setCulture(culture);
+  };
 
+  useEffect(() => {
     fetchCulture();
   }, []);
 
@@ -86,11 +85,19 @@ export function CultureView(props: Props): React.ReactElement {
     <SafeAreaView style={Styles.view}>
       <Tab.Navigator initialRouteName="General">
         <Tab.Screen name="General">
-          {() => <GeneralInsightsView insights={culture.generalInsights} />}
+          {() => (
+            <GeneralInsightsView
+              insights={culture.generalInsights}
+              onRefresh={async () => fetchCulture()}
+            />
+          )}
         </Tab.Screen>
         <Tab.Screen name="Specialized">
           {() => (
-            <SpecializedInsightView insights={culture.specializedInsights} />
+            <SpecializedInsightView
+              insights={culture.specializedInsights}
+              onRefresh={async () => fetchCulture()}
+            />
           )}
         </Tab.Screen>
       </Tab.Navigator>
@@ -106,8 +113,25 @@ export function CultureView(props: Props): React.ReactElement {
   );
 }
 
-function GeneralInsightsView(props: { insights: GeneralInsight[] }) {
-  const { insights } = props;
+/**
+ * Properties for {@link GeneralInsightsView}.
+ */
+type GeneralInsightProps = {
+  // General Insights about a culture
+  insights: GeneralInsight[];
+  // onRefresh called when the FlatList is refreshing
+  onRefresh: () => void;
+};
+
+/**
+ * GeneralInsightsView displays a list of General Insights
+ *
+ * @param {GeneralInsightProps} props
+ * @returns {React.ReactElement}
+ */
+function GeneralInsightsView(props: GeneralInsightProps): React.ReactElement {
+  const { insights, onRefresh } = props;
+  const [refreshing, setRefreshing] = useState(false);
 
   if (!insights) {
     return (
@@ -115,11 +139,18 @@ function GeneralInsightsView(props: { insights: GeneralInsight[] }) {
     );
   }
 
+  const refresh = () => {
+    onRefresh();
+    setRefreshing(true);
+  };
+
   return (
     <SafeAreaView>
       <FlatList
         data={insights}
         keyExtractor={(item) => item.text}
+        onRefresh={() => refresh()}
+        refreshing={refreshing}
         renderItem={({ item }) => (
           <List.Item
             title={
@@ -136,14 +167,33 @@ function GeneralInsightsView(props: { insights: GeneralInsight[] }) {
   );
 }
 
-function SpecializedInsightView(props: { insights: SpecializedInsight }) {
-  const { insights } = props;
+type SpecializedInsightProps = {
+  insights: SpecializedInsight;
+  onRefresh: () => void;
+};
+
+/**
+ * SpecializedInsightView displays Specialized Insights as a list of accordion lists
+ *
+ * @param {SpecializedInsightProps} props
+ * @returns {React.ReactElement}
+ */
+function SpecializedInsightView(
+  props: SpecializedInsightProps
+): React.ReactElement {
+  const { insights, onRefresh } = props;
+  const [refreshing, setRefreshing] = useState(false);
 
   if (!insights) {
     return (
       <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
     );
   }
+
+  const refresh = () => {
+    onRefresh();
+    setRefreshing(true);
+  };
 
   // FIXME: this is ugly, but whenever compiling the Map it just gets
   // turned into an Object that doesn't have the properties `entries` nor `forEach` which is part of the specification.
@@ -162,8 +212,12 @@ function SpecializedInsightView(props: { insights: SpecializedInsight }) {
   };
 
   return (
-    <SafeAreaView>
-      {mapToArray(insights).map(([key, value]) => {
+    <FlatList
+      data={mapToArray(insights)}
+      onRefresh={() => refresh()}
+      refreshing={refreshing}
+      renderItem={({ item }) => {
+        const [key, value] = item;
         return (
           <List.Accordion title={key}>
             {value.map((item) => (
@@ -174,8 +228,8 @@ function SpecializedInsightView(props: { insights: SpecializedInsight }) {
             ))}
           </List.Accordion>
         );
-      })}
-    </SafeAreaView>
+      }}
+    />
   );
 }
 
