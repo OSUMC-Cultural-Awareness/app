@@ -1285,6 +1285,13 @@
     query-string "^6.13.6"
     react-is "^16.13.0"
 
+"@react-navigation/material-top-tabs@^5.3.8":
+  version "5.3.8"
+  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-5.3.8.tgz#6f96d9e58eefef935e5996b90a5e8726483efab6"
+  integrity sha512-mZDvR8E6tyzvdILvBlVPyIgNCoAeJTSxprH4qdQ2zpIVz/RoxvtvRZef76OkNWO3IrxeTe8LiSgSzvwunM4kOg==
+  dependencies:
+    color "^3.1.3"
+
 "@react-navigation/native@^5.7.6":
   version "5.8.8"
   resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.8.8.tgz#55216b0f95dcd6971198c9d3717b7d7af6a5faee"
