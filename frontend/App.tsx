@@ -10,7 +10,7 @@ import { homePage } from "./views/homePage";
 import { adminDashboard } from "./views/adminDashboard";
 import { adminLogin } from "./views/adminLogin";
 import { adminRegistration } from "./views/adminRegistration";
-import { CultureView } from "./views/culture";
+import { CultureView } from "./views/Culture";
 import { Routes } from "./routes";
 import { Theme } from "./constants";
 
