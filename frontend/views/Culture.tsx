@@ -24,8 +24,8 @@ type Props = {
 };
 
 type TabProps = {
-  General: { insights: string[] };
-  Specialized: { insights: string[] };
+  General: { insights: GeneralInsight[] };
+  Specialized: { insights: SpecializedInsight };
 };
 
 const Tab = createMaterialTopTabNavigator<TabProps>();
@@ -34,6 +34,7 @@ const Styles = StyleSheet.create({
   spinner: { top: "50%", position: "relative" },
 
   fab: {
+    // TODO: this only works for Web need to better layout things to have a footer
     position: "fixed",
     margin: 16,
     right: 0,
@@ -56,7 +57,7 @@ const Styles = StyleSheet.create({
  * @param: props: properties to pass to CultureView
  *
  */
-export function CultureView(props: Props) {
+export function CultureView(props: Props): React.ReactElement {
   const { cultureName } = props.route.params;
   const [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
@@ -93,12 +94,14 @@ export function CultureView(props: Props) {
           )}
         </Tab.Screen>
       </Tab.Navigator>
-      <AdminMode
-        editing={editing}
-        isAdmin={true}
-        onChange={() => setEditing(!editing)}
-        onSave={() => console.log("Send updated culture to API")}
-      />
+      {editing ? (
+        <ToolsFAB
+          onSave={() => setEditing(!editing)}
+          onAdd={() => console.log("On Add")}
+        />
+      ) : (
+        <EditFAB onPress={() => setEditing(!editing)} />
+      )}
     </SafeAreaView>
   );
 }
@@ -176,46 +179,62 @@ function SpecializedInsightView(props: { insights: SpecializedInsight }) {
   );
 }
 
-type AdminModeProps = {
-  editing: boolean;
-  onSave: () => void;
-  onChange: () => void;
-  isAdmin: boolean;
+/**
+ * Properties for {@link EditFAB}
+ */
+type EditFABProps = {
+  // onPress handles when the FAB is pressed.
+  onPress: () => void;
 };
 
 /**
- * AdminMode a FAB that has two modes, editing and viewing.
- * Upon entering editing mode the FAB will change to allow saving.
- * See {@link AdminModeProps} for options on how to handle state change and saving.
+ * EditFAB displays a {@link FAB} that is labeled "edit" and has a pencil icon.
  *
- * @param {AdminModeProps} props
+ * @param {EditFABProps} props
+ * @returns {React.ReactElement} React component
  */
-function AdminMode(props: AdminModeProps) {
-  if (!props.isAdmin) {
-    return;
-  }
-
-  let label: string = "edit";
-  let icon = "pencil";
-  if (props.editing) {
-    label = "Save";
-    icon = "content-save";
-  }
-
-  const onChange = () => {
-    props.onChange();
-
-    if (props.editing) {
-      props.onSave();
-    }
-  };
-
+function EditFAB(props: EditFABProps): React.ReactElement {
   return (
     <FAB
-      icon={icon}
-      onPress={() => onChange()}
-      label={label}
+      icon="pencil"
+      onPress={() => props.onPress()}
+      label="edit"
       style={Styles.fab}
+    />
+  );
+}
+
+/**
+ * Properties for {@link ToolsFAB}
+ */
+type ToolsFABProps = {
+  // onSave function called when hitting the "save" button. This button should
+  // toggle the whether this FAB is being displayed.
+  onSave: () => void;
+  // onAdd function called when hitting the "add" button.
+  onAdd: () => void;
+};
+
+/**
+ * ToolsFAB displays a {@link FAB.Group} that has two sub {@link FAB} one for editing and one for saving.
+ *
+ * @param {ToolsFABProps} props
+ * @returns {React.ReactElement}
+ */
+function ToolsFAB(props: ToolsFABProps): React.ReactElement {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <FAB.Group
+      visible={true}
+      fabStyle={{ backgroundColor: "#1e88e5" }}
+      open={open}
+      icon={open ? "close" : "wrench"}
+      actions={[
+        { icon: "plus", onPress: () => props.onAdd() },
+        { icon: "content-save", onPress: () => props.onSave() },
+      ]}
+      onStateChange={() => setOpen(!open)}
     />
   );
 }
