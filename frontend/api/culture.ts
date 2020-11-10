@@ -36,13 +36,13 @@ export class Culture {
   ) {}
 
   /**
-   * Detailed information about a {@link Culture}.
+   * Get information about a {@link Culture}.
    *
    * @param {string} name
    * @returns {Promise<Culture>}
    */
-  static async detailed(name: string): Promise<Culture> {
-    let json = await Api.get(`/culture/${escape(name)}/all`);
+  static async get(name: string): Promise<Culture> {
+    let json = await Api.get(`/culture/${name}`);
 
     return new this(
       json["name"],
@@ -52,23 +52,11 @@ export class Culture {
   }
 
   /**
-   * Snapshot information about a {@link Culture}.
-   *
-   * @param {string} name
-   * @returns {Promise<Culture>}
-   */
-  static async snapshot(name: string): Promise<Culture> {
-    let json = await Api.get(`/culture/${escape(name)}`);
-
-    return new this(json["name"], json["general_insights"]);
-  }
-
-  /**
    * List all cultures by name.
    *
-   * @returns {Promise<string[]>}
+   * @returns {Promise<{ name: string; modified: number }[]>}
    */
-  static async List(): Promise<string[]> {
+  static async list(): Promise<{ name: string; modified: number }[]> {
     let json = await Api.get("/culture");
 
     return json["cultures"];
@@ -99,7 +87,7 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async delete(token: string): Promise<void> {
-    Api.delete(`/culture/${escape(this.name)}`, token);
+    Api.delete(`/culture/${this.name}`, token);
   }
 
   /**
@@ -109,6 +97,6 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async update(token: string): Promise<void> {
-    Api.put(`/culture/${escape(this.name)}`, this, token);
+    Api.put(`/culture/${this.name}`, this, token);
   }
 }
