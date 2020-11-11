@@ -55,7 +55,7 @@ export function homePage({ navigation }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      let cultureNames = await Culture.List();
+      let cultureNames = await Culture.list();
       setCultures(cultureNames);
     }
 

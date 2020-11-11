@@ -18,13 +18,13 @@ export class Culture {
   ) {}
 
   /**
-   * Detailed information about a {@link Culture}.
+   * Get information about a {@link Culture}.
    *
    * @param {string} name
    * @returns {Promise<Culture>}
    */
-  static async Detailed(name: string): Promise<Culture> {
-    let json = Api.get(`/culture/${name}/all`);
+  static async get(name: string): Promise<Culture> {
+    let json = await Api.get(`/culture/${name}`);
 
     return new this(
       json["name"],
@@ -34,12 +34,13 @@ export class Culture {
   }
 
   /**
+<<<<<<< HEAD
    * Snapshot information about a {@link Culture}.
    *
    * @param {string} name
    * @returns {Promise<Culture>}
    */
-  static async Snapshot(name: string): Promise<Culture> {
+  static async snapshot(name: string): Promise<Culture> {
     let json = Api.get(`/culture/${name}`);
 
     return new this(json["name"], json["general_insights"]);
@@ -48,9 +49,13 @@ export class Culture {
   /**
    * List all cultures by name.
    *
-   * @returns {Promise<string[]>}
+   * @returns {Promise<{ name: string; modified: number }[]>}
    */
+<<<<<<< HEAD
   static async List(): Promise<string[]> {
+=======
+  static async list(): Promise<{ name: string; modified: number }[]> {
+>>>>>>> 102cc226380c014172fc6b9ac1ab1468905f6d35
     let json = await Api.get("/culture");
 
     return json["cultures"];
@@ -62,7 +67,7 @@ export class Culture {
    * @param {string} token
    * @returns {Promise<void>}
    */
-  async Create(token: string): Promise<void> {
+  async create(token: string): Promise<void> {
     Api.post(
       "/culture",
       {
@@ -80,8 +85,13 @@ export class Culture {
    * @param {string} token
    * @returns {Promise<void>}
    */
+<<<<<<< HEAD
   static async Delete(name: string, token: string): Promise<void> {
     Api.delete(`/culture/${name}`, token);
+=======
+  async delete(token: string): Promise<void> {
+    Api.delete(`/culture/${this.name}`, token);
+>>>>>>> 102cc226380c014172fc6b9ac1ab1468905f6d35
   }
 
   /**
@@ -90,7 +100,7 @@ export class Culture {
    * @param {string} token
    * @returns {Promise<void>}
    */
-  async Update(token: string): Promise<void> {
+  async update(token: string): Promise<void> {
     Api.put(`/culture/${this.name}`, this, token);
   }
 }

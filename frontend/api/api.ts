@@ -29,7 +29,7 @@ export class Api {
    * @returns {Promise<any>} JSON
    */
   static async get(endpoint: string): Promise<any> {
-    const response = await fetch(`${API_URL}${endpoint}`, {
+    const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
       method: "GET",
       headers: { Accept: "application/json" },
     });
@@ -53,7 +53,7 @@ export class Api {
    * @returns {Promise<any>} JSON
    */
   static async getAuth(endpoint: string, token: string): Promise<any> {
-    const response = await fetch(`${API_URL}${endpoint}`, {
+    const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -80,7 +80,7 @@ export class Api {
    * @returns {Promise<any>} JSON
    */
   static async put(endpoint: string, body: {}, token: string): Promise<any> {
-    const response = await fetch(`${API_URL}${endpoint}`, {
+    const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
       method: "PUT",
       headers: {
         Accept: "application/json",
@@ -108,7 +108,7 @@ export class Api {
    * @returns {Promise<any>} JSON
    */
   static async delete(endpoint: string, token: string): Promise<any> {
-    const response = await fetch(`${API_URL}${endpoint}`, {
+    const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
       method: "PUT",
       headers: {
         Accept: "application/json",
@@ -145,7 +145,7 @@ export class Api {
       headers["Authorization"] = `Bearer: ${btoa(token)}`;
     }
 
-    const response = await fetch(`${API_URL}${endpoint}`, {
+    const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
       method: "POST",
       headers: headers,
       body: JSON.stringify(body),
