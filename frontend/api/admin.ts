@@ -65,7 +65,7 @@ export class Admin {
    * @returns {Promise<void>}
    */
   static async invite(email: string, token: string): Promise<void> {
-    Api.post("/admin/invite", { email: email }, token);
+    await Api.post("/admin/invite", { email: email }, token);
   }
 
   /**
@@ -101,7 +101,7 @@ export class Admin {
    * @returns {Promise<void>}
    */
   static async delete(email: string, token: string): Promise<void> {
-    Api.delete(`/admin/${email}`, token);
+    await Api.delete(`/admin/${email}`, token);
   }
 
   /**

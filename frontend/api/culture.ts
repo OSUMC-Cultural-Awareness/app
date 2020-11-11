@@ -69,7 +69,7 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async create(token: string): Promise<void> {
-    Api.post(
+    await Api.post(
       "/culture",
       {
         name: this.name,
@@ -87,7 +87,7 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async delete(token: string): Promise<void> {
-    Api.delete(`/culture/${this.name}`, token);
+    await Api.delete(`/culture/${this.name}`, token);
   }
 
   /**
@@ -97,6 +97,6 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async update(token: string): Promise<void> {
-    Api.put(`/culture/${this.name}`, this, token);
+    await Api.put(`/culture/${this.name}`, this, token);
   }
 }
