@@ -38,6 +38,9 @@ export class Culture {
   /**
    * Get information about a {@link Culture}.
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
    * @param {string} name
    * @returns {Promise<Culture>}
    */
@@ -54,6 +57,9 @@ export class Culture {
   /**
    * List all cultures by name.
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
    * @returns {Promise<{ name: string; modified: number }[]>}
    */
   static async list(): Promise<{ name: string; modified: number }[]> {
@@ -64,6 +70,9 @@ export class Culture {
 
   /**
    * Create a {@link Culture}
+   *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @param {string} token
    * @returns {Promise<void>}
@@ -83,6 +92,9 @@ export class Culture {
   /**
    * Delete a {@link Culture}
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
    * @param {string} token
    * @returns {Promise<void>}
    */
@@ -92,6 +104,9 @@ export class Culture {
 
   /**
    * Update a {@link Culture}
+   *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @param {string} token
    * @returns {Promise<void>}

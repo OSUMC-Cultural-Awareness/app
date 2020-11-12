@@ -37,6 +37,9 @@ export class Admin {
   /**
    * login an {@link Admin}.
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
    * @param {string} email - email of Admin
    * @param {string} password - password of Admin
    * @returns {Promise<string>} JSON Web Token authenticating the admin
@@ -49,6 +52,9 @@ export class Admin {
   /**
    * list all {@link Admin} by name.
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
    * @param {string} token
    * @returns {Promise<string[]>}
    */
@@ -60,6 +66,9 @@ export class Admin {
   /**
    * invite an {@link Admin}.
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
    * @param {string} email - of future admin to invite
    * @param {string} token - JSON Web Token
    * @returns {Promise<void>}
@@ -70,6 +79,9 @@ export class Admin {
 
   /**
    * update an {@link Admin}.
+   *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @param {string} password - validate password
    * @param {string} passwordConfirmation - MUST match passwordConfirmation
@@ -96,6 +108,9 @@ export class Admin {
   /**
    * delete an {@link Admin}.
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
    * @param {string} email - of Admin to delete
    * @param {string} token - JSON Web Token
    * @returns {Promise<void>}
@@ -106,6 +121,9 @@ export class Admin {
 
   /**
    * create an {@link Admin}.
+   *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @param {string} password - password validation
    * @param {string} passwordConfirmation - MUST match password

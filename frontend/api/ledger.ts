@@ -29,6 +29,8 @@ export namespace Ledger {
    * @remarks
    * This operation is really expensive.
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @throws network errors from {@link fetch}
    * @throws brotli errors from {@link Brotli}
@@ -109,7 +111,9 @@ export namespace Ledger {
    *
    * @param {string} culture
    *
-   * @throws network errors from {@link fetch}
+   *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    * @throws JSON errors from {@link JSON}
    * @throws storage failures from {@link AsyncStorage}
    * @throw brotli errors from {@link Brotli}
