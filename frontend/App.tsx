@@ -9,7 +9,7 @@ import { registerRootComponent } from 'expo';
 import { useState } from "react";
 import Constants from 'expo-constants';
 import {homePage} from './views/homePage';
-import {adminDashboard} from './views/adminDashboard';
+import {adminManagement} from './views/adminManagement';
 import {adminLogin} from './views/adminLogin';
 import {adminRegistration} from './views/adminRegistration';
 import {cultureEdit} from './views/cultureEdit';
@@ -21,11 +21,11 @@ const Stack = createStackNavigator();
 function App() {
   return (
       <NavigationContainer>{
-            <Stack.Navigator initialRouteName="Home Page">
+            <Stack.Navigator initialRouteName="Admin Management">
                   <Stack.Screen name="Home Page" component={homePage} />
                   <Stack.Screen name="Culture Insights" component={cultureInsights} />
                   <Stack.Screen name="Edit Culture" component={cultureEdit} />
-                  <Stack.Screen name="Admin Dashboard" component={adminDashboard} />
+                  <Stack.Screen name="Admin Management" component={adminManagement} />
                   <Stack.Screen name="Admin Login" component={adminLogin} />
                   <Stack.Screen name="Admin Registration" component={adminRegistration} />
                   <Stack.Screen name="Edit Insights" component={editInsight} />
