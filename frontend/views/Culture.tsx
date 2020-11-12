@@ -16,7 +16,13 @@ import {
   Snackbar,
 } from "react-native-paper";
 
-import { Culture, GeneralInsight, SpecializedInsight } from "../api/culture";
+import {
+  Culture,
+  GeneralInsight,
+  SpecializedInsight,
+  specializedToArray,
+} from "../api/culture";
+
 import { Ledger } from "../api/ledger";
 import { Routes } from "../routes";
 
@@ -115,17 +121,41 @@ export function CultureView(props: Props): React.ReactElement {
       <Tab.Navigator initialRouteName="General">
         <Tab.Screen name="General">
           {() => (
-            <GeneralInsightsView
-              insights={culture.generalInsights}
+            <Insights
+              renderItem={({ item }) => (
+                <List.Item
+                  title={
+                    <TextInput
+                      value={item.text}
+                      style={{ width: "100%" }}
+                      multiline={true}
+                    />
+                  }
+                />
+              )}
               onRefresh={async () => fetchCulture()}
+              insights={culture.generalInsights}
             />
           )}
         </Tab.Screen>
         <Tab.Screen name="Specialized">
           {() => (
-            <SpecializedInsightView
-              insights={culture.specializedInsights}
+            <Insights
+              insights={specializedToArray(culture.specializedInsights)}
               onRefresh={async () => fetchCulture()}
+              renderItem={({ item }) => {
+                const { text, insights } = item;
+                return (
+                  <List.Accordion title={text}>
+                    {insights.map((item: GeneralInsight) => (
+                      <Card.Content>
+                        <Title>{item.source}</Title>
+                        <Paragraph>{item.text}</Paragraph>
+                      </Card.Content>
+                    ))}
+                  </List.Accordion>
+                );
+              }}
             />
           )}
         </Tab.Screen>
@@ -153,24 +183,14 @@ export function CultureView(props: Props): React.ReactElement {
   );
 }
 
-/**
- * Properties for {@link GeneralInsightsView}.
- */
-type GeneralInsightProps = {
-  // General Insights about a culture
-  insights: GeneralInsight[];
-  // onRefresh called when the FlatList is refreshing
+type InsightProps = {
   onRefresh: () => void;
+  insights: { text: string; insights: GeneralInsight[] }[] | GeneralInsight[];
+  renderItem: ({ item: any }) => React.ReactElement;
 };
 
-/**
- * GeneralInsightsView displays a list of General Insights
- *
- * @param {GeneralInsightProps} props
- * @returns {React.ReactElement}
- */
-function GeneralInsightsView(props: GeneralInsightProps): React.ReactElement {
-  const { insights, onRefresh } = props;
+function Insights(props: InsightProps): React.ReactElement {
+  const { insights, onRefresh, renderItem } = props;
   const [refreshing, setRefreshing] = useState(false);
 
   if (!insights) {
@@ -191,85 +211,9 @@ function GeneralInsightsView(props: GeneralInsightProps): React.ReactElement {
         keyExtractor={(item) => item.text}
         onRefresh={() => refresh()}
         refreshing={refreshing}
-        renderItem={({ item }) => (
-          <List.Item
-            title={
-              <TextInput
-                value={item.text}
-                style={{ width: "100%" }}
-                multiline={true}
-              />
-            }
-          />
-        )}
+        renderItem={renderItem}
       />
     </SafeAreaView>
-  );
-}
-
-type SpecializedInsightProps = {
-  insights: SpecializedInsight;
-  onRefresh: () => void;
-};
-
-/**
- * SpecializedInsightView displays Specialized Insights as a list of accordion lists
- *
- * @param {SpecializedInsightProps} props
- * @returns {React.ReactElement}
- */
-function SpecializedInsightView(
-  props: SpecializedInsightProps
-): React.ReactElement {
-  const { insights, onRefresh } = props;
-  const [refreshing, setRefreshing] = useState(false);
-
-  if (!insights) {
-    return (
-      <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
-    );
-  }
-
-  const refresh = () => {
-    onRefresh();
-    setRefreshing(true);
-  };
-
-  // FIXME: this is ugly, but whenever compiling the Map it just gets
-  // turned into an Object that doesn't have the properties `entries` nor `forEach` which is part of the specification.
-  //
-  // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
-  const mapToArray = (
-    map: SpecializedInsight
-  ): [string, GeneralInsight[]][] => {
-    let ret = [];
-
-    for (let key in map) {
-      ret.push([key, map[key]]);
-    }
-
-    return ret;
-  };
-
-  return (
-    <FlatList
-      data={mapToArray(insights)}
-      onRefresh={() => refresh()}
-      refreshing={refreshing}
-      renderItem={({ item }) => {
-        const [key, value] = item;
-        return (
-          <List.Accordion title={key}>
-            {value.map((item) => (
-              <Card.Content>
-                <Title>{item.source}</Title>
-                <Paragraph>{item.text}</Paragraph>
-              </Card.Content>
-            ))}
-          </List.Accordion>
-        );
-      }}
-    />
   );
 }
 

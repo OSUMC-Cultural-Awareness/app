@@ -19,6 +19,23 @@ export type GeneralInsight = {
 export type SpecializedInsight = Map<string, GeneralInsight[]>;
 
 /**
+ * specializedToArray convert a Map<string, GeneralInsight> to an Array.
+ *
+ * @param {SpecializedInsight} Map of Specialized Insights
+ *
+ * @returns {{text: string; insights: GeneralInsight[]}[]} where `text` is the title.
+ */
+export function specializedToArray(
+  insights: SpecializedInsight
+): { text: string; insights: GeneralInsight[] }[] {
+  let ret = [];
+  for (let key in insights) {
+    ret.push({ text: key, insights: insights[key] });
+  }
+  return ret;
+}
+
+/**
  * A Wrapper around {@link Api} for Culture.
  */
 export class Culture {
