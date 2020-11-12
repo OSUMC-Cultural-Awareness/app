@@ -34,7 +34,6 @@ export class Culture {
   }
 
   /**
-<<<<<<< HEAD
    * Snapshot information about a {@link Culture}.
    *
    * @param {string} name
@@ -51,11 +50,7 @@ export class Culture {
    *
    * @returns {Promise<{ name: string; modified: number }[]>}
    */
-<<<<<<< HEAD
-  static async List(): Promise<string[]> {
-=======
   static async list(): Promise<{ name: string; modified: number }[]> {
->>>>>>> 102cc226380c014172fc6b9ac1ab1468905f6d35
     let json = await Api.get("/culture");
 
     return json["cultures"];
@@ -85,13 +80,8 @@ export class Culture {
    * @param {string} token
    * @returns {Promise<void>}
    */
-<<<<<<< HEAD
-  static async Delete(name: string, token: string): Promise<void> {
+  static async delete(name: string, token: string): Promise<void> {
     Api.delete(`/culture/${name}`, token);
-=======
-  async delete(token: string): Promise<void> {
-    Api.delete(`/culture/${this.name}`, token);
->>>>>>> 102cc226380c014172fc6b9ac1ab1468905f6d35
   }
 
   /**
