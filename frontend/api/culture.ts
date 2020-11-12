@@ -8,8 +8,9 @@ import { Api } from "./api";
  *   text: string
  */
 export type GeneralInsight = {
-  source: string;
-  text: string;
+  summary: string;
+  information: string;
+  source: { data: string; type: string };
 };
 
 /**

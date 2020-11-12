@@ -126,7 +126,7 @@ export function CultureView(props: Props): React.ReactElement {
                 <List.Item
                   title={
                     <TextInput
-                      value={item.text}
+                      value={item.summary}
                       style={{ width: "100%" }}
                       multiline={true}
                     />
@@ -149,8 +149,8 @@ export function CultureView(props: Props): React.ReactElement {
                   <List.Accordion title={text}>
                     {insights.map((item: GeneralInsight) => (
                       <Card.Content>
-                        <Title>{item.source}</Title>
-                        <Paragraph>{item.text}</Paragraph>
+                        <Title>{item.source.data}</Title>
+                        <Paragraph>{item.summary}</Paragraph>
                       </Card.Content>
                     ))}
                   </List.Accordion>
