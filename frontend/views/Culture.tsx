@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, FlatList, SafeAreaView } from "react-native";
+import { StyleSheet, FlatList, SafeAreaView, View } from "react-native";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -8,7 +8,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import {
   Card,
   ActivityIndicator,
-  TextInput,
+  Button,
   FAB,
   List,
   Paragraph,
@@ -42,16 +42,21 @@ const Styles = StyleSheet.create({
   spinner: { top: "50%", position: "relative" },
 
   fab: {
-    // TODO: this only works for Web need to better layout things to have a footer
-    position: "fixed",
-    margin: 16,
-    right: 0,
-    bottom: 0,
     backgroundColor: "#1e88e5",
+    position: "absolute",
+    margin: 16,
+    bottom: 0,
+    right: 0,
   },
 
   view: {
-    height: "100%",
+    flex: 1,
+  },
+
+  card: {
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 5,
   },
 });
 
@@ -116,21 +121,37 @@ export function CultureView(props: Props): React.ReactElement {
     );
   }
 
+  const specInsights = specializedToArray(culture.specializedInsights);
+
+  const deleteItem = (index: number | [string, number]) => {
+    let newCulture = new Culture(
+      culture.name,
+      culture.generalInsights,
+      culture.specializedInsights
+    );
+
+    if (index instanceof Array) {
+      const [key, i] = index;
+      newCulture.specializedInsights[key].splice(i, 1);
+    } else {
+      newCulture.generalInsights.splice(index, 1);
+    }
+
+    setCulture(newCulture);
+  };
+
   return (
-    <SafeAreaView style={Styles.view}>
+    <View style={Styles.view}>
       <Tab.Navigator initialRouteName="General">
         <Tab.Screen name="General">
           {() => (
             <Insights
-              renderItem={({ item }) => (
-                <List.Item
-                  title={
-                    <TextInput
-                      value={item.summary}
-                      style={{ width: "100%" }}
-                      multiline={true}
-                    />
-                  }
+              renderItem={({ item, index }) => (
+                <InsightCard
+                  index={index}
+                  editing={editing}
+                  insight={item}
+                  onDelete={deleteItem}
                 />
               )}
               onRefresh={async () => fetchCulture()}
@@ -141,17 +162,19 @@ export function CultureView(props: Props): React.ReactElement {
         <Tab.Screen name="Specialized">
           {() => (
             <Insights
-              insights={specializedToArray(culture.specializedInsights)}
+              insights={specInsights}
               onRefresh={async () => fetchCulture()}
               renderItem={({ item }) => {
                 const { text, insights } = item;
                 return (
                   <List.Accordion title={text}>
-                    {insights.map((item: GeneralInsight) => (
-                      <Card.Content>
-                        <Title>{item.source.data}</Title>
-                        <Paragraph>{item.summary}</Paragraph>
-                      </Card.Content>
+                    {insights.map((item: GeneralInsight, index: number) => (
+                      <InsightCard
+                        insight={item}
+                        index={[text, index]}
+                        editing={editing}
+                        onDelete={deleteItem}
+                      />
                     ))}
                   </List.Accordion>
                 );
@@ -168,7 +191,6 @@ export function CultureView(props: Props): React.ReactElement {
       ) : (
         <EditFAB onPress={() => setEditing(!editing)} />
       )}
-
       <Snackbar
         visible={showErr}
         onDismiss={hideSnackbar}
@@ -179,7 +201,7 @@ export function CultureView(props: Props): React.ReactElement {
       >
         {err}
       </Snackbar>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -208,7 +230,7 @@ function Insights(props: InsightProps): React.ReactElement {
     <SafeAreaView>
       <FlatList
         data={insights}
-        keyExtractor={(item) => item.text}
+        keyExtractor={(_, index) => index.toString()}
         onRefresh={() => refresh()}
         refreshing={refreshing}
         renderItem={renderItem}
@@ -233,11 +255,14 @@ type EditFABProps = {
  */
 function EditFAB(props: EditFABProps): React.ReactElement {
   return (
-    <FAB
+    <FAB.Group
+      fabStyle={{ backgroundColor: "#1e88e5" }}
       icon="pencil"
+      open={false}
       onPress={() => props.onPress()}
-      label="edit"
-      style={Styles.fab}
+      visible={true}
+      actions={[]}
+      onStateChange={() => props.onPress()}
     />
   );
 }
@@ -274,5 +299,43 @@ function ToolsFAB(props: ToolsFABProps): React.ReactElement {
       ]}
       onStateChange={() => setOpen(!open)}
     />
+  );
+}
+
+type InsightCardProps = {
+  insight: GeneralInsight;
+  editing: boolean;
+  index: number | [string, number];
+
+  onDelete: (index: number | [string, number]) => void;
+  //onLink: (index: number | [string, number]) => void;
+};
+
+function InsightCard(props: InsightCardProps): React.ReactElement {
+  const { insight, index, editing } = props;
+
+  const DeleteButton = () => {
+    if (editing) {
+      return (
+        <Button icon="delete" mode="text" onPress={() => props.onDelete(index)}>
+          {" "}
+        </Button>
+      );
+    }
+  };
+
+  return (
+    <Card style={Styles.card}>
+      <Card.Content>
+        <Title>{insight.summary}</Title>
+        <Paragraph>{insight.information}</Paragraph>
+      </Card.Content>
+      <Card.Actions>
+        <Button icon="link" mode="text">
+          {" "}
+        </Button>
+        {DeleteButton()}
+      </Card.Actions>
+    </Card>
   );
 }
