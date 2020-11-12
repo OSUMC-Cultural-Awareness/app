@@ -62,18 +62,30 @@ export function CultureView(props: Props): React.ReactElement {
   const [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
 
-  useEffect(() => {
-    props.navigation.setOptions({ title: cultureName });
-  }, []);
-
-  const fetchCulture = async (): Promise<void> => {
-    const culture = await Culture.get(cultureName);
-    setCulture(culture);
-  };
-
+  useEffect(() => props.navigation.setOptions({ title: cultureName }), []);
   useEffect(() => {
     fetchCulture();
   }, []);
+
+  const fetchCulture = async (): Promise<void> => {
+    try {
+      const culture = await Culture.get(cultureName);
+      setCulture(culture);
+    } catch (err) {
+      // TODO: Better error handling
+      console.error(err);
+    }
+  };
+
+  const updateCulture = async (): Promise<void> => {
+    try {
+      await culture.update("TODO: insert Admin token for updating");
+    } catch (err) {
+      // TODO: Better error handling
+      console.error(err);
+    }
+    setEditing(!editing);
+  };
 
   if (!culture) {
     return (
@@ -103,7 +115,7 @@ export function CultureView(props: Props): React.ReactElement {
       </Tab.Navigator>
       {editing ? (
         <ToolsFAB
-          onSave={() => setEditing(!editing)}
+          onSave={() => updateCulture()}
           onAdd={() => console.log("On Add")}
         />
       ) : (
