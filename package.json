@@ -14,7 +14,7 @@
     "@react-navigation/native": "^5.7.6",
     "@react-navigation/stack": "^5.9.3",
     "@types/pako": "^1.0.1",
-    "@types/react-native": "^0.63.30",
+    "@types/react-native": "^0.63.34",
     "expo": "~39.0.2",
     "expo-status-bar": "~1.0.2",
     "pako": "^1.0.11",
