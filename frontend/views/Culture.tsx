@@ -13,9 +13,11 @@ import {
   List,
   Paragraph,
   Title,
+  Snackbar,
 } from "react-native-paper";
 
 import { Culture, GeneralInsight, SpecializedInsight } from "../api/culture";
+import { Ledger } from "../api/ledger";
 import { Routes } from "../routes";
 
 type Props = {
@@ -61,6 +63,8 @@ export function CultureView(props: Props): React.ReactElement {
   const { cultureName } = props.route.params;
   const [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
+  const [err, setErr] = useState<string>("");
+  const [showErr, setShowErr] = useState<boolean>(false);
 
   useEffect(() => props.navigation.setOptions({ title: cultureName }), []);
   useEffect(() => {
@@ -72,8 +76,15 @@ export function CultureView(props: Props): React.ReactElement {
       const culture = await Culture.get(cultureName);
       setCulture(culture);
     } catch (err) {
-      // TODO: Better error handling
-      console.error(err);
+      // Offline, try reading from storage
+      try {
+        const culture = await Ledger.read(cultureName);
+        setCulture(culture);
+      } catch (err) {
+        console.error(err);
+        // TODO: Display Magical Unicorn Culture
+        props.navigation.goBack();
+      }
     }
   };
 
@@ -81,11 +92,17 @@ export function CultureView(props: Props): React.ReactElement {
     try {
       await culture.update("TODO: insert Admin token for updating");
     } catch (err) {
-      // TODO: Better error handling
+      setShowErr(true);
+      // TODO: better error messages
+      //
+      // Error messages currently are cryptic ie: "Not Enough Segments" -- referring to JWT.
+      setErr(err.toString());
       console.error(err);
     }
     setEditing(!editing);
   };
+
+  const hideSnackbar = () => setShowErr(false);
 
   if (!culture) {
     return (
@@ -121,6 +138,17 @@ export function CultureView(props: Props): React.ReactElement {
       ) : (
         <EditFAB onPress={() => setEditing(!editing)} />
       )}
+
+      <Snackbar
+        visible={showErr}
+        onDismiss={hideSnackbar}
+        action={{
+          label: "Hide",
+          onPress: hideSnackbar,
+        }}
+      >
+        {err}
+      </Snackbar>
     </SafeAreaView>
   );
 }
