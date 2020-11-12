@@ -44,8 +44,8 @@ export class Culture {
    * constructor for {@link Culture}.
    *
    * @param {string} name
-   * @param {string[]} generalInsights
-   * @param {string[]} specializedInsights
+   * @param {GeneralInsight[]} generalInsights
+   * @param {SpecializedInsight} specializedInsights
    */
   constructor(
     public name: string,
