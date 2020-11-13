@@ -124,24 +124,26 @@ export class Admin {
    * @param {string} password - password validation
    * @param {string} passwordConfirmation - MUST match password
    * @param {string} token - JSON Web Token
-   * @returns {Promise<string>}
+   * @returns {Promise<object>}
    */
-  async create(
+  static async create(
+    name: string,
+    email: string,
     password: string,
     passwordConfirmation: string,
     token: string
-  ): Promise<string> {
-    let json = Api.post(
+  ): Promise<object> {
+    const json = await Api.post(
       "/register",
       {
-        email: this.email,
-        name: this.name,
+        name: name,
+        email: email,
         password: password,
         password_confirmation: passwordConfirmation,
       },
       token
     );
 
-    return json["token"];
+    return json;
   }
 }
