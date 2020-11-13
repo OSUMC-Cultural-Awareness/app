@@ -35,15 +35,29 @@ export class Admin {
   }
 
   /**
+   * get an {@link Admin} data.
+   *
+   * @param {string} token
+   * @param {string} email
+   * @returns {Promise<string[]>}
+   */
+  static async get(email: string, token: string): Promise<string[]> {
+    let json = Api.getAuth(`/admin/${email}`, token);
+    return json;
+  }
+
+  /**
    * login an {@link Admin}.
    *
    * @param {string} email - email of Admin
    * @param {string} password - password of Admin
-   * @returns {Promise<string>} JSON Web Token authenticating the admin
+   * @returns {Promise<object>} JSON Web Token authenticating the admin
    */
-  static async login(email: string, password: string): Promise<string> {
-    let json = Api.post("/login", { email: email, password: password });
-    return json["token"];
+  static async login(email: string, password: string): Promise<object> {
+    const json = await Api.post("/login", { email: email, password: password });
+    const token = json["token"];
+    const user = await this.get(email, token);
+    return { ...user, token };
   }
 
   /**
