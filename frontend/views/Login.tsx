@@ -1,7 +1,7 @@
 import * as React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Alert, View, StyleSheet } from "react-native";
-import { StackActions } from "@react-navigation/native";
+import { CommonActions } from "@react-navigation/native";
 import { Button, Card, TextInput } from "react-native-paper";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
 });
 
 function Login({ route, navigation, updateUser, user }) {
+  const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [passwordConfirmation, setPasswordConfirmation] = React.useState("");
@@ -30,7 +31,12 @@ function Login({ route, navigation, updateUser, user }) {
     Admin.login(email, password)
       .then((response) => {
         updateUser(response);
-        navigation.dispatch(StackActions.popToTop());
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{ name: "Home" }],
+          })
+        );
       })
       .catch((error) => {
         console.error("Unsuccessful Login", error);
@@ -38,9 +44,34 @@ function Login({ route, navigation, updateUser, user }) {
           "Unsuccessful Login",
           "Incorrect username or password",
           [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-          { cancelable: false }
+          { cancelable: true }
         );
       });
+  };
+
+  const handleRegistration = async () => {
+    const token =
+      route.params !== undefined && route.params.token !== undefined
+        ? route.params.token
+        : "";
+
+    if (token) {
+      Admin.create(name, email, password, passwordConfirmation, token)
+        .then((response: any) => {
+          response.user = JSON.parse(response.user);
+          updateUser(response);
+          navigation.navigate("Home");
+        })
+        .catch((error) => {
+          console.error("Unsuccessful Registration", error);
+          Alert.alert(
+            "Unsuccessful Registration",
+            "helpful error message",
+            [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+            { cancelable: true }
+          );
+        });
+    }
   };
 
   return (
@@ -63,6 +94,15 @@ function Login({ route, navigation, updateUser, user }) {
         }}
       >
         <Card style={styles.card}>
+          {route.name == "Register" ? (
+            <TextInput
+              style={styles.container}
+              mode="outlined"
+              label="name"
+              value={name}
+              onChangeText={(text) => setName(text)}
+            />
+          ) : null}
           <TextInput
             style={styles.container}
             mode="outlined"
@@ -87,10 +127,14 @@ function Login({ route, navigation, updateUser, user }) {
               value={passwordConfirmation}
               onChangeText={(text) => setPasswordConfirmation(text)}
             />
-          ) : (
-            <></>
-          )}
-          <Button icon="login" mode="contained" onPress={() => handleLogin()}>
+          ) : null}
+          <Button
+            icon="login"
+            mode="contained"
+            onPress={() =>
+              route.name === "Login" ? handleLogin() : handleRegistration()
+            }
+          >
             submit
           </Button>
         </Card>
