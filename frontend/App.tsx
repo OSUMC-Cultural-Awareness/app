@@ -23,7 +23,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { registerRootComponent } from "expo";
 import Home from "./views/Home";
-import adminDashboard from "./views/adminDashboard";
+import { adminDashboard } from "./views/adminDashboard";
 import Login from "./views/Login";
 import { CultureView } from "./views/culture";
 import { Routes } from "./routes";
