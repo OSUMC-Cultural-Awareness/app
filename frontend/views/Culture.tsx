@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, FlatList, SafeAreaView, View } from "react-native";
 
+import {
+  getFocusedRouteNameFromRoute,
+  useRoute,
+} from "@react-navigation/native";
+
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -8,7 +13,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import {
   Card,
   ActivityIndicator,
-  Button,
+  IconButton,
   FAB,
   List,
   Paragraph,
@@ -72,16 +77,21 @@ const Styles = StyleSheet.create({
  */
 export function CultureView(props: Props): React.ReactElement {
   const { cultureName } = props.route.params;
+
   const [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
   const [err, setErr] = useState<string>("");
   const [showErr, setShowErr] = useState<boolean>(false);
+  const route = useRoute();
 
   useEffect(() => props.navigation.setOptions({ title: cultureName }), []);
   useEffect(() => {
     fetchCulture();
   }, []);
 
+  /**
+   * Fetch culture information from Api or fallback to downloaded information
+   */
   const fetchCulture = async (): Promise<void> => {
     try {
       const culture = await Culture.get(cultureName);
@@ -99,6 +109,9 @@ export function CultureView(props: Props): React.ReactElement {
     }
   };
 
+  /**
+   * Update a culture's information in the Api
+   */
   const updateCulture = async (): Promise<void> => {
     try {
       await culture.update("TODO: insert Admin token for updating");
@@ -123,7 +136,10 @@ export function CultureView(props: Props): React.ReactElement {
 
   const specInsights = specializedToArray(culture.specializedInsights);
 
-  const deleteItem = (index: number | [string, number]) => {
+  /**
+   * Delete an insight from a list
+   */
+  const deleteInsight = (index: number | [string, number]) => {
     let newCulture = new Culture(
       culture.name,
       culture.generalInsights,
@@ -140,6 +156,31 @@ export function CultureView(props: Props): React.ReactElement {
     setCulture(newCulture);
   };
 
+  /**
+   * Add an insight to either the General or Specialized tab
+   */
+  const addInsight = () => {
+    let newCulture = new Culture(
+      culture.name,
+      culture.generalInsights,
+      culture.specializedInsights
+    );
+
+    switch (getFocusedRouteNameFromRoute(route) ?? "General") {
+      case "General":
+        newCulture.generalInsights.push({
+          summary: "summary",
+          information: "information",
+          source: { data: "www.example.com", type: "link" },
+        });
+        break;
+      case "Specialized":
+        newCulture.specializedInsights["Specialized Insight"] = [];
+    }
+
+    setCulture(newCulture);
+  };
+
   return (
     <View style={Styles.view}>
       <Tab.Navigator initialRouteName="General">
@@ -151,7 +192,7 @@ export function CultureView(props: Props): React.ReactElement {
                   index={index}
                   editing={editing}
                   insight={item}
-                  onDelete={deleteItem}
+                  onDelete={deleteInsight}
                 />
               )}
               onRefresh={async () => fetchCulture()}
@@ -173,7 +214,7 @@ export function CultureView(props: Props): React.ReactElement {
                         insight={item}
                         index={[text, index]}
                         editing={editing}
-                        onDelete={deleteItem}
+                        onDelete={deleteInsight}
                       />
                     ))}
                   </List.Accordion>
@@ -184,10 +225,7 @@ export function CultureView(props: Props): React.ReactElement {
         </Tab.Screen>
       </Tab.Navigator>
       {editing ? (
-        <ToolsFAB
-          onSave={() => updateCulture()}
-          onAdd={() => console.log("On Add")}
-        />
+        <ToolsFAB onSave={() => updateCulture()} onAdd={addInsight} />
       ) : (
         <EditFAB onPress={() => setEditing(!editing)} />
       )}
@@ -205,12 +243,25 @@ export function CultureView(props: Props): React.ReactElement {
   );
 }
 
+/**
+ * Properties for {@link Insights}
+ */
 type InsightProps = {
+  // callback called when the {@link FlatList} is refreshed
   onRefresh: () => void;
+  // Insights to render
   insights: { text: string; insights: GeneralInsight[] }[] | GeneralInsight[];
+  // how to render the insights
   renderItem: ({ item: any }) => React.ReactElement;
 };
 
+/**
+ * Component that displays a list of components of either {@link GeneralInsights}
+ * or {{text: string, insights: GeneralInsight[]}[]}.
+ *
+ * @param {InsightProps} props
+ * @returns {React.ReactElement}
+ */
 function Insights(props: InsightProps): React.ReactElement {
   const { insights, onRefresh, renderItem } = props;
   const [refreshing, setRefreshing] = useState(false);
@@ -302,27 +353,29 @@ function ToolsFAB(props: ToolsFABProps): React.ReactElement {
   );
 }
 
+/**
+ * Properties for {@link InsightCard}
+ */
 type InsightCardProps = {
+  // Insight to display on card
   insight: GeneralInsight;
+  // editing whether the admin is editing the current page
   editing: boolean;
+  // index in the list of General or Specialized lists
   index: number | [string, number];
-
+  // callback to be used when an insight is deleted
   onDelete: (index: number | [string, number]) => void;
   //onLink: (index: number | [string, number]) => void;
 };
 
+/**
+ * InsightCard card to display information about an Insight
+ *
+ * @param {InsightCardProps} props
+ * @returns {React.ReactElement}
+ */
 function InsightCard(props: InsightCardProps): React.ReactElement {
   const { insight, index, editing } = props;
-
-  const DeleteButton = () => {
-    if (editing) {
-      return (
-        <Button icon="delete" mode="text" onPress={() => props.onDelete(index)}>
-          {" "}
-        </Button>
-      );
-    }
-  };
 
   return (
     <Card style={Styles.card}>
@@ -331,10 +384,10 @@ function InsightCard(props: InsightCardProps): React.ReactElement {
         <Paragraph>{insight.information}</Paragraph>
       </Card.Content>
       <Card.Actions>
-        <Button icon="link" mode="text">
-          {" "}
-        </Button>
-        {DeleteButton()}
+        <IconButton icon="link" />
+        {editing ? (
+          <IconButton icon="delete" onPress={() => props.onDelete(index)} />
+        ) : null}
       </Card.Actions>
     </Card>
   );
