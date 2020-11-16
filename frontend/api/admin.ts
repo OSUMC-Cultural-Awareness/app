@@ -56,13 +56,11 @@ export class Admin {
    *
    * @param {string} email - email of Admin
    * @param {string} password - password of Admin
-   * @returns {Promise<object>} JSON Web Token authenticating the admin
+   * @returns {Promise<string>} JSON Web Token authenticating the admin
    */
-  static async login(email: string, password: string): Promise<object> {
+  static async login(email: string, password: string): Promise<string> {
     const json = await Api.post("/login", { email: email, password: password });
-    const token = json["token"];
-    const user = await this.get(email, token);
-    return { user: { ...user }, token };
+    return json["token"];
   }
 
   /**
@@ -137,8 +135,8 @@ export class Admin {
     password: string,
     passwordConfirmation: string,
     token: string
-  ): Promise<Admin> {
-    const json = await Api.post(
+  ): Promise<void> {
+    Api.post(
       "/register",
       {
         name: name,
@@ -149,6 +147,6 @@ export class Admin {
       token
     );
 
-    return json;
+    return;
   }
 }
