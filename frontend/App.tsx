@@ -1,17 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 //import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Button,
-  FlatList,
-  SafeAreaView,
-  Image,
-} from "react-native";
+import { StyleSheet } from "react-native";
 import "react-native-gesture-handler";
 import * as React from "react";
 import { Provider } from "react-redux";
@@ -24,7 +13,7 @@ import { registerRootComponent } from "expo";
 import Home from "./views/Home";
 import { adminDashboard } from "./views/adminDashboard";
 import Login from "./views/Login";
-import { CultureView } from "./views/culture";
+import { cultureInsights } from "./views/cultureInsights";
 import { Routes } from "./routes";
 import { Theme } from "./constants";
 import userReducer from "./redux/UserReducer";
@@ -44,7 +33,7 @@ function App() {
           <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
               name="Culture"
-              component={CultureView}
+              component={cultureInsights}
               initialParams={{ cultureName: "African Americans" }}
               options={{
                 headerRight: () => (
