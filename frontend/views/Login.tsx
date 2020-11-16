@@ -78,7 +78,12 @@ function Login(props: Props): React.ReactElement {
     if (token) {
       try {
         await Admin.create(name, email, password, passwordConfirmation, token);
-        navigation.navigate("Login");
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{ name: "Login" }],
+          })
+        );
       } catch (error) {
         console.error("Unsuccessful Registration", error);
         Alert.alert(
