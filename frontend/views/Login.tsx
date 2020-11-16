@@ -1,13 +1,22 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Alert, View, StyleSheet } from "react-native";
 import { CommonActions } from "@react-navigation/native";
 import { Button, Card, TextInput } from "react-native-paper";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp, useRoute } from "@react-navigation/native";
 
 import { Admin } from "../api/admin";
 import { updateUser } from "../redux/UserAction";
+import { Routes } from "../routes";
+
+type Props = {
+  navigation: StackNavigationProp<Routes, "Login" | "Register">;
+  route: RouteProp<Routes, "Login" | "Register">;
+  updateUser: Function;
+};
 
 const styles = StyleSheet.create({
   card: {
@@ -19,42 +28,52 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
   },
+  view: {
+    height: "100%",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  gradient: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    height: "100%",
+  },
 });
 
-function Login({ route, navigation, updateUser, user }) {
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = React.useState("");
+function Login(props: Props): React.ReactElement {
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
+  const route = useRoute();
+  const token = route.params ? route.params.token : null;
+  const { navigation, updateUser } = props;
 
   const handleLogin = async () => {
-    Admin.login(email, password)
-      .then((response) => {
-        updateUser(response);
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 1,
-            routes: [{ name: "Home" }],
-          })
-        );
-      })
-      .catch((error) => {
-        console.error("Unsuccessful Login", error);
-        Alert.alert(
-          "Unsuccessful Login",
-          "Incorrect username or password",
-          [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-          { cancelable: true }
-        );
-      });
+    try {
+      const response = await Admin.login(email, password);
+      updateUser(response);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{ name: "Home" }],
+        })
+      );
+    } catch (error) {
+      console.error("Unsuccessful Login", error);
+      Alert.alert(
+        "Unsuccessful Login",
+        "Incorrect username or password",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+        { cancelable: true }
+      );
+    }
   };
 
   const handleRegistration = async () => {
-    const token =
-      route.params !== undefined && route.params.token !== undefined
-        ? route.params.token
-        : "";
-
     if (token) {
       Admin.create(name, email, password, passwordConfirmation, token)
         .then((response: any) => {
@@ -75,26 +94,10 @@ function Login({ route, navigation, updateUser, user }) {
   };
 
   return (
-    <View
-      style={{
-        height: "100%",
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <LinearGradient
-        colors={["#454545", "#f0f4ef"]}
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 0,
-          height: "100%",
-        }}
-      >
+    <View style={styles.view}>
+      <LinearGradient colors={["#454545", "#f0f4ef"]} style={styles.gradient}>
         <Card style={styles.card}>
-          {route.name == "Register" ? (
+          {route.name === "Register" ? (
             <TextInput
               style={styles.container}
               mode="outlined"
@@ -118,7 +121,7 @@ function Login({ route, navigation, updateUser, user }) {
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-          {route.name == "Register" ? (
+          {route.name === "Register" ? (
             <TextInput
               style={styles.container}
               mode="outlined"
