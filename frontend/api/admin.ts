@@ -127,7 +127,7 @@ export class Admin {
    * @param {string} password - password validation
    * @param {string} passwordConfirmation - MUST match password
    * @param {string} token - JSON Web Token
-   * @returns {Promise<Admin>}
+   * @returns {Promise<void>}
    */
   static async create(
     name: string,
