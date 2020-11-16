@@ -27,7 +27,7 @@ export class Admin {
    *
    * @param {string} name
    * @param {string} email
-   * @param {string} superUser
+   * @param {boolean} superUser
    */
   constructor(
     public name: string,
