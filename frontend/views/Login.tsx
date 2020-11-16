@@ -144,11 +144,6 @@ function Login(props: Props): React.ReactElement {
   );
 }
 
-const mapStateToProps = (state) => {
-  const { user } = state;
-  return { user };
-};
-
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
@@ -157,4 +152,4 @@ const mapDispatchToProps = (dispatch) =>
     dispatch
   );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(Login);
