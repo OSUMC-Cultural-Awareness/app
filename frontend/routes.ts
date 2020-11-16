@@ -12,7 +12,7 @@ export type Routes = {
    */
   Culture: { cultureName: string };
   Home: undefined;
-  Register: undefined;
+  Register: { token: string };
   Login: undefined;
   Dashboard: undefined;
 };
