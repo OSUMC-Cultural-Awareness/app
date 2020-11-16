@@ -1,12 +1,8 @@
 import { combineReducers } from "redux";
+import { Admin } from "../api/admin";
 
-const INITIAL_STATE = {
-  _id: "",
-  name: "",
-  email: "",
-  token: "",
-  superUser: false,
-};
+const defaultAdmin = new Admin("", "", "");
+const INITIAL_STATE = { ...defaultAdmin };
 
 const userReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
