@@ -54,8 +54,9 @@ function Login(props: Props): React.ReactElement {
 
   const handleLogin = async () => {
     try {
-      const response = await Admin.login(email, password);
-      updateUser(response);
+      const token = await Admin.login(email, password);
+      const user = await Admin.get(email, token);
+      updateUser({ user: { ...user }, token });
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -75,21 +76,18 @@ function Login(props: Props): React.ReactElement {
 
   const handleRegistration = async () => {
     if (token) {
-      Admin.create(name, email, password, passwordConfirmation, token)
-        .then((response: any) => {
-          response.user = JSON.parse(response.user);
-          updateUser(response);
-          navigation.navigate("Home");
-        })
-        .catch((error) => {
-          console.error("Unsuccessful Registration", error);
-          Alert.alert(
-            "Unsuccessful Registration",
-            "helpful error message",
-            [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-            { cancelable: true }
-          );
-        });
+      try {
+        await Admin.create(name, email, password, passwordConfirmation, token);
+        navigation.navigate("Login");
+      } catch (error) {
+        console.error("Unsuccessful Registration", error);
+        Alert.alert(
+          "Unsuccessful Registration",
+          "helpful error message",
+          [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+          { cancelable: true }
+        );
+      }
     }
   };
 
