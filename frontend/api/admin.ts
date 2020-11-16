@@ -28,12 +28,10 @@ export class Admin {
    * @param {string} name
    * @param {string} email
    * @param {string} superUser
-   * @param {string} token
    */
   constructor(
     public name: string,
     public email: string,
-    public token: string,
     public superUser: boolean = false
   ) {
     if (email.indexOf(":") != -1) {
@@ -48,7 +46,7 @@ export class Admin {
    * @param {string} email
    * @returns {Promise<string[]>}
    */
-  static async get(email: string, token: string): Promise<string[]> {
+  static async get(email: string, token: string): Promise<Admin> {
     let json = Api.getAuth(`/admin/${email}`, token);
     return json;
   }
@@ -64,7 +62,7 @@ export class Admin {
     const json = await Api.post("/login", { email: email, password: password });
     const token = json["token"];
     const user = await this.get(email, token);
-    return { ...user, token };
+    return { user: { ...user }, token };
   }
 
   /**
