@@ -129,7 +129,7 @@ export class Admin {
    * @param {string} password - password validation
    * @param {string} passwordConfirmation - MUST match password
    * @param {string} token - JSON Web Token
-   * @returns {Promise<object>}
+   * @returns {Promise<Admin>}
    */
   static async create(
     name: string,
@@ -137,7 +137,7 @@ export class Admin {
     password: string,
     passwordConfirmation: string,
     token: string
-  ): Promise<object> {
+  ): Promise<Admin> {
     const json = await Api.post(
       "/register",
       {
