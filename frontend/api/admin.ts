@@ -27,8 +27,15 @@ export class Admin {
    *
    * @param {string} name
    * @param {string} email
+   * @param {string} superUser
+   * @param {string} token
    */
-  constructor(public name: string, public email: string) {
+  constructor(
+    public name: string,
+    public email: string,
+    public token: string,
+    public superUser: boolean = false
+  ) {
     if (email.indexOf(":") != -1) {
       throw new EmailColonError(`${email} has an unsupported character ':'`);
     }
