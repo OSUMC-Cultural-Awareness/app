@@ -144,6 +144,7 @@ export function CultureView(props: Props): React.ReactElement {
   const updateCulture = async (): Promise<void> => {
     try {
       await culture.update("TODO: insert Admin token for updating");
+      setCultureInPlace(culture);
     } catch (err) {
       setShowErr(true);
       // TODO: better error messages
@@ -152,7 +153,6 @@ export function CultureView(props: Props): React.ReactElement {
       setErr(err.toString());
       console.error(err);
     }
-    setCultureInPlace(culture);
     setEditing(!editing);
   };
 
