@@ -17,7 +17,7 @@ import {
   FAB,
   List,
   Paragraph,
-  TextInput,
+  Button,
   Title,
   Snackbar,
 } from "react-native-paper";
@@ -49,10 +49,6 @@ const Styles = StyleSheet.create({
 
   fab: {
     backgroundColor: "#1e88e5",
-    position: "absolute",
-    margin: 16,
-    bottom: 0,
-    right: 0,
   },
 
   view: {
@@ -67,6 +63,12 @@ const Styles = StyleSheet.create({
 
   editInput: {
     width: "100%",
+  },
+
+  specialAddInsight: {
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 5,
   },
 });
 
@@ -83,19 +85,32 @@ const Styles = StyleSheet.create({
 export function CultureView(props: Props): React.ReactElement {
   const { cultureName } = props.route.params;
 
-  const [culture, setCulture] = useState<Culture | null>(null);
+  let [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
   const [err, setErr] = useState<string>("");
   const [showErr, setShowErr] = useState<boolean>(false);
   const route = useRoute();
 
-  // Only used when editing
-  let [newCulture, setNewCulture] = useState<Culture | null>(culture);
-
   useEffect(() => props.navigation.setOptions({ title: cultureName }), []);
   useEffect(() => {
     fetchCulture();
   }, []);
+
+  /**
+   * Updates the Culture in place by calling `setCulture`.
+   *
+   * HACK: As a result of how useState works it creates a new object and moves all the values over
+   * rather than something as simple as setCulture, this is because React checks differences of objects shallowly.
+   */
+  const setCultureInPlace = (culture: Culture) => {
+    const newCulture = new Culture(
+      culture.name,
+      culture.generalInsights,
+      culture.specializedInsights
+    );
+
+    setCulture(newCulture);
+  };
 
   /**
    * Fetch culture information from Api or fallback to downloaded information
@@ -104,13 +119,11 @@ export function CultureView(props: Props): React.ReactElement {
     try {
       const culture = await Culture.get(cultureName);
       setCulture(culture);
-      setNewCulture(culture);
     } catch (err) {
       // Offline, try reading from storage
       try {
         const culture = await Ledger.read(cultureName);
         setCulture(culture);
-        setNewCulture(culture);
       } catch (err) {
         console.error(err);
         // TODO: Display Magical Unicorn Culture
@@ -125,7 +138,6 @@ export function CultureView(props: Props): React.ReactElement {
   const updateCulture = async (): Promise<void> => {
     try {
       await culture.update("TODO: insert Admin token for updating");
-      setCulture(newCulture);
     } catch (err) {
       setShowErr(true);
       // TODO: better error messages
@@ -134,6 +146,7 @@ export function CultureView(props: Props): React.ReactElement {
       setErr(err.toString());
       console.error(err);
     }
+    setCultureInPlace(culture);
     setEditing(!editing);
   };
 
@@ -145,12 +158,7 @@ export function CultureView(props: Props): React.ReactElement {
     );
   }
 
-  let specInsights: { text: string; insights: GeneralInsight[] }[];
-  if (editing) {
-    specInsights = specializedToArray(newCulture.specializedInsights);
-  } else {
-    specInsights = specializedToArray(culture.specializedInsights);
-  }
+  let specInsights = specializedToArray(culture.specializedInsights);
 
   /**
    * Delete an insight from a list
@@ -158,64 +166,42 @@ export function CultureView(props: Props): React.ReactElement {
   const deleteInsight = (index: number | [string, number]) => {
     if (index instanceof Array) {
       const [key, i] = index;
-      newCulture.specializedInsights[key].splice(i, 1);
+      culture.specializedInsights[key].splice(i, 1);
     } else {
-      newCulture.generalInsights.splice(index, 1);
+      culture.generalInsights.splice(index, 1);
     }
 
-    setCulture(newCulture);
+    setCultureInPlace(culture);
   };
 
   /**
    * Add an insight to either the General or Specialized tab
    */
-  const addInsight = () => {
+  const addInsightOrCategory = () => {
     switch (getFocusedRouteNameFromRoute(route) ?? "General") {
       case "General":
-        newCulture.generalInsights.push({
+        culture.generalInsights.push({
           summary: "summary",
           information: "information",
           source: { data: "www.example.com", type: "link" },
         });
         break;
       case "Specialized":
-        newCulture.specializedInsights["Specialized Insight"] = [];
+        culture.specializedInsights["Specialized Insight"] = [];
+        break;
     }
 
-    setCulture(newCulture);
+    setCultureInPlace(culture);
   };
 
-  const editInsight = (
-    index: number | [string, number],
-    field: "Summary" | "Description",
-    newText: string
-  ) => {
-    switch (field) {
-      case "Summary":
-        if (index instanceof Array) {
-          const [key, i] = index;
-          newCulture.specializedInsights[key][i].summary = newText;
-        } else {
-          newCulture.generalInsights[index].summary = newText;
-        }
-        break;
-      case "Description":
-        if (index instanceof Array) {
-          const [key, i] = index;
-          newCulture.generalInsights[key][i].information = newText;
-        } else {
-          newCulture.generalInsights[index].information = newText;
-        }
-        break;
-    }
+  const addSpecializedInsight = (key: string) => {
+    culture.specializedInsights[key].push({
+      summary: "summary",
+      information: "information",
+      source: { data: "www.example.com", type: "link" },
+    });
 
-    setNewCulture(
-      new Culture(
-        newCulture.name,
-        newCulture.generalInsights,
-        newCulture.specializedInsights
-      )
-    );
+    setCultureInPlace(culture);
   };
 
   return (
@@ -229,14 +215,12 @@ export function CultureView(props: Props): React.ReactElement {
                   index={index}
                   editing={editing}
                   insight={item}
+                  onPress={(index) => console.log(`On press ${index}`)}
                   onDelete={deleteInsight}
-                  onEdit={editInsight}
                 />
               )}
               onRefresh={async () => fetchCulture()}
-              insights={
-                editing ? newCulture.generalInsights : culture.generalInsights
-              }
+              insights={culture.generalInsights}
             />
           )}
         </Tab.Screen>
@@ -252,12 +236,22 @@ export function CultureView(props: Props): React.ReactElement {
                     {insights.map((item: GeneralInsight, index: number) => (
                       <InsightCard
                         insight={item}
+                        onPress={(index) => console.log(`On press ${index}`)}
                         index={[text, index]}
                         editing={editing}
                         onDelete={deleteInsight}
-                        onEdit={editInsight}
                       />
                     ))}
+                    {editing ? (
+                      <Button
+                        icon="plus"
+                        onPress={() => addSpecializedInsight(text)}
+                        mode="contained"
+                        style={Styles.specialAddInsight}
+                      >
+                        {""}
+                      </Button>
+                    ) : null}
                   </List.Accordion>
                 );
               }}
@@ -266,7 +260,7 @@ export function CultureView(props: Props): React.ReactElement {
         </Tab.Screen>
       </Tab.Navigator>
       {editing ? (
-        <ToolsFAB onSave={() => updateCulture()} onAdd={addInsight} />
+        <ToolsFAB onSave={() => updateCulture()} onAdd={addInsightOrCategory} />
       ) : (
         <EditFAB onPress={() => setEditing(!editing)} />
       )}
@@ -348,7 +342,7 @@ type EditFABProps = {
 function EditFAB(props: EditFABProps): React.ReactElement {
   return (
     <FAB.Group
-      fabStyle={{ backgroundColor: "#1e88e5" }}
+      fabStyle={Styles.fab}
       icon="pencil"
       open={false}
       onPress={() => props.onPress()}
@@ -382,7 +376,7 @@ function ToolsFAB(props: ToolsFABProps): React.ReactElement {
   return (
     <FAB.Group
       visible={true}
-      fabStyle={{ backgroundColor: "#1e88e5" }}
+      fabStyle={Styles.fab}
       open={open}
       icon={open ? "close" : "wrench"}
       actions={[
@@ -407,12 +401,9 @@ type InsightCardProps = {
   // callback to be used when an insight is deleted
   onDelete: (index: number | [string, number]) => void;
 
-  // callback to be used when
-  onEdit: (
-    index: number | [string, number],
-    field: "Summary" | "Description",
-    newText: string
-  ) => void;
+  // callback to be used when an insight is pressed
+  onPress: (index: number | [string, number]) => void;
+
   //onLink: (index: number | [string, number]) => void;
 };
 
@@ -423,40 +414,13 @@ type InsightCardProps = {
  * @returns {React.ReactElement}
  */
 function InsightCard(props: InsightCardProps): React.ReactElement {
-  const { insight, index, editing, onEdit } = props;
+  const { insight, index, editing, onPress } = props;
 
   return (
-    <Card style={Styles.card}>
+    <Card style={Styles.card} onPress={() => (editing ? onPress(index) : null)}>
       <Card.Content>
-        <Title>
-          {editing ? (
-            <TextInput
-              style={Styles.editInput}
-              value={insight.summary}
-              label="Summary"
-              onChangeText={(newText: string) =>
-                onEdit(index, "Summary", newText)
-              }
-            />
-          ) : (
-            insight.summary
-          )}
-        </Title>
-        <Paragraph>
-          {editing ? (
-            <TextInput
-              style={Styles.editInput}
-              value={insight.information}
-              label="Description"
-              multiline={true}
-              onChangeText={(newText: string) =>
-                onEdit(index, "Description", newText)
-              }
-            />
-          ) : (
-            insight.information
-          )}
-        </Paragraph>
+        <Title>{insight.summary}</Title>
+        <Paragraph>{insight.information}</Paragraph>
       </Card.Content>
       <Card.Actions>
         <IconButton icon="link" size={20} />
