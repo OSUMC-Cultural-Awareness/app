@@ -55,7 +55,7 @@ export class Api {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer: ${btoa(token)}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -83,7 +83,7 @@ export class Api {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer: ${btoa(token)}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     });
@@ -111,7 +111,7 @@ export class Api {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer: ${btoa(token)}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -140,7 +140,7 @@ export class Api {
     };
 
     if (token !== undefined) {
-      headers["Authorization"] = `Bearer: ${btoa(token)}`;
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
