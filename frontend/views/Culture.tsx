@@ -72,6 +72,12 @@ const Styles = StyleSheet.create({
   },
 });
 
+const ExampleInsight = {
+  summary: "summary",
+  information: "information",
+  source: { data: "www.example.com", type: "link" },
+};
+
 /**
  * CultureView displays information about a specific culture. The name of the culture
  * to query the API for is specified in `props.route.params`.
@@ -167,6 +173,10 @@ export function CultureView(props: Props): React.ReactElement {
     if (index instanceof Array) {
       const [key, i] = index;
       culture.specializedInsights[key].splice(i, 1);
+
+      if (culture.specializedInsights[key].length === 0) {
+        delete culture.specializedInsights[key];
+      }
     } else {
       culture.generalInsights.splice(index, 1);
     }
@@ -180,14 +190,10 @@ export function CultureView(props: Props): React.ReactElement {
   const addInsightOrCategory = () => {
     switch (getFocusedRouteNameFromRoute(route) ?? "General") {
       case "General":
-        culture.generalInsights.push({
-          summary: "summary",
-          information: "information",
-          source: { data: "www.example.com", type: "link" },
-        });
+        culture.generalInsights.push(ExampleInsight);
         break;
       case "Specialized":
-        culture.specializedInsights["Specialized Insight"] = [];
+        culture.specializedInsights["Specialized Insight"] = [ExampleInsight];
         break;
     }
 
@@ -195,11 +201,7 @@ export function CultureView(props: Props): React.ReactElement {
   };
 
   const addSpecializedInsight = (key: string) => {
-    culture.specializedInsights[key].push({
-      summary: "summary",
-      information: "information",
-      source: { data: "www.example.com", type: "link" },
-    });
+    culture.specializedInsights[key].push(ExampleInsight);
 
     setCultureInPlace(culture);
   };
@@ -229,10 +231,10 @@ export function CultureView(props: Props): React.ReactElement {
             <Insights
               insights={specInsights}
               onRefresh={async () => fetchCulture()}
-              renderItem={({ item }) => {
+              renderItem={({ item, index }) => {
                 const { text, insights } = item;
                 return (
-                  <List.Accordion title={text}>
+                  <List.Accordion title={text} id={index}>
                     {insights.map((item: GeneralInsight, index: number) => (
                       <InsightCard
                         insight={item}
