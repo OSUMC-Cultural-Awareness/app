@@ -48,11 +48,11 @@ const Styles = StyleSheet.create({
   spinner: { top: "50%", position: "relative" },
 
   fab: {
-    backgroundColor: "#1e88e5",
+    // TODO: Emulate Fixed for the Floating Action Button
   },
 
-  view: {
-    flex: 1,
+  fabStyle: {
+    backgroundColor: "#1e88e5",
   },
 
   card: {
@@ -207,7 +207,7 @@ export function CultureView(props: Props): React.ReactElement {
   };
 
   return (
-    <View style={Styles.view}>
+    <View>
       <Tab.Navigator initialRouteName="General">
         <Tab.Screen name="General">
           {() => (
@@ -344,7 +344,8 @@ type EditFABProps = {
 function EditFAB(props: EditFABProps): React.ReactElement {
   return (
     <FAB.Group
-      fabStyle={Styles.fab}
+      style={Styles.fab}
+      fabStyle={Styles.fabStyle}
       icon="pencil"
       open={false}
       onPress={() => props.onPress()}
@@ -378,7 +379,8 @@ function ToolsFAB(props: ToolsFABProps): React.ReactElement {
   return (
     <FAB.Group
       visible={true}
-      fabStyle={Styles.fab}
+      style={Styles.fab}
+      fabStyle={Styles.fabStyle}
       open={open}
       icon={open ? "close" : "wrench"}
       actions={[
@@ -402,11 +404,8 @@ type InsightCardProps = {
   index: number | [string, number];
   // callback to be used when an insight is deleted
   onDelete: (index: number | [string, number]) => void;
-
   // callback to be used when an insight is pressed
   onPress: (index: number | [string, number]) => void;
-
-  //onLink: (index: number | [string, number]) => void;
 };
 
 /**
