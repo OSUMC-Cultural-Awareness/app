@@ -233,6 +233,7 @@ function CultureView(props: Props): React.ReactElement {
   ): React.ReactElement => {
     return (
       <InsightCard
+        key={index.toString()}
         index={index}
         editing={editing}
         insight={insight}
@@ -288,15 +289,17 @@ function CultureView(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
-      {token &&
-        (editing ? (
-          <ToolsFAB
-            onSave={() => updateCulture()}
-            onAdd={addInsightOrCategory}
-          />
-        ) : (
-          <EditFAB onPress={() => setEditing(!editing)} />
-        ))}
+      <>
+        {token &&
+          (editing ? (
+            <ToolsFAB
+              onSave={() => updateCulture()}
+              onAdd={addInsightOrCategory}
+            />
+          ) : (
+            <EditFAB onPress={() => setEditing(!editing)} />
+          ))}
+      </>
       <Snackbar
         visible={showErr}
         onDismiss={hideSnackbar}
@@ -427,6 +430,7 @@ function ToolsFAB(props: ToolsFABProps): React.ReactElement {
  * Properties for {@link InsightCard}
  */
 type InsightCardProps = {
+  key: string;
   // Insight to display on card
   insight: GeneralInsight;
   // editing whether the admin is editing the current page
