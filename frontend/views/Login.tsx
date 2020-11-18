@@ -100,7 +100,7 @@ function Login(props: Props): React.ReactElement {
     <View style={styles.view}>
       <LinearGradient colors={["#454545", "#f0f4ef"]} style={styles.gradient}>
         <Card style={styles.card}>
-          {route.name === "Register" ? (
+          {route.name === "Register" && (
             <TextInput
               style={styles.container}
               mode="outlined"
@@ -108,7 +108,7 @@ function Login(props: Props): React.ReactElement {
               value={name}
               onChangeText={(text) => setName(text)}
             />
-          ) : null}
+          )}
           <TextInput
             style={styles.container}
             mode="outlined"
@@ -124,7 +124,7 @@ function Login(props: Props): React.ReactElement {
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-          {route.name === "Register" ? (
+          {route.name === "Register" && (
             <TextInput
               style={styles.container}
               mode="outlined"
@@ -133,7 +133,7 @@ function Login(props: Props): React.ReactElement {
               value={passwordConfirmation}
               onChangeText={(text) => setPasswordConfirmation(text)}
             />
-          ) : null}
+          )}
           <Button
             icon="login"
             mode="contained"
