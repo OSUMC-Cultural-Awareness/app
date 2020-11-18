@@ -1,22 +1,6 @@
 import { Api } from "./api";
 
 /**
- * EmailColonError - Emails **cannot** have `:`.
- *
- * @extends {Error}
- */
-export class EmailColonError extends Error {
-  /**
-   * constructor.
-   *
-   * @param {string} reason
-   */
-  constructor(public reason: string) {
-    super(reason);
-  }
-}
-
-/**
  * Administrator wrapper around fetch for interacting with API.
  */
 export class Admin {
@@ -33,11 +17,7 @@ export class Admin {
     public name: string,
     public email: string,
     public superUser: boolean = false
-  ) {
-    if (email.indexOf(":") != -1) {
-      throw new EmailColonError(`${email} has an unsupported character ':'`);
-    }
-  }
+  ) {}
 
   /**
    * get an {@link Admin} data.
