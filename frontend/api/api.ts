@@ -1,4 +1,5 @@
 import { API_URL } from "../constants";
+import { Culture } from "./culture";
 
 /**
  * An ApiError returned from an {@link Api} method.
@@ -53,6 +54,7 @@ export class Api {
     }
 
     let json = await response.json();
+    //console.log(json);
     if (!response.ok) {
       throw new ApiError(json["msg"], response.status);
     }
