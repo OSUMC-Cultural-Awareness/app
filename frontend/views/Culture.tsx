@@ -207,21 +207,30 @@ export function CultureView(props: Props): React.ReactElement {
     setCultureInPlace(culture);
   };
 
+  const InsightCardView = (
+    insight: GeneralInsight,
+    index: number | [string, number]
+  ): React.ReactElement => {
+    return (
+      <InsightCard
+        index={index}
+        editing={editing}
+        insight={insight}
+        onPress={(index) => console.log(`On press ${index}`)}
+        onDelete={deleteInsight}
+      />
+    );
+  };
+
   return (
     <View>
       <Tab.Navigator initialRouteName="General">
         <Tab.Screen name="General">
           {() => (
             <Insights
-              renderItem={(row: { item: GeneralInsight; index: number }) => (
-                <InsightCard
-                  index={row.index}
-                  editing={editing}
-                  insight={row.item}
-                  onPress={(index) => console.log(`On press ${index}`)}
-                  onDelete={deleteInsight}
-                />
-              )}
+              renderItem={(row: { item: GeneralInsight; index: number }) =>
+                InsightCardView(row.item, row.index)
+              }
               onRefresh={async () => fetchCulture()}
               insights={culture.generalInsights}
             />
@@ -239,15 +248,9 @@ export function CultureView(props: Props): React.ReactElement {
                 const { text, insights } = row.item;
                 return (
                   <List.Accordion title={text} id={row.index}>
-                    {insights.map((item: GeneralInsight, index: number) => (
-                      <InsightCard
-                        insight={item}
-                        onPress={(index) => console.log(`On press ${index}`)}
-                        index={[text, index]}
-                        editing={editing}
-                        onDelete={deleteInsight}
-                      />
-                    ))}
+                    {insights.map((item: GeneralInsight, index: number) =>
+                      InsightCardView(item, [text, index])
+                    )}
                     {editing && (
                       <Button
                         icon="plus"
