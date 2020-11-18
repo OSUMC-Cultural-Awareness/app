@@ -8,7 +8,7 @@ import { bindActionCreators } from "redux";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp, useRoute } from "@react-navigation/native";
 
-import { Admin } from "../api/admin";
+import { Admin } from "../api";
 import { updateUser } from "../redux/UserAction";
 import { Routes } from "../routes";
 

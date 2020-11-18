@@ -27,9 +27,9 @@ import {
   GeneralInsight,
   SpecializedInsight,
   specializedToArray,
-} from "../api/culture";
+  Ledger,
+} from "../api";
 
-import { Ledger } from "../api/ledger";
 import { Routes } from "../routes";
 import { Store } from "../redux/UserReducer";
 
