@@ -10,7 +10,7 @@ import { registerRootComponent } from "expo";
 import Home from "./views/Home";
 import { adminDashboard } from "./views/adminDashboard";
 import Login from "./views/Login";
-import { CultureView } from "./views/Culture";
+import CultureView from "./views/Culture";
 import { Routes } from "./routes";
 import { Theme } from "./constants";
 import userReducer from "./redux/UserReducer";

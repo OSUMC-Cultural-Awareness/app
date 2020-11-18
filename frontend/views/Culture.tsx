@@ -8,8 +8,8 @@ import {
 
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
+import { connect } from "react-redux";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-
 import {
   Card,
   ActivityIndicator,
@@ -31,10 +31,12 @@ import {
 
 import { Ledger } from "../api/ledger";
 import { Routes } from "../routes";
+import { Store } from "../redux/UserReducer";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Culture">;
   route: RouteProp<Routes, "Culture">;
+  token: string;
 };
 
 type TabProps = {
@@ -89,8 +91,9 @@ const ExampleInsight = {
  *
  * @returns React Element
  */
-export function CultureView(props: Props): React.ReactElement {
+function CultureView(props: Props): React.ReactElement {
   const { cultureName } = props.route.params;
+  const token = props.token;
 
   let [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
@@ -146,7 +149,7 @@ export function CultureView(props: Props): React.ReactElement {
    */
   const updateCulture = async (): Promise<void> => {
     try {
-      await culture.update("TODO: insert Admin token for updating");
+      await culture.update(token);
       setCultureInPlace(culture);
     } catch (err) {
       setShowErr(true);
@@ -285,11 +288,15 @@ export function CultureView(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
-      {editing ? (
-        <ToolsFAB onSave={() => updateCulture()} onAdd={addInsightOrCategory} />
-      ) : (
-        <EditFAB onPress={() => setEditing(!editing)} />
-      )}
+      {token &&
+        (editing ? (
+          <ToolsFAB
+            onSave={() => updateCulture()}
+            onAdd={addInsightOrCategory}
+          />
+        ) : (
+          <EditFAB onPress={() => setEditing(!editing)} />
+        ))}
       <Snackbar
         visible={showErr}
         onDismiss={hideSnackbar}
@@ -460,3 +467,18 @@ function InsightCard(props: InsightCardProps): React.ReactElement {
     </Card>
   );
 }
+
+export default connect(
+  (
+    state: Store,
+    ownProps: {
+      navigation: StackNavigationProp<Routes, "Culture">;
+      route: RouteProp<Routes, "Culture">;
+    }
+  ) => ({
+    token: state.user.token,
+    navigation: ownProps.navigation,
+    route: ownProps.route,
+  }),
+  null
+)(CultureView);
