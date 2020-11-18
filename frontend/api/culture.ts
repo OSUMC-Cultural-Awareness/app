@@ -130,6 +130,12 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async update(token: string): Promise<void> {
-    await Api.put(`/culture/${this.name}`, this, token);
+    const data = {
+      general_insights: this.generalInsights,
+      specialized_insights: this.specializedInsights,
+      name: this.name,
+    };
+
+    await Api.put(`/culture/${this.name}`, data, token);
   }
 }
