@@ -244,7 +244,7 @@ export function CultureView(props: Props): React.ReactElement {
                         onDelete={deleteInsight}
                       />
                     ))}
-                    {editing ? (
+                    {editing && (
                       <Button
                         icon="plus"
                         onPress={() => addSpecializedInsight(text)}
@@ -253,7 +253,7 @@ export function CultureView(props: Props): React.ReactElement {
                       >
                         {""}
                       </Button>
-                    ) : null}
+                    )}
                   </List.Accordion>
                 );
               }}
@@ -418,20 +418,20 @@ function InsightCard(props: InsightCardProps): React.ReactElement {
   const { insight, index, editing, onPress } = props;
 
   return (
-    <Card style={Styles.card} onPress={() => (editing ? onPress(index) : null)}>
+    <Card style={Styles.card} onPress={() => editing && onPress(index)}>
       <Card.Content>
         <Title>{insight.summary}</Title>
         <Paragraph>{insight.information}</Paragraph>
       </Card.Content>
       <Card.Actions>
         <IconButton icon="link" size={20} />
-        {editing ? (
+        {editing && (
           <IconButton
             icon="delete"
             size={20}
             onPress={() => props.onDelete(index)}
           />
-        ) : null}
+        )}
       </Card.Actions>
     </Card>
   );
