@@ -16,6 +16,18 @@ export class ApiError extends Error {
 }
 
 /**
+ * An OfflineError returned from an {@link Api} method.
+ */
+export class OfflineError extends Error {
+  /**
+   * constructor for OfflineError
+   */
+  constructor(public reason: string) {
+    super(`Offline: ${reason}`);
+  }
+}
+
+/**
  * @internal
  */
 export class Api {
@@ -23,15 +35,22 @@ export class Api {
    * Perform a GET request on the API.
    *
    * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @param {string} endpoint  after `http://localhost:5000/v1/`
+   *
    * @returns {Promise<any>} JSON
    */
   static async get(endpoint: string): Promise<any> {
-    const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
-      method: "GET",
-      headers: { Accept: "application/json" },
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      });
+    } catch (err) {
+      throw new OfflineError(err);
+    }
 
     let json = await response.json();
     if (!response.ok) {
@@ -45,19 +64,25 @@ export class Api {
    * Perform a GET request on the API with authorization.
    *
    * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @param {string} endpoint  after `http://localhost:5000/v1/`
    * @param {string} token  JSON Web Token
    * @returns {Promise<any>} JSON
    */
   static async getAuth(endpoint: string, token: string): Promise<any> {
-    const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (err) {
+      throw new OfflineError(err);
+    }
 
     let json = await response.json();
     if (!response.ok) {
@@ -71,6 +96,7 @@ export class Api {
    * Perform a PUT request on the API.
    *
    * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @param {string} endpoint  after `http://localhost:5000/v1/`
    * @param {Object} body  JSON payload
@@ -78,15 +104,20 @@ export class Api {
    * @returns {Promise<any>} JSON
    */
   static async put(endpoint: string, body: {}, token: string): Promise<any> {
-    const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(body),
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      throw new OfflineError(err);
+    }
 
     let json = await response.json();
     if (!response.ok) {
@@ -100,20 +131,26 @@ export class Api {
    * Perform a DELETE request on the API.
    *
    * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @param {string} endpoint  after `http://localhost:5000/v1/`
    * @param {string} token  JSON Web Token
    * @returns {Promise<any>} JSON
    */
   static async delete(endpoint: string, token: string): Promise<any> {
-    const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (err) {
+      new OfflineError(err);
+    }
 
     let json = await response.json();
     if (!response.ok) {
@@ -127,6 +164,7 @@ export class Api {
    * Perform a POST request on the API.
    *
    * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @param {string} endpoint  after `http://localhost:5000/v1/`
    * @param {Object} body  Request Body
@@ -143,11 +181,16 @@ export class Api {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify(body),
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      throw new OfflineError(err);
+    }
 
     let json = await response.json();
     if (!response.ok) {

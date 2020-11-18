@@ -1,6 +1,42 @@
 import { Api } from "./api";
 
 /**
+ * Represents a GeneralInsight used by {@link Culture}.
+ *
+ * fields:
+ *   source: string
+ *   text: string
+ */
+export type GeneralInsight = {
+  summary: string;
+  information: string;
+  source: { data: string; type: string };
+};
+
+/**
+ * Represents a SpecializedInsight used by {@link Culture}.
+ * A Map<string, GeneralInsight>.
+ */
+export type SpecializedInsight = Map<string, GeneralInsight[]>;
+
+/**
+ * specializedToArray convert a Map<string, GeneralInsight> to an Array.
+ *
+ * @param {SpecializedInsight} Map of Specialized Insights
+ *
+ * @returns {{text: string; insights: GeneralInsight[]}[]} where `text` is the title.
+ */
+export function specializedToArray(
+  insights: SpecializedInsight
+): { text: string; insights: GeneralInsight[] }[] {
+  let ret = [];
+  for (let key in insights) {
+    ret.push({ text: key, insights: insights[key] });
+  }
+  return ret;
+}
+
+/**
  * A Wrapper around {@link Api} for Culture.
  */
 export class Culture {
@@ -8,17 +44,20 @@ export class Culture {
    * constructor for {@link Culture}.
    *
    * @param {string} name
-   * @param {string[]} generalInsights
-   * @param {string[]} specializeInsights
+   * @param {GeneralInsight[]} generalInsights
+   * @param {SpecializedInsight} specializedInsights
    */
   constructor(
     public name: string,
-    public generalInsights: string[],
-    public specializeInsights: string[] = []
+    public generalInsights: GeneralInsight[],
+    public specializedInsights: SpecializedInsight
   ) {}
 
   /**
    * Get information about a {@link Culture}.
+   *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @param {string} name
    * @returns {Promise<Culture>}
@@ -34,20 +73,10 @@ export class Culture {
   }
 
   /**
-<<<<<<< HEAD
-   * Snapshot information about a {@link Culture}.
-   *
-   * @param {string} name
-   * @returns {Promise<Culture>}
-   */
-  static async snapshot(name: string): Promise<Culture> {
-    let json = Api.get(`/culture/${name}`);
-
-    return new this(json["name"], json["general_insights"]);
-  }
-
-  /**
    * List all cultures by name.
+   *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @returns {Promise<{ name: string; modified: number }[]>}
    */
@@ -60,16 +89,19 @@ export class Culture {
   /**
    * Create a {@link Culture}
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
    * @param {string} token
    * @returns {Promise<void>}
    */
   async create(token: string): Promise<void> {
-    Api.post(
+    await Api.post(
       "/culture",
       {
         name: this.name,
         general_insights: this.generalInsights,
-        specialized_insights: this.specializeInsights,
+        specialized_insights: this.specializedInsights,
       },
       token
     );
@@ -78,20 +110,32 @@ export class Culture {
   /**
    * Delete a {@link Culture}
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
    * @param {string} token
    * @returns {Promise<void>}
    */
   async delete(token: string): Promise<void> {
-    Api.delete(`/culture/${this.name}`, token);
+    await Api.delete(`/culture/${this.name}`, token);
   }
 
   /**
    * Update a {@link Culture}
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
    * @param {string} token
    * @returns {Promise<void>}
    */
   async update(token: string): Promise<void> {
-    Api.put(`/culture/${this.name}`, this, token);
+    const data = {
+      general_insights: this.generalInsights,
+      specialized_insights: this.specializedInsights,
+      name: this.name,
+    };
+
+    await Api.put(`/culture/${this.name}`, data, token);
   }
 }
