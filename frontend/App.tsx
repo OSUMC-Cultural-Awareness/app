@@ -1,31 +1,36 @@
 import "react-native-gesture-handler";
 import * as React from "react";
-
+import { Provider } from "react-redux";
+import { createStore } from "redux";
 import { Provider as PaperProvider, Button, Avatar } from "react-native-paper";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { registerRootComponent } from "expo";
-import { homePage } from "./views/homePage";
+import Home from "./views/Home";
 import { adminDashboard } from "./views/adminDashboard";
-import { adminLogin } from "./views/adminLogin";
-import { adminRegistration } from "./views/adminRegistration";
+import Login from "./views/Login";
 import { CultureView } from "./views/Culture";
 import { Routes } from "./routes";
 import { Theme } from "./constants";
+import userReducer from "./redux/UserReducer";
+
+const store = createStore(userReducer);
 
 function App() {
   const Stack = createStackNavigator<Routes>();
+  const linking = {
+    prefixes: ["/"],
+  };
 
   return (
     <PaperProvider theme={Theme}>
-      <NavigationContainer>
-        {
-          <Stack.Navigator initialRouteName="Culture">
+      <Provider store={store}>
+        <NavigationContainer linking={linking}>
+          <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
               name="Culture"
               component={CultureView}
-              initialParams={{ cultureName: "African Americans" }}
               options={{
                 headerRight: () => (
                   <Button onPress={() => console.log("button pressed")}>
@@ -34,13 +39,13 @@ function App() {
                 ),
               }}
             />
-            <Stack.Screen name="Home" component={homePage} />
+            <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Dashboard" component={adminDashboard} />
-            <Stack.Screen name="Login" component={adminLogin} />
-            <Stack.Screen name="Register" component={adminRegistration} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Login} />
           </Stack.Navigator>
-        }
-      </NavigationContainer>
+        </NavigationContainer>
+      </Provider>
     </PaperProvider>
   );
 }
