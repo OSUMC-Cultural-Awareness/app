@@ -7,13 +7,13 @@ import { Provider as PaperProvider, Button, Avatar } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { registerRootComponent } from "expo";
-import Home from "./views/Home";
 import { adminDashboard } from "./views/adminDashboard";
 import Login from "./views/Login";
 import CultureView from "./views/Culture";
 import { Routes } from "./routes";
 import { Theme } from "./constants";
 import userReducer from "./redux/UserReducer";
+import Home from "./views/Home";
 
 const store = createStore(userReducer);
 
