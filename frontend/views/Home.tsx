@@ -3,18 +3,28 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  ScrollView,
-  Button,
   FlatList,
   SafeAreaView,
   Image,
 } from "react-native";
 import "react-native-gesture-handler";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Culture } from "../api/culture";
 import { connect } from "react-redux";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from "@react-navigation/native";
+import {
+  List,
+  ActivityIndicator,
+  Colors,
+  Button,
+  FAB,
+} from "react-native-paper";
+
+import { Routes } from "../routes";
+import { Store } from "../redux/UserReducer";
 
 const styles = StyleSheet.create({
   emptyListStyle: {
@@ -49,54 +59,34 @@ const styles = StyleSheet.create({
     fontSize: 18,
     padding: 7,
   },
+  btn: {},
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 });
 
-function Home({ navigation, user }) {
-  const [cultureGroup, setCultureGroup] = useState("");
-  const [delCultureGroup, deleteCultureGroup] = useState("");
-  const [cultureGenData, setGenCultureData] = useState("");
-  const [cultureSpecData, setCultureSpecData] = useState("");
+type Props = {
+  navigation: StackNavigationProp<Routes, "Home">;
+  route: RouteProp<Routes, "Home">;
+  token: string;
+};
 
-  const handleDisclaimer = (evt) => {
-    alert("Pressed!");
-  };
+function Home(props: Props) {
+  const [cultures, setCultures] = useState(null);
 
-  const handleAdminLogin = (evt) => {
-    navigation.navigate("Login");
-  };
+  console.log(props.token);
 
-  const EmptyListMessage = ({ item }) => {
-    return (
-      // Flat List Item
-      <Text style={styles.emptyListStyle} onPress={() => getItem(item)}>
-        No Data Found
-      </Text>
-    );
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      let cultureNames = await Culture.list();
+      setCultures(cultureNames);
+    };
 
-  const ItemView = ({ item }) => {
-    return (
-      // Flat List Item
-      <Text style={styles.itemStyle} onPress={() => getItem(item)}>
-        {item.id}
-        {"."}
-        {item.title.toUpperCase()}
-      </Text>
-    );
-  };
-
-  const ItemSeparatorView = () => {
-    return (
-      // Flat List Item Separator
-      <View
-        style={{
-          height: 0.5,
-          width: "100%",
-          backgroundColor: "#C8C8C8",
-        }}
-      />
-    );
-  };
+    fetchData();
+  }, []);
 
   const ListHeader = () => {
     //View to set in Header
@@ -111,11 +101,9 @@ function Home({ navigation, user }) {
     //View to set in Footer
     return (
       <View style={styles.bottomFooterStyle}>
-        <Button
-          title="General Disclaimer"
-          style="margin:50%"
-          onPress={handleDisclaimer}
-        />
+        <Button onPress={() => console.log("Pressed!")}>
+          General Disclaimer
+        </Button>
         <TouchableOpacity style={styles.btn} onPress={handleAdminLogin}>
           <Image
             source={require("../assets/admin_login.png")}
@@ -126,53 +114,60 @@ function Home({ navigation, user }) {
     );
   };
 
-  const getItem = (item) => {
-    // Function for click on an item
-    alert("Id : " + item.id + " Title : " + item.title);
+  const handleAdminLogin = (evt) => {
+    props.navigation.navigate("Login");
+    //alert('Pressed!')
+  };
+  const handleDisclaimer = (evt) => {
+    alert("Pressed!");
   };
 
-  const [dataSource, setDataSource] = useState([
-    { id: 1, title: "Button" },
-    { id: 2, title: "Card" },
-    { id: 3, title: "Input" },
-    { id: 4, title: "Avatar" },
-    { id: 5, title: "CheckBox" },
-    { id: 6, title: "Header" },
-    { id: 7, title: "Icon" },
-    { id: 8, title: "Lists" },
-    { id: 9, title: "Rating" },
-    { id: 10, title: "Pricing" },
-    { id: 11, title: "Avatar" },
-    { id: 12, title: "CheckBox" },
-    { id: 13, title: "Header" },
-    { id: 14, title: "Icon" },
-    { id: 15, title: "Lists" },
-    { id: 16, title: "Rating" },
-    { id: 17, title: "Pricing" },
-  ]);
-
-  console.log(user);
+  if (cultures === null)
+    return <ActivityIndicator animating={true} color={Colors.red800} />;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <FAB icon="plus" style={styles.fab}></FAB>
       <FlatList
-        data={dataSource}
+        style={{ flex: 1 }}
+        data={cultures}
         keyExtractor={(item, index) => index.toString()}
-        ItemSeparatorComponent={ItemSeparatorView}
-        //Header to show above listview
-        ListHeaderComponent={ListHeader}
         //Footer to show below listview
         ListFooterComponent={ListFooter}
-        renderItem={ItemView}
-        ListEmptyComponent={EmptyListMessage}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity onPress={() => console.log("Pressed!")}>
+              <List.Item
+                title={item.name}
+                right={(styleprops) => (
+                  <Button
+                    icon="delete"
+                    onPress={() => Culture.delete(item.name, props.token)}
+                  >
+                    {" "}
+                  </Button>
+                )}
+              />
+            </TouchableOpacity>
+          );
+        }}
+        //ListEmptyComponent={EmptyListMessage}
       />
     </SafeAreaView>
   );
 }
 
-const mapStateToProps = (state) => {
-  const { user } = state;
-  return { user };
-};
-
-export default connect(mapStateToProps)(Home);
+export default connect(
+  (
+    state: Store,
+    ownProps: {
+      navigation: StackNavigationProp<Routes, "Home">;
+      route: RouteProp<Routes, "Home">;
+    }
+  ) => ({
+    token: state.user.token,
+    navigation: ownProps.navigation,
+    route: ownProps.route,
+  }),
+  null
+)(Home);
