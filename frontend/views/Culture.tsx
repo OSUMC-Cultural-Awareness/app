@@ -212,11 +212,11 @@ export function CultureView(props: Props): React.ReactElement {
         <Tab.Screen name="General">
           {() => (
             <Insights
-              renderItem={({ item, index }) => (
+              renderItem={(row: { item: GeneralInsight; index: number }) => (
                 <InsightCard
-                  index={index}
+                  index={row.index}
                   editing={editing}
-                  insight={item}
+                  insight={row.item}
                   onPress={(index) => console.log(`On press ${index}`)}
                   onDelete={deleteInsight}
                 />
@@ -231,10 +231,13 @@ export function CultureView(props: Props): React.ReactElement {
             <Insights
               insights={specInsights}
               onRefresh={async () => fetchCulture()}
-              renderItem={({ item, index }) => {
-                const { text, insights } = item;
+              renderItem={(row: {
+                item: { text: string; insights: GeneralInsight[] };
+                index: number;
+              }) => {
+                const { text, insights } = row.item;
                 return (
-                  <List.Accordion title={text} id={index}>
+                  <List.Accordion title={text} id={row.index}>
                     {insights.map((item: GeneralInsight, index: number) => (
                       <InsightCard
                         insight={item}
