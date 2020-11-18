@@ -106,6 +106,8 @@ export function CultureView(props: Props): React.ReactElement {
   /**
    * Updates the Culture in place by calling `setCulture`.
    *
+   * @param {Culture} culture to update CultureView with.
+   *
    * HACK: As a result of how useState works it creates a new object and moves all the values over
    * rather than something as simple as setCulture, this is because React checks differences of objects shallowly.
    */
@@ -169,6 +171,8 @@ export function CultureView(props: Props): React.ReactElement {
 
   /**
    * Delete an insight from a list
+   *
+   * @param {number | [string, number]} index of insight to delete
    */
   const deleteInsight = (index: number | [string, number]) => {
     if (index instanceof Array) {
@@ -201,12 +205,25 @@ export function CultureView(props: Props): React.ReactElement {
     setCultureInPlace(culture);
   };
 
+  /**
+   * addSpecializedInsight adds an insight to a category of SpecializedInsight
+   *
+   * @param {string} key of specializedInsight
+   */
   const addSpecializedInsight = (key: string) => {
     culture.specializedInsights[key].push(ExampleInsight);
 
     setCultureInPlace(culture);
   };
 
+  /**
+   * Renders a InsightCard
+   *
+   * @param {GeneralInsight} insight to render
+   * @param {number | [string, number]} index of insight
+   *
+   * @returns {React.ReactElement} React Component
+   */
   const InsightCardView = (
     insight: GeneralInsight,
     index: number | [string, number]
