@@ -1,6 +1,3 @@
-import { StatusBar } from "expo-status-bar";
-//import React from 'react';
-import { StyleSheet } from "react-native";
 import "react-native-gesture-handler";
 import * as React from "react";
 import { Provider } from "react-redux";
@@ -13,7 +10,7 @@ import { registerRootComponent } from "expo";
 import Home from "./views/Home";
 import { adminManagement } from "./views/adminManagement";
 import Login from "./views/Login";
-import { cultureInsights } from "./views/cultureInsights";
+import CultureView from "./views/Culture";
 import { Routes } from "./routes";
 import { Theme } from "./constants";
 import userReducer from "./redux/UserReducer";
@@ -33,8 +30,7 @@ function App() {
           <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
               name="Culture"
-              component={cultureInsights}
-              initialParams={{ cultureName: "African Americans" }}
+              component={CultureView}
               options={{
                 headerRight: () => (
                   <Button onPress={() => console.log("button pressed")}>
@@ -55,38 +51,3 @@ function App() {
 }
 
 export default registerRootComponent(App);
-
-const styles = StyleSheet.create({
-  emptyListStyle: {
-    padding: 10,
-    fontSize: 18,
-    textAlign: "center",
-  },
-  itemStyle: {
-    padding: 10,
-  },
-  img: {
-    padding: 35,
-    height: 70,
-    width: "25%",
-  },
-  headerFooterStyle: {
-    width: "100%",
-    height: 45,
-    backgroundColor: "#606070",
-  },
-  bottomFooterStyle: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    height: 80,
-    backgroundColor: "#606070",
-  },
-  textStyle: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 18,
-    padding: 7,
-  },
-});
