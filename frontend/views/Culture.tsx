@@ -87,6 +87,7 @@ const ExampleInsight = {
  *
  * @param: props: properties to pass to CultureView
  *
+ * @returns React Element
  */
 export function CultureView(props: Props): React.ReactElement {
   const { cultureName } = props.route.params;
@@ -300,7 +301,7 @@ type InsightProps = {
  * or {{text: string, insights: GeneralInsight[]}[]}.
  *
  * @param {InsightProps} props
- * @returns {React.ReactElement}
+ * @returns {React.ReactElement} React component
  */
 function Insights(props: InsightProps): React.ReactElement {
   const { insights, onRefresh, renderItem } = props;
@@ -374,7 +375,7 @@ type ToolsFABProps = {
  * ToolsFAB displays a {@link FAB.Group} that has two sub {@link FAB} one for editing and one for saving.
  *
  * @param {ToolsFABProps} props
- * @returns {React.ReactElement}
+ * @returns {React.ReactElement} React component
  */
 function ToolsFAB(props: ToolsFABProps): React.ReactElement {
   const [open, setOpen] = useState(false);
@@ -415,7 +416,7 @@ type InsightCardProps = {
  * InsightCard card to display information about an Insight
  *
  * @param {InsightCardProps} props
- * @returns {React.ReactElement}
+ * @returns {React.ReactElement} React component
  */
 function InsightCard(props: InsightCardProps): React.ReactElement {
   const { insight, index, editing, onPress } = props;
