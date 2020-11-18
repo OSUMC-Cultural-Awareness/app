@@ -14,5 +14,4 @@ export type Routes = {
   Home: undefined;
   Register: { token: string };
   Login: undefined;
-  Dashboard: undefined;
 };
