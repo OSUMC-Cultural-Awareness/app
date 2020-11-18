@@ -116,8 +116,8 @@ export class Culture {
    * @param {string} token
    * @returns {Promise<void>}
    */
-  async delete(token: string): Promise<void> {
-    await Api.delete(`/culture/${this.name}`, token);
+  static async delete(name: string, token: string): Promise<void> {
+    await Api.delete(`/culture/${name}`, token);
   }
 
   /**

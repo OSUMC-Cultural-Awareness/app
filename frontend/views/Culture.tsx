@@ -92,7 +92,7 @@ const ExampleInsight = {
  * @returns React Element
  */
 function CultureView(props: Props): React.ReactElement {
-  const { cultureName } = props.route.params;
+  const cultureName = props.route.params ? props.route.params.cultureName : "";
   const token = props.token;
 
   let [culture, setCulture] = useState<Culture | null>(null);
@@ -139,7 +139,7 @@ function CultureView(props: Props): React.ReactElement {
       } catch (err) {
         console.error(err);
         // TODO: Display Magical Unicorn Culture
-        props.navigation.goBack();
+        props.navigation.navigate("Home");
       }
     }
   };
@@ -233,6 +233,7 @@ function CultureView(props: Props): React.ReactElement {
   ): React.ReactElement => {
     return (
       <InsightCard
+        key={`insight-card-${index.toString()}`}
         index={index}
         editing={editing}
         insight={insight}
@@ -288,15 +289,17 @@ function CultureView(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
-      {token &&
-        (editing ? (
-          <ToolsFAB
-            onSave={() => updateCulture()}
-            onAdd={addInsightOrCategory}
-          />
-        ) : (
-          <EditFAB onPress={() => setEditing(!editing)} />
-        ))}
+      <>
+        {token &&
+          (editing ? (
+            <ToolsFAB
+              onSave={() => updateCulture()}
+              onAdd={addInsightOrCategory}
+            />
+          ) : (
+            <EditFAB onPress={() => setEditing(!editing)} />
+          ))}
+      </>
       <Snackbar
         visible={showErr}
         onDismiss={hideSnackbar}
@@ -427,6 +430,7 @@ function ToolsFAB(props: ToolsFABProps): React.ReactElement {
  * Properties for {@link InsightCard}
  */
 type InsightCardProps = {
+  key: string;
   // Insight to display on card
   insight: GeneralInsight;
   // editing whether the admin is editing the current page
