@@ -143,7 +143,7 @@ export class Api {
     let response: Response;
     try {
       response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
-        method: "PUT",
+        method: "DELETE",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
