@@ -53,10 +53,6 @@ const Styles = StyleSheet.create({
     // TODO: Emulate Fixed for the Floating Action Button
   },
 
-  fabStyle: {
-    backgroundColor: "#1e88e5",
-  },
-
   card: {
     padding: 10,
     marginVertical: 5,
@@ -379,7 +375,6 @@ function EditFAB(props: EditFABProps): React.ReactElement {
   return (
     <FAB.Group
       style={Styles.fab}
-      fabStyle={Styles.fabStyle}
       icon="pencil"
       open={false}
       onPress={() => props.onPress()}
@@ -414,7 +409,6 @@ function ToolsFAB(props: ToolsFABProps): React.ReactElement {
     <FAB.Group
       visible={true}
       style={Styles.fab}
-      fabStyle={Styles.fabStyle}
       open={open}
       icon={open ? "close" : "wrench"}
       actions={[
