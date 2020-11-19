@@ -233,7 +233,12 @@ function CultureView(props: Props): React.ReactElement {
         index={index}
         editing={editing}
         insight={insight}
-        onPress={(index) => console.log(`On press ${index}`)}
+        onPress={(index) =>
+          props.navigation.navigate("EditInsight", {
+            culture: culture,
+            index: index,
+          })
+        }
         onDelete={deleteInsight}
       />
     );
