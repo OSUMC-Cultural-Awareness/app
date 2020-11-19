@@ -31,6 +31,18 @@ const Styles = StyleSheet.create({
   },
 });
 
+/**
+ * EditInsight displays information for a particular insight and allows editing it.
+ * Upon hitting the {@link FAB} it will bring the user back to {@Link CultureView}
+ * in order to save the changes to the database.
+ *
+ * Admin:
+ *   Admin ONLY screen
+ *
+ * @param {Props} props: properties to pass to {@link EditInsight}
+ *
+ * @returns {React.ReactElement} React Element
+ */
 export default function EditInsight(props: Props): React.ReactElement {
   const index = props.route.params.index;
   let { culture } = props.route.params;
@@ -51,6 +63,10 @@ export default function EditInsight(props: Props): React.ReactElement {
   const [srcData, setSrcData] = useState<string>(insight.source.data);
   const [srcType, setSrcType] = useState<string>(insight.source.type);
 
+  /**
+   * updateCulture updates the Culture's insight for either Specialized or General
+   * screens.
+   */
   const updateCulture = () => {
     const newInsight = {
       summary: summary,
