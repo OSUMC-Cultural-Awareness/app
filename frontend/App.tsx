@@ -7,10 +7,9 @@ import { Provider as PaperProvider, Button, Avatar } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { registerRootComponent } from "expo";
-import Home from "./views/Home";
-import { adminManagement } from "./views/adminManagement";
-import Login from "./views/Login";
-import CultureView from "./views/Culture";
+
+import { Home, Login, CultureView, adminManagement } from "./views";
+
 import { Routes } from "./routes";
 import { Theme } from "./constants";
 import userReducer from "./redux/UserReducer";
@@ -27,7 +26,7 @@ function App() {
     <PaperProvider theme={Theme}>
       <Provider store={store}>
         <NavigationContainer linking={linking}>
-          <Stack.Navigator initialRouteName="Home">
+          <Stack.Navigator initialRouteName="Dashboard">
             <Stack.Screen
               name="Culture"
               component={CultureView}
