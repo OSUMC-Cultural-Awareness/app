@@ -1,4 +1,3 @@
-//import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,8 +8,8 @@ import {
   Image,
 } from "react-native";
 import "react-native-gesture-handler";
-import * as React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useRoute } from "@react-navigation/native";
 import { Culture } from "../api/culture";
 import { connect } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -22,10 +21,13 @@ import {
   Button,
   FAB,
   IconButton,
+  Snackbar,
 } from "react-native-paper";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import { Routes } from "../routes";
 import { Store } from "../redux/UserReducer";
+import { Admin } from "../api/admin";
 
 const styles = StyleSheet.create({
   emptyListStyle: {
@@ -72,19 +74,48 @@ const styles = StyleSheet.create({
 type Props = {
   navigation: StackNavigationProp<Routes, "Home">;
   route: RouteProp<Routes, "Home">;
+  user: Admin;
   token: string;
 };
 
-function Home(props: Props) {
+type TabProps = {
+  // TODO
+};
+
+const Tab = createMaterialTopTabNavigator<TabProps>();
+
+function Home(props: Props): React.ReactElement {
   const [cultures, setCultures] = useState(null);
+  const [users, setUsers] = useState(null);
+  const [editing, setEditing] = useState<boolean>(false);
+  const [err, setErr] = useState<string>("");
+  const [showErr, setShowErr] = useState<boolean>(false);
+  const route = useRoute();
+  const token = props.token;
+
+  const hideSnackbar = () => setShowErr(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCultureData = async () => {
       let cultureNames = await Culture.list();
       setCultures(cultureNames);
     };
 
-    fetchData();
+    fetchCultureData();
+  }, []);
+
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      let users;
+      if (props.user.superUser) {
+        users = await Admin.list(token);
+      } else {
+        users = [props.user];
+      }
+      setUsers(users);
+    };
+
+    fetchAdminData();
   }, []);
 
   const ListHeader = () => {
@@ -115,7 +146,6 @@ function Home(props: Props) {
 
   const handleAdminLogin = (evt) => {
     props.navigation.navigate("Login");
-    //alert('Pressed!')
   };
   const handleDisclaimer = (evt) => {
     console.log("Pressed");
@@ -124,35 +154,88 @@ function Home(props: Props) {
   if (cultures === null)
     return <ActivityIndicator animating={true} color={Colors.red800} />;
 
+  
+  // These are the documents that we fetched from the database above
+  // Pass these as arguments to Admins and Cultures components respectively
+
+  console.log(users);
+  console.log(cultures);
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <FAB icon="plus" style={styles.fab}></FAB>
-      <FlatList
-        style={{ flex: 1 }}
-        data={cultures}
-        keyExtractor={(_, index) => index.toString()}
-        ListFooterComponent={ListFooter}
-        renderItem={({ item }) => {
-          return (
-            <List.Item
-              title={item.name}
-              onPress={() =>
-                props.navigation.navigate("Culture", { cultureName: item.name })
-              }
-              right={() =>
-                props.token ? (
-                  <IconButton
-                    icon="delete"
-                    onPress={() => Culture.delete(item.name, props.token)}
-                  />
-                ) : null
-              }
-            />
-          );
+    // TODO:
+    // We want to refactor this code to work like the Culture view
+    // Use the same patterns/base components as Culture.tsx
+    // Fill in the Cultures tab and Admins tab
+    //
+
+    <View>
+      <Tab.Navigator initialRouteName="Cultures">
+        {/* CULTURES TAB */}
+        <Tab.Screen name="Cultures">
+          {/* TODO: create a cultures component that lists the cultures, reuse the FlatList that was originally in here */}
+        </Tab.Screen>
+
+        {/* ADMINS TAB */}
+        {/* This tab should only be visible to users who are logged in */}
+        <Tab.Screen name="Admins">
+          {/* TODO: create admins component that lists the admins  */}
+        </Tab.Screen>
+      </Tab.Navigator>
+      <>
+        {token &&
+          (editing ? (
+            // TODO: create ToolsFAB component, updateAdmin function
+
+            // <ToolsFAB
+            //   onSave={() => updateAdmin()}
+            //   onAdd={addInsightOrCategory}
+            // />
+          ) : (
+            // TODO: create EditFab component
+
+            // <EditFAB onPress={() => setEditing(!editing)} />
+          ))}
+      </>
+      <Snackbar
+        visible={showErr}
+        onDismiss={hideSnackbar}
+        action={{
+          label: "Hide",
+          onPress: hideSnackbar,
         }}
-        //ListEmptyComponent={EmptyListMessage}
-      />
-    </SafeAreaView>
+      >
+        {err}
+      </Snackbar>
+    </View>
+
+    // <SafeAreaView style={{ flex: 1 }}>
+    //   <FAB icon="plus" style={styles.fab}></FAB>
+    //   <FlatList
+    //     style={{ flex: 1 }}
+    //     data={cultures}
+    //     keyExtractor={(_, index) => index.toString()}
+    //     ListFooterComponent={ListFooter}
+    //     renderItem={({ item }) => {
+    //       return (
+    //         <List.Item
+    //           title={item.name}
+    //           onPress={() =>
+    //             props.navigation.navigate("Culture", { cultureName: item.name })
+    //           }
+    //           right={() =>
+    //             props.token ? (
+    //               <IconButton
+    //                 icon="delete"
+    //                 onPress={() => Culture.delete(item.name, props.token)}
+    //               />
+    //             ) : null
+    //           }
+    //         />
+    //       );
+    //     }}
+    //     //ListEmptyComponent={EmptyListMessage}
+    //   />
+    // </SafeAreaView>
   );
 }
 
@@ -164,9 +247,10 @@ export default connect(
       route: RouteProp<Routes, "Home">;
     }
   ) => ({
-    token: state.user.token,
     navigation: ownProps.navigation,
     route: ownProps.route,
+    user: state.user.user,
+    token: state.user.token,
   }),
   null
 )(Home);
