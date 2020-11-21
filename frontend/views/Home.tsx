@@ -27,9 +27,10 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { Routes } from "../routes";
 import { Store } from "../redux/UserReducer";
 import { Admin } from "../api/admin";
-import { Culture } from "../api/culture"
+import { Culture } from "../api/culture";
 
 const styles = StyleSheet.create({
+  spinner: { top: "50%", position: "relative" },
   emptyListStyle: {
     padding: 10,
     fontSize: 18,
@@ -53,8 +54,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    height: 80,
+    height: 70,
     backgroundColor: "#606070",
+    position: "absolute",
+    bottom: "0px",
+    left: "0px",
+    right: "0px",
+    marginBottom: "0px",
   },
   textStyle: {
     textAlign: "center",
@@ -68,6 +74,9 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+  },
+  view: {
+    height: "100%",
   },
 });
 
@@ -97,11 +106,6 @@ function Home(props: Props): React.ReactElement {
   const hideSnackbar = () => setShowErr(false);
 
   useEffect(() => {
-    const fetchCultureData = async () => {
-      let cultureNames = await Culture.list();
-      setCultures(cultureNames);
-    };
-
     fetchCultureData();
   }, []);
 
@@ -118,6 +122,11 @@ function Home(props: Props): React.ReactElement {
 
     fetchAdminData();
   }, []);
+
+  const fetchCultureData = async () => {
+    let cultureNames = await Culture.list();
+    setCultures(cultureNames);
+  };
 
   const ListHeader = () => {
     //View to set in Header
@@ -155,45 +164,49 @@ function Home(props: Props): React.ReactElement {
   if (cultures === null)
     return <ActivityIndicator animating={true} color={Colors.red800} />;
 
-  
   // These are the documents that we fetched from the database above
   // Pass these as arguments to Admins and Cultures components respectively
 
   console.log(users);
-  console.log(cultures);
 
   return (
     // TODO:
     // We want to refactor this code to work like the Culture view
     // Use the same patterns/base components as Culture.tsx
 
-    <View>
+    <View style={styles.view}>
       <Tab.Navigator initialRouteName="Cultures">
         {/* CULTURES TAB */}
         <Tab.Screen name="Cultures">
-          {/* TODO: create a cultures component that lists the cultures, reuse the FlatList that was originally in here */}
+          {() => (
+            <Cultures
+              onRefresh={async () => fetchCultureData()}
+              cultures={cultures}
+              navigation={props.navigation}
+              token={token}
+            />
+          )}
         </Tab.Screen>
 
         {/* ADMINS TAB */}
         {/* This tab should only be visible to users who are logged in how can we prevent the following component from rendering if a user is not signed in? */}
-        <Tab.Screen name="Admins">
-          {/* TODO: create admins component that lists the admins  */}
-        </Tab.Screen>
+        {/* TODO: create admins component that lists the admins  */}
+        <Tab.Screen name="Admins">{() => <></>}</Tab.Screen>
       </Tab.Navigator>
       <>
-        {token &&
+        {/* {token &&
           (editing ? (
-            // TODO: create ToolsFAB component, updateAdmin function
+            TODO: create ToolsFAB component, updateAdmin function
 
-            // <ToolsFAB
-            //   onSave={() => updateAdmin()}
-            //   onAdd={addInsightOrCategory}
-            // />
+            <ToolsFAB
+              onSave={() => updateAdmin()}
+              onAdd={addInsightOrCategory}
+            />
           ) : (
-            // TODO: create EditFab component
+            TODO: create EditFab component
 
-            // <EditFAB onPress={() => setEditing(!editing)} />
-          ))}
+            <EditFAB onPress={() => setEditing(!editing)} />
+          ))} */}
       </>
       <Snackbar
         visible={showErr}
@@ -205,36 +218,72 @@ function Home(props: Props): React.ReactElement {
       >
         {err}
       </Snackbar>
+      {ListFooter()}
     </View>
+  );
+}
 
-    // <SafeAreaView style={{ flex: 1 }}>
-    //   <FAB icon="plus" style={styles.fab}></FAB>
-    //   <FlatList
-    //     style={{ flex: 1 }}
-    //     data={cultures}
-    //     keyExtractor={(_, index) => index.toString()}
-    //     ListFooterComponent={ListFooter}
-    //     renderItem={({ item }) => {
-    //       return (
-    //         <List.Item
-    //           title={item.name}
-    //           onPress={() =>
-    //             props.navigation.navigate("Culture", { cultureName: item.name })
-    //           }
-    //           right={() =>
-    //             props.token ? (
-    //               <IconButton
-    //                 icon="delete"
-    //                 onPress={() => Culture.delete(item.name, props.token)}
-    //               />
-    //             ) : null
-    //           }
-    //         />
-    //       );
-    //     }}
-    //     //ListEmptyComponent={EmptyListMessage}
-    //   />
-    // </SafeAreaView>
+/**
+ * Properties for {@link Cultures}
+ */
+type CultureProps = {
+  // callback called when the {@link FlatList} is refreshed
+  onRefresh: () => void;
+  // Cultures to render
+  cultures: { name: string; cultures: Culture[] }[];
+  navigation: any;
+  token: string;
+};
+
+/**
+ * Component that displays a list of components of either {@link Cultures}
+ *
+ * @param {CultureProps} props
+ * @returns {React.ReactElement} React component
+ */
+function Cultures(props: CultureProps): React.ReactElement {
+  const { cultures, onRefresh } = props;
+  const [refreshing, setRefreshing] = useState(false);
+
+  if (!cultures) {
+    return (
+      <ActivityIndicator animating={true} size="large" style={styles.spinner} />
+    );
+  }
+
+  const refresh = () => {
+    onRefresh();
+    setRefreshing(true);
+  };
+
+  return (
+    <SafeAreaView>
+      <FlatList
+        style={{ flex: 1 }}
+        data={cultures}
+        keyExtractor={(_, index) => index.toString()}
+        onRefresh={() => refresh()}
+        refreshing={refreshing}
+        renderItem={({ item }) => {
+          return (
+            <List.Item
+              title={item.name}
+              onPress={() =>
+                props.navigation.navigate("Culture", { cultureName: item.name })
+              }
+              right={() =>
+                props.token ? (
+                  <IconButton
+                    icon="delete"
+                    onPress={() => Culture.delete(item.name, props.token)}
+                  />
+                ) : null
+              }
+            />
+          );
+        }}
+      />
+    </SafeAreaView>
   );
 }
 
