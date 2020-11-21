@@ -164,11 +164,6 @@ function Home(props: Props): React.ReactElement {
   if (cultures === null)
     return <ActivityIndicator animating={true} color={Colors.red800} />;
 
-  // These are the documents that we fetched from the database above
-  // Pass these as arguments to Admins and Cultures components respectively
-
-  console.log(users);
-
   return (
     // TODO:
     // We want to refactor this code to work like the Culture view
@@ -190,7 +185,7 @@ function Home(props: Props): React.ReactElement {
 
         {/* ADMINS TAB */}
         {/* This tab should only be visible to users who are logged in how can we prevent the following component from rendering if a user is not signed in? */}
-        {/* TODO: create admins component that lists the admins  */}
+        {/* TODO: create admins component that lists the admins, pass users to that component */}
         <Tab.Screen name="Admins">{() => <></>}</Tab.Screen>
       </Tab.Navigator>
       <>
