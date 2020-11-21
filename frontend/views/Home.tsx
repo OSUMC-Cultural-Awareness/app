@@ -21,6 +21,7 @@ import {
   Colors,
   Button,
   FAB,
+  IconButton,
 } from "react-native-paper";
 
 import { Routes } from "../routes";
@@ -77,8 +78,6 @@ type Props = {
 function Home(props: Props) {
   const [cultures, setCultures] = useState(null);
 
-  console.log(props.token);
-
   useEffect(() => {
     const fetchData = async () => {
       let cultureNames = await Culture.list();
@@ -131,24 +130,24 @@ function Home(props: Props) {
       <FlatList
         style={{ flex: 1 }}
         data={cultures}
-        keyExtractor={(item, index) => index.toString()}
-        //Footer to show below listview
+        keyExtractor={(_, index) => index.toString()}
         ListFooterComponent={ListFooter}
         renderItem={({ item }) => {
           return (
-            <TouchableOpacity onPress={() => console.log("Pressed!")}>
-              <List.Item
-                title={item.name}
-                right={(styleprops) => (
-                  <Button
+            <List.Item
+              title={item.name}
+              onPress={() =>
+                props.navigation.navigate("Culture", { cultureName: item.name })
+              }
+              right={() =>
+                props.token ? (
+                  <IconButton
                     icon="delete"
                     onPress={() => Culture.delete(item.name, props.token)}
-                  >
-                    {" "}
-                  </Button>
-                )}
-              />
-            </TouchableOpacity>
+                  />
+                ) : null
+              }
+            />
           );
         }}
         //ListEmptyComponent={EmptyListMessage}
