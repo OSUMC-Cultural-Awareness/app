@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Brotli from "brotli";
+import * as Pako from "pako";
 
 import { Culture } from "./culture";
 
@@ -29,9 +29,11 @@ export namespace Ledger {
    * @remarks
    * This operation is really expensive.
    *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    *
    * @throws network errors from {@link fetch}
-   * @throws brotli errors from {@link Brotli}
+   * @throws zlib errors from {@link Pako}
    * @throws storage failures from {@link AsyncStorage}
    * @throws JSON errors from {@link JSON}
    */
@@ -58,15 +60,14 @@ export namespace Ledger {
    * @param {string} name of culture
    *
    * @throws network errors from {@link fetch}
-   * @throws brotli errors from {@link Brotli}
+   * @throws zlib errors from {@link Pako}
    * @throws JSON errors from {@link JSON}
    *
-   * @returns {Promise<Uint8Array>} compressed bytes
+   * @returns {Promise<string>} compressed bytes
    */
-  async function compress(name: string): Promise<Uint8Array> {
+  async function compress(name: string): Promise<string> {
     const info = await Culture.get(name);
-    const buf = Buffer.from(JSON.stringify(info));
-    return Brotli.compress(buf, { mode: 1 });
+    return Pako.deflate(JSON.stringify(info), { to: "string" });
   }
 
   /**
@@ -94,14 +95,14 @@ export namespace Ledger {
    *
    * @throws JSON errors from {@link JSON}
    * @throws storage failures from {@link AsyncStorage}
-   * @throw brotli errors from {@link Brotli}
+   * @throw pako errors from {@link Pako}
    *
    * @returns {Promise<Culture>} culture read
    */
   export async function read(culture: string): Promise<Culture> {
     const storedData = await AsyncStorage.getItem(culture);
-    const data = Brotli.decompress(Buffer.from(storedData));
-    return JSON.parse(data.toString());
+    const data: string = Pako.inflate(storedData, { to: "string" });
+    return JSON.parse(data);
   }
 
   /**
@@ -109,10 +110,12 @@ export namespace Ledger {
    *
    * @param {string} culture
    *
-   * @throws network errors from {@link fetch}
+   *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
    * @throws JSON errors from {@link JSON}
    * @throws storage failures from {@link AsyncStorage}
-   * @throw brotli errors from {@link Brotli}
+   * @throw pako errors from {@link Pako}
    */
   export async function add(culture: string) {
     const data = await compress(culture);

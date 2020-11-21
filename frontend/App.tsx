@@ -1,72 +1,52 @@
-import { StatusBar } from 'expo-status-bar';
-//import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Button, FlatList, SafeAreaView, Image } from 'react-native';
-import 'react-native-gesture-handler';
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { registerRootComponent } from 'expo';
-import { useState } from "react";
-import Constants from 'expo-constants';
-import {homePage} from './views/homePage';
-import {adminManagement} from './views/adminManagement';
-import {adminLogin} from './views/adminLogin';
-import {adminRegistration} from './views/adminRegistration';
-import {cultureEdit} from './views/cultureEdit';
-import {cultureInsights} from './views/cultureInsights';
-import {editInsight} from './views/editInsight';
+import "react-native-gesture-handler";
+import * as React from "react";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import { Provider as PaperProvider, Button, Avatar } from "react-native-paper";
 
-const Stack = createStackNavigator();
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { registerRootComponent } from "expo";
+
+import { Home, Login, CultureView, EditInsight } from "./views";
+
+import { Routes } from "./routes";
+import { Theme } from "./constants";
+import userReducer from "./redux/UserReducer";
+
+const store = createStore(userReducer);
 
 function App() {
+  const Stack = createStackNavigator<Routes>();
+  const linking = {
+    prefixes: ["/"],
+  };
+
   return (
-      <NavigationContainer>{
-            <Stack.Navigator initialRouteName="Admin Management">
-                  <Stack.Screen name="Home Page" component={homePage} />
-                  <Stack.Screen name="Culture Insights" component={cultureInsights} />
-                  <Stack.Screen name="Edit Culture" component={cultureEdit} />
-                  <Stack.Screen name="Admin Management" component={adminManagement} />
-                  <Stack.Screen name="Admin Login" component={adminLogin} />
-                  <Stack.Screen name="Admin Registration" component={adminRegistration} />
-                  <Stack.Screen name="Edit Insights" component={editInsight} />
-            </Stack.Navigator>
-    }</NavigationContainer>
+    <PaperProvider theme={Theme}>
+      <Provider store={store}>
+        <NavigationContainer linking={linking}>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen
+              name="Culture"
+              component={CultureView}
+              options={{
+                headerRight: () => (
+                  <Button onPress={() => console.log("button pressed")}>
+                    <Avatar.Text size={36} label="NH" />
+                  </Button>
+                ),
+              }}
+            />
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Login} />
+            <Stack.Screen name="EditInsight" component={EditInsight} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
+    </PaperProvider>
   );
 }
 
 export default registerRootComponent(App);
-
-const styles = StyleSheet.create({
-      emptyListStyle: {
-        padding: 10,
-        fontSize: 18,
-        textAlign: 'center',
-      },
-      itemStyle: {
-        padding: 10,
-      },
-      img: {
-        padding: 35,
-        height: 70,
-        width: '25%'
-      },
-      headerFooterStyle: {
-        width: '100%',
-        height: 45,
-        backgroundColor: '#606070',
-      },
-      bottomFooterStyle: {
-       flex: 1,
-       flexDirection: 'row',
-       justifyContent: 'space-between',
-        width: '100%',
-        height: 80,
-        backgroundColor: '#606070',
-      },
-      textStyle: {
-        textAlign: 'center',
-        color: '#fff',
-        fontSize: 18,
-        padding: 7,
-      },
-});
