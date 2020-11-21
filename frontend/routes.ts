@@ -20,8 +20,8 @@ export type Routes = {
    *
    * Admin **ONLY** route
    */
-  EditCulture: { culture: Culture; index: number | [string, number] };
+  EditInsight: { culture: Culture; index: number | [string, number] };
   Home: undefined;
   Register: { token: string };
-  Login: undefined;
+  Login: { token: undefined };
 };

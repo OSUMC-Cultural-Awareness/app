@@ -89,7 +89,7 @@ const ExampleInsight = {
  */
 function CultureView(props: Props): React.ReactElement {
   const cultureName = props.route.params ? props.route.params.cultureName : "";
-  const token = props.token;
+  const token = props.token || "";
 
   let [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
