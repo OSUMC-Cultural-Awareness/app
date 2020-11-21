@@ -119,7 +119,7 @@ export namespace Ledger {
    */
   export async function add(culture: string) {
     const data = await compress(culture);
-    AsyncStorage.setItem(name, data.toString());
+    AsyncStorage.setItem(culture, data.toString());
   }
 
   /**
