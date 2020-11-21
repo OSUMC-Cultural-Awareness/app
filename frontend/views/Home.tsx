@@ -10,7 +10,6 @@ import {
 import "react-native-gesture-handler";
 import React, { useState, useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
-import { Culture } from "../api/culture";
 import { connect } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -28,6 +27,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { Routes } from "../routes";
 import { Store } from "../redux/UserReducer";
 import { Admin } from "../api/admin";
+import { Culture } from "../api/culture"
 
 const styles = StyleSheet.create({
   emptyListStyle: {
@@ -79,7 +79,8 @@ type Props = {
 };
 
 type TabProps = {
-  // TODO
+  Cultures: { insights: Culture[] };
+  Admins: { insights: Admin };
 };
 
 const Tab = createMaterialTopTabNavigator<TabProps>();
@@ -165,8 +166,6 @@ function Home(props: Props): React.ReactElement {
     // TODO:
     // We want to refactor this code to work like the Culture view
     // Use the same patterns/base components as Culture.tsx
-    // Fill in the Cultures tab and Admins tab
-    //
 
     <View>
       <Tab.Navigator initialRouteName="Cultures">
@@ -176,7 +175,7 @@ function Home(props: Props): React.ReactElement {
         </Tab.Screen>
 
         {/* ADMINS TAB */}
-        {/* This tab should only be visible to users who are logged in */}
+        {/* This tab should only be visible to users who are logged in how can we prevent the following component from rendering if a user is not signed in? */}
         <Tab.Screen name="Admins">
           {/* TODO: create admins component that lists the admins  */}
         </Tab.Screen>
