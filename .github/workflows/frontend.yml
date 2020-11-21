@@ -1,0 +1,24 @@
+name: Frontend
+
+on: [push]
+
+jobs:
+  CI:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node-version: [latest]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: "12.x"
+          check-latest: true
+      - run: yarn install --dev
+
+      - name: Prettier
+        run: |
+          yarn run prettier --check frontend/
