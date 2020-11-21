@@ -118,7 +118,7 @@ function Home(props: Props) {
     //alert('Pressed!')
   };
   const handleDisclaimer = (evt) => {
-    alert("Pressed!");
+    console.log("Pressed");
   };
 
   if (cultures === null)
