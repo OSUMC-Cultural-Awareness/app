@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Alert, View, StyleSheet } from "react-native";
 import { CommonActions } from "@react-navigation/native";
-import { Button, Card, TextInput } from "react-native-paper";
+import { Button, Card, TextInput, IconButton } from "react-native-paper";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -52,6 +52,7 @@ type RegistrationFields = {
 };
 
 function Login(props: Props): React.ReactElement {
+  const [obscurePass, SetObscurePass] = useState(true);
   const route = useRoute();
   const token = props.route.params ? props.route.params.token : "";
   const { navigation, updateUser } = props;
@@ -124,7 +125,7 @@ function Login(props: Props): React.ReactElement {
               : handleRegistration(values)
           }
         >
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
+          {({ handleChange, handleSubmit, values }) => (
             <Card style={styles.card}>
               {route.name === "Register" && (
                 <TextInput
@@ -146,9 +147,15 @@ function Login(props: Props): React.ReactElement {
                 style={styles.container}
                 mode="outlined"
                 label="password"
-                secureTextEntry={true}
+                secureTextEntry={obscurePass}
                 value={values.password}
                 onChangeText={handleChange("password")}
+                right={
+                  <TextInput.Icon
+                    name={obscurePass ? "eye" : "eye-off"}
+                    onPress={() => SetObscurePass(!obscurePass)}
+                  />
+                }
               />
               {route.name === "Register" && (
                 <TextInput
