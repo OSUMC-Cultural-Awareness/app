@@ -56,6 +56,13 @@ function Login(props: Props): React.ReactElement {
   const token = props.route.params ? props.route.params.token : "";
   const { navigation, updateUser } = props;
 
+  const initialValues: RegistrationFields = {
+    name: "",
+    email: "",
+    password: "",
+    passwordConfirmation: "",
+  };
+
   const handleLogin = async (fields: RegistrationFields) => {
     const { email, password } = fields;
     try {
@@ -81,24 +88,28 @@ function Login(props: Props): React.ReactElement {
 
   const handleRegistration = async (fields: RegistrationFields) => {
     const { name, email, password, passwordConfirmation } = fields;
-    if (token) {
-      try {
-        await Admin.create(name, email, password, passwordConfirmation, token);
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 1,
-            routes: [{ name: "Login" }],
-          })
-        );
-      } catch (error) {
-        console.error("Unsuccessful Registration", error);
-        Alert.alert(
-          "Unsuccessful Registration",
-          "helpful error message",
-          [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-          { cancelable: true }
-        );
-      }
+    if (!token) {
+      // User shouldn't be here, they don't have a token
+      props.navigation.navigate("Home");
+      return;
+    }
+
+    try {
+      await Admin.create(name, email, password, passwordConfirmation, token);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{ name: "Login" }],
+        })
+      );
+    } catch (error) {
+      console.error("Unsuccessful Registration", error);
+      Alert.alert(
+        "Unsuccessful Registration",
+        "helpful error message",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+        { cancelable: true }
+      );
     }
   };
 
@@ -106,12 +117,7 @@ function Login(props: Props): React.ReactElement {
     <View style={styles.view}>
       <LinearGradient colors={["#454545", "#f0f4ef"]} style={styles.gradient}>
         <Formik
-          initialValues={{
-            name: "",
-            email: "",
-            password: "",
-            passwordConfirmation: "",
-          }}
+          initialValues={initialValues}
           onSubmit={(values) =>
             route.name === "Login"
               ? handleLogin(values)
