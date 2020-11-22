@@ -301,7 +301,7 @@ type AdminProps = {
   // callback called when the {@link FlatList} is refreshed
   onRefresh: () => void;
   // Users to render
-  users: { name: string ; users: Admin[] }[];
+  users: { name: string; users: Admin[] }[];
   navigation: any;
   token: string;
 };
@@ -327,7 +327,6 @@ function Admins(props: AdminProps): React.ReactElement {
     setRefreshing(true);
   };
 
-
   return (
     <SafeAreaView>
       <FlatList
@@ -340,9 +339,12 @@ function Admins(props: AdminProps): React.ReactElement {
           return (
             <List.Item
               title={item.name}
-              onPress={() => {
-                Alert.alert("user pressed", item.name, [{ text: "OK", onPress: () => console.log("OK Pressed") }]);
-              }
+              onPress={
+                () => {
+                  Alert.alert("user pressed", item.name, [
+                    { text: "OK", onPress: () => console.log("OK Pressed") },
+                  ]);
+                }
                 //props.navigation.navigate("Culture", { cultureName: item.name })
               }
               right={() =>
