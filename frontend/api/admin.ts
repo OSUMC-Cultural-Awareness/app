@@ -1,6 +1,14 @@
 import { Api } from "./api";
 
 /**
+ * Payload returned by {@link Admin.login} and {@link Admin.create}
+ */
+export type AuthPayload = {
+  user: Admin;
+  token: string;
+};
+
+/**
  * Administrator wrapper around fetch for interacting with API.
  */
 export class Admin {
@@ -39,11 +47,11 @@ export class Admin {
    *
    * @param {string} email - email of Admin
    * @param {string} password - password of Admin
-   * @returns {Promise<string>} JSON Web Token authenticating the admin
+   * @returns {Promise<AuthPayload>} JWT token and Admin user information
    */
-  static async login(email: string, password: string): Promise<string> {
+  static async login(email: string, password: string): Promise<AuthPayload> {
     const json = await Api.post("/login", { email: email, password: password });
-    return json["token"];
+    return json;
   }
 
   /**
@@ -125,7 +133,7 @@ export class Admin {
    * @param {string} password - password validation
    * @param {string} passwordConfirmation - MUST match password
    * @param {string} token - JSON Web Token
-   * @returns {Promise<void>}
+   * @returns {Promise<AuthPayload>} contains JSON Web Token and user information
    */
   static async create(
     name: string,
@@ -133,8 +141,8 @@ export class Admin {
     password: string,
     passwordConfirmation: string,
     token: string
-  ): Promise<void> {
-    await Api.post(
+  ): Promise<AuthPayload> {
+    const json = await Api.post(
       "/register",
       {
         name: name,
@@ -144,5 +152,7 @@ export class Admin {
       },
       token
     );
+
+    return json;
   }
 }
