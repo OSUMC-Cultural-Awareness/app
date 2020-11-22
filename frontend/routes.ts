@@ -23,5 +23,10 @@ export type Routes = {
   EditInsight: { culture: Culture; index: number | [string, number] };
   Home: undefined;
   Register: { token: string };
-  Login: { token: undefined };
+
+  /**
+   * Allows admin Login, Account recovery, and remembering the user's
+   * email between logins.
+   */
+  Login: undefined;
 };
