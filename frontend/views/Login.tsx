@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp, useRoute } from "@react-navigation/native";
+import { Formik } from "formik";
 
 import { Admin } from "../api";
 import { updateUser } from "../redux/UserAction";
@@ -43,16 +44,20 @@ const styles = StyleSheet.create({
   },
 });
 
+type RegistrationFields = {
+  name?: string;
+  email: string;
+  password: string;
+  passwordConfirmation?: string;
+};
+
 function Login(props: Props): React.ReactElement {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
   const route = useRoute();
-  const token = props.route.params.token || "";
+  const token = props.route.params ? props.route.params.token : "";
   const { navigation, updateUser } = props;
 
-  const handleLogin = async () => {
+  const handleLogin = async (fields: RegistrationFields) => {
+    const { email, password } = fields;
     try {
       const token = await Admin.login(email, password);
       const user = await Admin.get(email, token);
@@ -74,7 +79,8 @@ function Login(props: Props): React.ReactElement {
     }
   };
 
-  const handleRegistration = async () => {
+  const handleRegistration = async (fields: RegistrationFields) => {
+    const { name, email, password, passwordConfirmation } = fields;
     if (token) {
       try {
         await Admin.create(name, email, password, passwordConfirmation, token);
@@ -99,51 +105,61 @@ function Login(props: Props): React.ReactElement {
   return (
     <View style={styles.view}>
       <LinearGradient colors={["#454545", "#f0f4ef"]} style={styles.gradient}>
-        <Card style={styles.card}>
-          {route.name === "Register" && (
-            <TextInput
-              style={styles.container}
-              mode="outlined"
-              label="name"
-              value={name}
-              onChangeText={(text) => setName(text)}
-            />
+        <Formik
+          initialValues={{
+            name: "",
+            email: "",
+            password: "",
+            passwordConfirmation: "",
+          }}
+          onSubmit={(values) =>
+            route.name === "Login"
+              ? handleLogin(values)
+              : handleRegistration(values)
+          }
+        >
+          {({ handleChange, handleBlur, handleSubmit, values }) => (
+            <Card style={styles.card}>
+              {route.name === "Register" && (
+                <TextInput
+                  style={styles.container}
+                  mode="outlined"
+                  label="name"
+                  value={values.name}
+                  onChangeText={handleChange("name")}
+                />
+              )}
+              <TextInput
+                style={styles.container}
+                mode="outlined"
+                label="email"
+                value={values.email}
+                onChangeText={handleChange("email")}
+              />
+              <TextInput
+                style={styles.container}
+                mode="outlined"
+                label="password"
+                secureTextEntry={true}
+                value={values.password}
+                onChangeText={handleChange("password")}
+              />
+              {route.name === "Register" && (
+                <TextInput
+                  style={styles.container}
+                  mode="outlined"
+                  label="password confirmation"
+                  secureTextEntry={true}
+                  value={values.passwordConfirmation}
+                  onChangeText={handleChange("passwordConfirmation")}
+                />
+              )}
+              <Button icon="login" mode="contained" onPress={handleSubmit}>
+                {route.name}
+              </Button>
+            </Card>
           )}
-          <TextInput
-            style={styles.container}
-            mode="outlined"
-            label="email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
-          <TextInput
-            style={styles.container}
-            mode="outlined"
-            label="password"
-            secureTextEntry={true}
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-          />
-          {route.name === "Register" && (
-            <TextInput
-              style={styles.container}
-              mode="outlined"
-              label="password confirmation"
-              secureTextEntry={true}
-              value={passwordConfirmation}
-              onChangeText={(text) => setPasswordConfirmation(text)}
-            />
-          )}
-          <Button
-            icon="login"
-            mode="contained"
-            onPress={() =>
-              route.name === "Login" ? handleLogin() : handleRegistration()
-            }
-          >
-            submit
-          </Button>
-        </Card>
+        </Formik>
       </LinearGradient>
     </View>
   );

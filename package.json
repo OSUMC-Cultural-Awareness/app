@@ -18,6 +18,7 @@
     "@types/react-redux": "^7.1.11",
     "expo": "~39.0.2",
     "expo-status-bar": "~1.0.2",
+    "formik": "^2.2.5",
     "pako": "^1.0.11",
     "react": "16.13.1",
     "react-dom": "16.13.1",
