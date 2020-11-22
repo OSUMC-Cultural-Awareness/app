@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ES2015"],
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "jsx": "react-native"
+  },
+  "include": ["frontend/**/*"]
+}

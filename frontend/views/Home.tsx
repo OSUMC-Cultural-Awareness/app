@@ -1,4 +1,3 @@
-//import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,9 +8,8 @@ import {
   Image,
 } from "react-native";
 import "react-native-gesture-handler";
-import * as React from "react";
-import { useState, useEffect } from "react";
-import { Culture } from "../api/culture";
+import React, { useState, useEffect } from "react";
+import { useRoute } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -21,12 +19,18 @@ import {
   Colors,
   Button,
   FAB,
+  IconButton,
+  Snackbar,
 } from "react-native-paper";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import { Routes } from "../routes";
 import { Store } from "../redux/UserReducer";
+import { Admin } from "../api/admin";
+import { Culture } from "../api/culture";
 
 const styles = StyleSheet.create({
+  spinner: { top: "50%", position: "relative" },
   emptyListStyle: {
     padding: 10,
     fontSize: 18,
@@ -50,8 +54,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    height: 80,
+    height: 70,
     backgroundColor: "#606070",
+    position: "absolute",
+    bottom: "0px",
+    left: "0px",
+    right: "0px",
+    marginBottom: "0px",
   },
   textStyle: {
     textAlign: "center",
@@ -66,27 +75,58 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
+  view: {
+    height: "100%",
+  },
 });
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Home">;
   route: RouteProp<Routes, "Home">;
+  user: Admin;
   token: string;
 };
 
-function Home(props: Props) {
-  const [cultures, setCultures] = useState(null);
+type TabProps = {
+  Cultures: { insights: Culture[] };
+  Admins: { insights: Admin };
+};
 
-  console.log(props.token);
+const Tab = createMaterialTopTabNavigator<TabProps>();
+
+function Home(props: Props): React.ReactElement {
+  const [cultures, setCultures] = useState(null);
+  const [users, setUsers] = useState(null);
+  const [editing, setEditing] = useState<boolean>(false);
+  const [err, setErr] = useState<string>("");
+  const [showErr, setShowErr] = useState<boolean>(false);
+  const route = useRoute();
+  const token = props.token;
+
+  const hideSnackbar = () => setShowErr(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      let cultureNames = await Culture.list();
-      setCultures(cultureNames);
+    fetchCultureData();
+  }, []);
+
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      let users;
+      if (props.user.superUser) {
+        users = await Admin.list(token);
+      } else {
+        users = [props.user];
+      }
+      setUsers(users);
     };
 
-    fetchData();
+    fetchAdminData();
   }, []);
+
+  const fetchCultureData = async () => {
+    let cultureNames = await Culture.list();
+    setCultures(cultureNames);
+  };
 
   const ListHeader = () => {
     //View to set in Header
@@ -116,42 +156,127 @@ function Home(props: Props) {
 
   const handleAdminLogin = (evt) => {
     props.navigation.navigate("Login");
-    //alert('Pressed!')
   };
   const handleDisclaimer = (evt) => {
-    alert("Pressed!");
+    console.log("Pressed");
   };
 
   if (cultures === null)
     return <ActivityIndicator animating={true} color={Colors.red800} />;
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <FAB icon="plus" style={styles.fab}></FAB>
+    // TODO:
+    // We want to refactor this code to work like the Culture view
+    // Use the same patterns/base components as Culture.tsx
+
+    <View style={styles.view}>
+      <Tab.Navigator initialRouteName="Cultures">
+        {/* CULTURES TAB */}
+        <Tab.Screen name="Cultures">
+          {() => (
+            <Cultures
+              onRefresh={async () => fetchCultureData()}
+              cultures={cultures}
+              navigation={props.navigation}
+              token={token}
+            />
+          )}
+        </Tab.Screen>
+
+        {/* ADMINS TAB */}
+        {/* This tab should only be visible to users who are logged in how can we prevent the following component from rendering if a user is not signed in? */}
+        {/* TODO: create admins component that lists the admins, pass users to that component */}
+        <Tab.Screen name="Admins">{() => <></>}</Tab.Screen>
+      </Tab.Navigator>
+      <>
+        {/* {token &&
+          (editing ? (
+            TODO: create ToolsFAB component, updateAdmin function
+
+            <ToolsFAB
+              onSave={() => updateAdmin()}
+              onAdd={addInsightOrCategory}
+            />
+          ) : (
+            TODO: create EditFab component
+
+            <EditFAB onPress={() => setEditing(!editing)} />
+          ))} */}
+      </>
+      <Snackbar
+        visible={showErr}
+        onDismiss={hideSnackbar}
+        action={{
+          label: "Hide",
+          onPress: hideSnackbar,
+        }}
+      >
+        {err}
+      </Snackbar>
+      {ListFooter()}
+    </View>
+  );
+}
+
+/**
+ * Properties for {@link Cultures}
+ */
+type CultureProps = {
+  // callback called when the {@link FlatList} is refreshed
+  onRefresh: () => void;
+  // Cultures to render
+  cultures: { name: string; cultures: Culture[] }[];
+  navigation: any;
+  token: string;
+};
+
+/**
+ * Component that displays a list of components of either {@link Cultures}
+ *
+ * @param {CultureProps} props
+ * @returns {React.ReactElement} React component
+ */
+function Cultures(props: CultureProps): React.ReactElement {
+  const { cultures, onRefresh } = props;
+  const [refreshing, setRefreshing] = useState(false);
+
+  if (!cultures) {
+    return (
+      <ActivityIndicator animating={true} size="large" style={styles.spinner} />
+    );
+  }
+
+  const refresh = () => {
+    onRefresh();
+    setRefreshing(true);
+  };
+
+  return (
+    <SafeAreaView>
       <FlatList
         style={{ flex: 1 }}
         data={cultures}
-        keyExtractor={(item, index) => index.toString()}
-        //Footer to show below listview
-        ListFooterComponent={ListFooter}
+        keyExtractor={(_, index) => index.toString()}
+        onRefresh={() => refresh()}
+        refreshing={refreshing}
         renderItem={({ item }) => {
           return (
-            <TouchableOpacity onPress={() => console.log("Pressed!")}>
-              <List.Item
-                title={item.name}
-                right={(styleprops) => (
-                  <Button
+            <List.Item
+              title={item.name}
+              onPress={() =>
+                props.navigation.navigate("Culture", { cultureName: item.name })
+              }
+              right={() =>
+                props.token ? (
+                  <IconButton
                     icon="delete"
                     onPress={() => Culture.delete(item.name, props.token)}
-                  >
-                    {" "}
-                  </Button>
-                )}
-              />
-            </TouchableOpacity>
+                  />
+                ) : null
+              }
+            />
           );
         }}
-        //ListEmptyComponent={EmptyListMessage}
       />
     </SafeAreaView>
   );
@@ -165,9 +290,10 @@ export default connect(
       route: RouteProp<Routes, "Home">;
     }
   ) => ({
-    token: state.user.token,
     navigation: ownProps.navigation,
     route: ownProps.route,
+    user: state.user.user,
+    token: state.user.token,
   }),
   null
 )(Home);

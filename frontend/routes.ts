@@ -1,3 +1,5 @@
+import { Culture } from "./api";
+
 /**
  * React Navigation Routes
  *
@@ -11,7 +13,15 @@ export type Routes = {
    * For admins it allows editing and adding information about a particular culture.
    */
   Culture: { cultureName: string };
+
+  /**
+   * Displays an interface to edit a {@link Culture} {@link GeneralInsight}
+   * and {@link SpecializedInsight}
+   *
+   * Admin **ONLY** route
+   */
+  EditInsight: { culture: Culture; index: number | [string, number] };
   Home: undefined;
   Register: { token: string };
-  Login: undefined;
+  Login: { token: undefined };
 };
