@@ -6,6 +6,7 @@ import {
   FlatList,
   SafeAreaView,
   Image,
+  Alert,
 } from "react-native";
 import "react-native-gesture-handler";
 import React, { useState, useEffect } from "react";
@@ -110,22 +111,22 @@ function Home(props: Props): React.ReactElement {
   }, []);
 
   useEffect(() => {
-    const fetchAdminData = async () => {
-      let users;
-      if (props.user.superUser) {
-        users = await Admin.list(token);
-      } else {
-        users = [props.user];
-      }
-      setUsers(users);
-    };
-
     fetchAdminData();
   }, []);
 
   const fetchCultureData = async () => {
     let cultureNames = await Culture.list();
     setCultures(cultureNames);
+  };
+
+  const fetchAdminData = async () => {
+    let users;
+    if (props.user.superUser) {
+      users = await Admin.list(token);
+    } else {
+      users = [props.user];
+    }
+    setUsers(users);
   };
 
   const ListHeader = () => {
@@ -186,7 +187,16 @@ function Home(props: Props): React.ReactElement {
         {/* ADMINS TAB */}
         {/* This tab should only be visible to users who are logged in how can we prevent the following component from rendering if a user is not signed in? */}
         {/* TODO: create admins component that lists the admins, pass users to that component */}
-        <Tab.Screen name="Admins">{() => <></>}</Tab.Screen>
+        <Tab.Screen name="Admins">
+          {() => (
+            <Admins
+              onRefresh={async () => fetchAdminData()}
+              users={users}
+              navigation={props.navigation}
+              token={token}
+            />
+          )}
+        </Tab.Screen>
       </Tab.Navigator>
       <>
         {/* {token &&
@@ -271,6 +281,75 @@ function Cultures(props: CultureProps): React.ReactElement {
                   <IconButton
                     icon="delete"
                     onPress={() => Culture.delete(item.name, props.token)}
+                  />
+                ) : null
+              }
+            />
+          );
+        }}
+      />
+    </SafeAreaView>
+  );
+}
+
+/* ADMIN */
+
+/**
+ * Properties for {@link Users}
+ */
+type AdminProps = {
+  // callback called when the {@link FlatList} is refreshed
+  onRefresh: () => void;
+  // Users to render
+  users: { name: string ; users: Admin[] }[];
+  navigation: any;
+  token: string;
+};
+
+/**
+ * Component that displays a list of components of either {@link Users}
+ *
+ * @param {AdminProps} props
+ * @returns {React.ReactElement} React component
+ */
+function Admins(props: AdminProps): React.ReactElement {
+  const { users, onRefresh } = props;
+  const [refreshing, setRefreshing] = useState(false);
+
+  if (!users) {
+    return (
+      <ActivityIndicator animating={true} size="large" style={styles.spinner} />
+    );
+  }
+
+  const refresh = () => {
+    onRefresh();
+    setRefreshing(true);
+  };
+
+
+  return (
+    <SafeAreaView>
+      <FlatList
+        style={{ flex: 1 }}
+        data={users}
+        keyExtractor={(_, index) => index.toString()}
+        onRefresh={() => refresh()}
+        refreshing={refreshing}
+        renderItem={({ item }) => {
+          return (
+            <List.Item
+              title={item.name}
+              onPress={() => {
+                Alert.alert("user pressed", item.name, [{ text: "OK", onPress: () => console.log("OK Pressed") }]);
+              }
+                //props.navigation.navigate("Culture", { cultureName: item.name })
+              }
+              right={() =>
+                props.token ? (
+                  <IconButton
+                    icon="delete"
+                    onPress={() => Admin.delete(item.name, props.token)}
                   />
                 ) : null
               }

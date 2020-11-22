@@ -26,7 +26,7 @@ function App() {
     <PaperProvider theme={Theme}>
       <Provider store={store}>
         <NavigationContainer linking={linking}>
-          <Stack.Navigator initialRouteName="Dashboard">
+          <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
               name="Culture"
               component={CultureView}
@@ -39,7 +39,6 @@ function App() {
               }}
             />
             <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Dashboard" component={adminManagement} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Login} />
             <Stack.Screen name="EditInsight" component={EditInsight} />
