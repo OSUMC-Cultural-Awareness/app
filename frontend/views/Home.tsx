@@ -1,4 +1,5 @@
-//import React from 'react';
+import React, { useState, useEffect } from "react";
+
 import {
   StyleSheet,
   Text,
@@ -9,8 +10,6 @@ import {
   Image,
 } from "react-native";
 import "react-native-gesture-handler";
-import * as React from "react";
-import { useState, useEffect } from "react";
 import { Culture } from "../api/culture";
 import { connect } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -27,7 +26,6 @@ import {
 import { Routes } from "../routes";
 import { Store } from "../redux/UserReducer";
 import { Ledger } from "../api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const styles = StyleSheet.create({
   emptyListStyle: {
@@ -89,15 +87,6 @@ function Home(props: Props) {
     fetchData();
   }, []);
 
-  const ListHeader = () => {
-    //View to set in Header
-    return (
-      <View style={styles.headerFooterStyle}>
-        <Text style={styles.textStyle}>Cultural Awareness Home Page</Text>
-      </View>
-    );
-  };
-
   const ListFooter = () => {
     //View to set in Footer
     return (
@@ -119,6 +108,7 @@ function Home(props: Props) {
     props.navigation.navigate("Login");
     //alert('Pressed!')
   };
+
   const handleDisclaimer = (evt) => {
     console.log("Pressed");
   };
@@ -139,24 +129,38 @@ function Home(props: Props) {
               onPress={() =>
                 props.navigation.navigate("Culture", { cultureName: item.name })
               }
-              right={() =>
-                  <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end"}}>
-                    <IconButton
+              right={() => (
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <IconButton
                     icon="download"
                     onPress={() => Ledger.add(item.name)}
+                  />
+                  {props.token && (
+                    <IconButton
+                      icon="delete"
+                      onPress={() => Culture.delete(item.name, props.token)}
                     />
-                    {props.token && <IconButton
-                    icon="delete"
-                    onPress={() => Culture.delete(item.name, props.token)}
-                    />}
-                  </View>
-              }
+                  )}
+                </View>
+              )}
             />
           );
         }}
         //ListEmptyComponent={EmptyListMessage}
       />
-      {props.token && <FAB icon="plus" style={styles.fab} onPress={() => setCultures([...cultures, ""])}></FAB>}
+      {props.token && (
+        <FAB
+          icon="plus"
+          style={styles.fab}
+          onPress={() => setCultures([...cultures, ""])}
+        ></FAB>
+      )}
     </SafeAreaView>
   );
 }
