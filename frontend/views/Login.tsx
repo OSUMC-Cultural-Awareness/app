@@ -49,7 +49,7 @@ function Login(props: Props): React.ReactElement {
   const [password, setPassword] = useState<string>("");
   const [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
   const route = useRoute();
-  const token = props.route.params ? props.route.params.token || "" : "";
+  const token = props.route.params ? props.route.params.token : "";
   const { navigation, updateUser } = props;
 
   const handleLogin = async () => {
