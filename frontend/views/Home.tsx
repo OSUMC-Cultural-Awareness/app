@@ -22,6 +22,8 @@ import {
   FAB,
   IconButton,
   Snackbar,
+  Modal,
+  Portal,
 } from "react-native-paper";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
@@ -74,11 +76,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     margin: 16,
     right: 0,
-    bottom: 0,
+    bottom: 64,
   },
   view: {
     height: "100%",
   },
+  inviteModal: {
+    padding: 20,
+    background: 'white'
+  }
 });
 
 type Props = {
@@ -165,6 +171,7 @@ function Home(props: Props): React.ReactElement {
   if (cultures === null)
     return <ActivityIndicator animating={true} color={Colors.red800} />;
 
+  console.log(users)
   return (
     // TODO:
     // We want to refactor this code to work like the Culture view
@@ -187,32 +194,24 @@ function Home(props: Props): React.ReactElement {
         {/* ADMINS TAB */}
         {/* This tab should only be visible to users who are logged in how can we prevent the following component from rendering if a user is not signed in? */}
         {/* TODO: create admins component that lists the admins, pass users to that component */}
-        <Tab.Screen name="Admins">
+        {
+          token ? <Tab.Screen name="Admins">
           {() => (
+            <>
             <Admins
               onRefresh={async () => fetchAdminData()}
               users={users}
               navigation={props.navigation}
               token={token}
+              fetchData={fetchAdminData}
             />
+
+          </>
           )}
-        </Tab.Screen>
+        </Tab.Screen> : <></>
+        }
       </Tab.Navigator>
-      <>
-        {/* {token &&
-          (editing ? (
-            TODO: create ToolsFAB component, updateAdmin function
 
-            <ToolsFAB
-              onSave={() => updateAdmin()}
-              onAdd={addInsightOrCategory}
-            />
-          ) : (
-            TODO: create EditFab component
-
-            <EditFAB onPress={() => setEditing(!editing)} />
-          ))} */}
-      </>
       <Snackbar
         visible={showErr}
         onDismiss={hideSnackbar}
@@ -301,9 +300,10 @@ type AdminProps = {
   // callback called when the {@link FlatList} is refreshed
   onRefresh: () => void;
   // Users to render
-  users: { name: string; users: Admin[] }[];
+  users: { name: string; email: string; superUser: boolean }[];
   navigation: any;
   token: string;
+  fetchData: Function;
 };
 
 /**
@@ -315,6 +315,24 @@ type AdminProps = {
 function Admins(props: AdminProps): React.ReactElement {
   const { users, onRefresh } = props;
   const [refreshing, setRefreshing] = useState(false);
+  const [visible, setVisible] = React.useState(false);
+
+
+  const onDelete = (email: string) => {
+    //TODO: not refreshing the data on client side
+    Admin.delete(email, props.token)
+    props.fetchData()
+  }
+
+  const onEdit = (user: {email:string, name: string, superUser: boolean}) => {
+    //TODO: update Admin.update() perams
+    //Admin.update(email, props.token)
+    props.fetchData()
+  }
+
+  const onInvite = (email: string, token: string) => {
+    Admin.invite(email, token)
+  }
 
   if (!users) {
     return (
@@ -344,21 +362,41 @@ function Admins(props: AdminProps): React.ReactElement {
                   Alert.alert("user pressed", item.name, [
                     { text: "OK", onPress: () => console.log("OK Pressed") },
                   ]);
-                }
+              }
                 //props.navigation.navigate("Culture", { cultureName: item.name })
               }
               right={() =>
                 props.token ? (
+                  <>
+                  <IconButton
+                    icon="pencil"
+                    onPress={() => onEdit(item)}
+                  />
                   <IconButton
                     icon="delete"
-                    onPress={() => Admin.delete(item.name, props.token)}
+                    onPress={() => onDelete(item.email)}
                   />
+                  </>
                 ) : null
               }
             />
           );
         }}
       />
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress= {
+          () => setVisible(!visible)}
+      />
+      <Portal>
+        <Modal
+          visible={visible}
+          contentContainerStyle={styles.inviteModal}
+        >
+          <Text>Example Modal.  Click outside this area to dismiss.</Text>
+      </Modal>
+      </Portal>
     </SafeAreaView>
   );
 }
