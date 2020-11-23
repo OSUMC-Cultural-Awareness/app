@@ -27,7 +27,7 @@ export class Admin {
    * @returns {Promise<string[]>}
    */
   static async get(email: string, token: string): Promise<Admin> {
-    let json = await Api.getAuth(`/admin/${email}`, token);
+    let json = await Api.getAuth(`/admins/${email}`, token);
     return json;
   }
 
@@ -56,7 +56,7 @@ export class Admin {
    * @returns {Promise<string[]>}
    */
   static async list(token: string): Promise<string[]> {
-    let json = await Api.getAuth("/admin", token);
+    let json = await Api.getAuth("/admins", token);
     return json["admins"];
   }
 
@@ -71,7 +71,7 @@ export class Admin {
    * @returns {Promise<void>}
    */
   static async invite(email: string, token: string): Promise<void> {
-    await Api.post("/admin/invite", { email: email }, token);
+    await Api.post("/admins/invite", { email: email }, token);
   }
 
   /**
@@ -91,7 +91,7 @@ export class Admin {
     token: string
   ): Promise<void> {
     await Api.put(
-      `/admin/${this.email}`,
+      `/admins/${this.email}`,
       {
         email: this.email,
         name: this.name,
@@ -113,7 +113,7 @@ export class Admin {
    * @returns {Promise<void>}
    */
   static async delete(email: string, token: string): Promise<void> {
-    await Api.delete(`/admin/${email}`, token);
+    await Api.delete(`/admins/${email}`, token);
   }
 
   /**
