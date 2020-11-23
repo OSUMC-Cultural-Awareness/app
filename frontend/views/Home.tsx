@@ -205,13 +205,11 @@ function Home(props: Props): React.ReactElement {
               token={token}
               fetchData={fetchAdminData}
             />
-
           </>
           )}
         </Tab.Screen> : <></>
         }
       </Tab.Navigator>
-
       <Snackbar
         visible={showErr}
         onDismiss={hideSnackbar}
@@ -316,7 +314,6 @@ function Admins(props: AdminProps): React.ReactElement {
   const { users, onRefresh } = props;
   const [refreshing, setRefreshing] = useState(false);
   const [visible, setVisible] = React.useState(false);
-
 
   const onDelete = (email: string) => {
     //TODO: not refreshing the data on client side
