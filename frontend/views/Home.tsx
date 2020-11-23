@@ -26,6 +26,8 @@ import {
 
 import { Routes } from "../routes";
 import { Store } from "../redux/UserReducer";
+import { Ledger } from "../api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const styles = StyleSheet.create({
   emptyListStyle: {
@@ -123,10 +125,8 @@ function Home(props: Props) {
 
   if (cultures === null)
     return <ActivityIndicator animating={true} color={Colors.red800} />;
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <FAB icon="plus" style={styles.fab}></FAB>
       <FlatList
         style={{ flex: 1 }}
         data={cultures}
@@ -140,18 +140,23 @@ function Home(props: Props) {
                 props.navigation.navigate("Culture", { cultureName: item.name })
               }
               right={() =>
-                props.token ? (
-                  <IconButton
+                  <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end"}}>
+                    <IconButton
+                    icon="download"
+                    onPress={() => Ledger.add(item.name)}
+                    />
+                    {props.token && <IconButton
                     icon="delete"
                     onPress={() => Culture.delete(item.name, props.token)}
-                  />
-                ) : null
+                    />}
+                  </View>
               }
             />
           );
         }}
         //ListEmptyComponent={EmptyListMessage}
       />
+      {props.token && <FAB icon="plus" style={styles.fab} onPress={() => setCultures([...cultures, ""])}></FAB>}
     </SafeAreaView>
   );
 }
