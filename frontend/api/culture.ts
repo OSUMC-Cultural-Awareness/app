@@ -63,7 +63,7 @@ export class Culture {
    * @returns {Promise<Culture>}
    */
   static async get(name: string): Promise<Culture> {
-    let json = await Api.get(`/culture/${name}`);
+    let json = await Api.get(`/cultures/${name}`);
 
     return new this(
       json["name"],
@@ -81,7 +81,7 @@ export class Culture {
    * @returns {Promise<{ name: string; modified: number }[]>}
    */
   static async list(): Promise<{ name: string; modified: number }[]> {
-    let json = await Api.get("/culture");
+    let json = await Api.get("/cultures");
 
     return json["cultures"];
   }
@@ -117,7 +117,7 @@ export class Culture {
    * @returns {Promise<void>}
    */
   static async delete(name: string, token: string): Promise<void> {
-    await Api.delete(`/culture/${name}`, token);
+    await Api.delete(`/cultures/${name}`, token);
   }
 
   /**
@@ -136,6 +136,6 @@ export class Culture {
       name: this.name,
     };
 
-    await Api.put(`/culture/${this.name}`, data, token);
+    await Api.put(`/cultures/${this.name}`, data, token);
   }
 }

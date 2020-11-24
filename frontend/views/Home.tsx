@@ -6,28 +6,27 @@ import {
   FlatList,
   SafeAreaView,
   Image,
+  Alert,
 } from "react-native";
 import "react-native-gesture-handler";
 import React, { useState, useEffect } from "react";
-import { useRoute } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import {
   List,
   ActivityIndicator,
-  Colors,
   Button,
   FAB,
   IconButton,
-  Snackbar,
+  Modal,
+  Portal,
 } from "react-native-paper";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import { Routes } from "../routes";
 import { Store } from "../redux/UserReducer";
-import { Admin } from "../api/admin";
-import { Culture } from "../api/culture";
+import { Admin, Culture } from "../api";
 
 const styles = StyleSheet.create({
   spinner: { top: "50%", position: "relative" },
@@ -73,10 +72,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     margin: 16,
     right: 0,
-    bottom: 0,
+    bottom: -450,
   },
   view: {
     height: "100%",
+  },
+  inviteModal: {
+    padding: 20,
+    background: "white",
   },
 });
 
@@ -88,54 +91,14 @@ type Props = {
 };
 
 type TabProps = {
-  Cultures: { insights: Culture[] };
-  Admins: { insights: Admin };
+  Cultures: { cultures: Culture[] };
+  Admins: { admins: Admin[] };
 };
 
 const Tab = createMaterialTopTabNavigator<TabProps>();
 
 function Home(props: Props): React.ReactElement {
-  const [cultures, setCultures] = useState(null);
-  const [users, setUsers] = useState(null);
-  const [editing, setEditing] = useState<boolean>(false);
-  const [err, setErr] = useState<string>("");
-  const [showErr, setShowErr] = useState<boolean>(false);
-  const route = useRoute();
   const token = props.token;
-
-  const hideSnackbar = () => setShowErr(false);
-
-  useEffect(() => {
-    fetchCultureData();
-  }, []);
-
-  useEffect(() => {
-    const fetchAdminData = async () => {
-      let users;
-      if (props.user.superUser) {
-        users = await Admin.list(token);
-      } else {
-        users = [props.user];
-      }
-      setUsers(users);
-    };
-
-    fetchAdminData();
-  }, []);
-
-  const fetchCultureData = async () => {
-    let cultureNames = await Culture.list();
-    setCultures(cultureNames);
-  };
-
-  const ListHeader = () => {
-    //View to set in Header
-    return (
-      <View style={styles.headerFooterStyle}>
-        <Text style={styles.textStyle}>Cultural Awareness Home Page</Text>
-      </View>
-    );
-  };
 
   const ListFooter = () => {
     //View to set in Footer
@@ -157,62 +120,25 @@ function Home(props: Props): React.ReactElement {
   const handleAdminLogin = (evt) => {
     props.navigation.navigate("Login");
   };
-  const handleDisclaimer = (evt) => {
-    console.log("Pressed");
-  };
-
-  if (cultures === null)
-    return <ActivityIndicator animating={true} color={Colors.red800} />;
 
   return (
-    // TODO:
-    // We want to refactor this code to work like the Culture view
-    // Use the same patterns/base components as Culture.tsx
-
     <View style={styles.view}>
       <Tab.Navigator initialRouteName="Cultures">
-        {/* CULTURES TAB */}
         <Tab.Screen name="Cultures">
-          {() => (
-            <Cultures
-              onRefresh={async () => fetchCultureData()}
-              cultures={cultures}
-              navigation={props.navigation}
-              token={token}
-            />
-          )}
+          {() => <Cultures navigation={props.navigation} token={token} />}
         </Tab.Screen>
-
-        {/* ADMINS TAB */}
-        {/* This tab should only be visible to users who are logged in how can we prevent the following component from rendering if a user is not signed in? */}
-        {/* TODO: create admins component that lists the admins, pass users to that component */}
-        <Tab.Screen name="Admins">{() => <></>}</Tab.Screen>
+        {token ? (
+          <Tab.Screen name="Admins">
+            {() => (
+              <>
+                <Admins token={token} user={props.user} />
+              </>
+            )}
+          </Tab.Screen>
+        ) : (
+          <></>
+        )}
       </Tab.Navigator>
-      <>
-        {/* {token &&
-          (editing ? (
-            TODO: create ToolsFAB component, updateAdmin function
-
-            <ToolsFAB
-              onSave={() => updateAdmin()}
-              onAdd={addInsightOrCategory}
-            />
-          ) : (
-            TODO: create EditFab component
-
-            <EditFAB onPress={() => setEditing(!editing)} />
-          ))} */}
-      </>
-      <Snackbar
-        visible={showErr}
-        onDismiss={hideSnackbar}
-        action={{
-          label: "Hide",
-          onPress: hideSnackbar,
-        }}
-      >
-        {err}
-      </Snackbar>
       {ListFooter()}
     </View>
   );
@@ -222,11 +148,7 @@ function Home(props: Props): React.ReactElement {
  * Properties for {@link Cultures}
  */
 type CultureProps = {
-  // callback called when the {@link FlatList} is refreshed
-  onRefresh: () => void;
-  // Cultures to render
-  cultures: { name: string; cultures: Culture[] }[];
-  navigation: any;
+  navigation: StackNavigationProp<Routes, "Home">;
   token: string;
 };
 
@@ -237,8 +159,15 @@ type CultureProps = {
  * @returns {React.ReactElement} React component
  */
 function Cultures(props: CultureProps): React.ReactElement {
-  const { cultures, onRefresh } = props;
-  const [refreshing, setRefreshing] = useState(false);
+  const [cultures, setCultures] = useState(null);
+  useEffect(() => {
+    fetchCultureData();
+  }, []);
+
+  const fetchCultureData = async () => {
+    let cultureNames = await Culture.list();
+    setCultures(cultureNames);
+  };
 
   if (!cultures) {
     return (
@@ -246,19 +175,12 @@ function Cultures(props: CultureProps): React.ReactElement {
     );
   }
 
-  const refresh = () => {
-    onRefresh();
-    setRefreshing(true);
-  };
-
   return (
     <SafeAreaView>
       <FlatList
         style={{ flex: 1 }}
         data={cultures}
         keyExtractor={(_, index) => index.toString()}
-        onRefresh={() => refresh()}
-        refreshing={refreshing}
         renderItem={({ item }) => {
           return (
             <List.Item
@@ -278,6 +200,120 @@ function Cultures(props: CultureProps): React.ReactElement {
           );
         }}
       />
+    </SafeAreaView>
+  );
+}
+
+/* ADMIN */
+
+/**
+ * Properties for {@link Users}
+ */
+type AdminProps = {
+  token: string;
+  user: Admin;
+};
+
+/**
+ * Component that displays a list of components of either {@link Users}
+ *
+ * @param {AdminProps} props
+ * @returns {React.ReactElement} React component
+ */
+function Admins(props: AdminProps): React.ReactElement {
+  const [users, setUsers] = useState(null);
+  const [visible, setVisible] = React.useState(false);
+  useEffect(() => {
+    fetchAdminData();
+  }, []);
+
+  const fetchAdminData = async () => {
+    let users;
+    if (props.user.superUser) {
+      users = await Admin.list(props.token);
+    } else {
+      users = [props.user];
+    }
+    setUsers(users);
+  };
+
+  const onDelete = async (email: string) => {
+    try {
+      await Admin.delete(email, props.token);
+    } catch {
+      // show error message
+    }
+    fetchAdminData();
+  };
+
+  const onEdit = (user: {
+    email: string;
+    name: string;
+    superUser: boolean;
+  }) => {
+    //TODO: update Admin.update() perams
+    try {
+      //Admin.update(email, props.token)
+      fetchAdminData();
+    } catch {
+      // show error message
+    }
+  };
+
+  const onInvite = async (email: string) => {
+    try {
+      await Admin.invite(email, props.token);
+    } catch (err) {
+      // show error message
+    }
+  };
+
+  if (!users) {
+    return (
+      <ActivityIndicator animating={true} size="large" style={styles.spinner} />
+    );
+  }
+
+  return (
+    <SafeAreaView>
+      <FlatList
+        style={{ flex: 1 }}
+        data={users}
+        keyExtractor={(_, index) => index.toString()}
+        renderItem={({ item }) => {
+          return (
+            <List.Item
+              title={item.email}
+              onPress={() => {
+                Alert.alert("user pressed", item.name, [
+                  { text: "OK", onPress: () => console.log("OK Pressed") },
+                ]);
+              }}
+              right={() =>
+                props.token ? (
+                  <>
+                    <IconButton icon="pencil" onPress={() => onEdit(item)} />
+                    <IconButton
+                      icon="delete"
+                      onPress={() => onDelete(item.email)}
+                    />
+                  </>
+                ) : null
+              }
+            />
+          );
+        }}
+      />
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => setVisible(!visible)}
+      />
+      <Portal>
+        <Modal visible={visible} contentContainerStyle={styles.inviteModal}>
+          <Text>Example Modal. Click outside this area to dismiss.</Text>
+        </Modal>
+      </Portal>
     </SafeAreaView>
   );
 }
