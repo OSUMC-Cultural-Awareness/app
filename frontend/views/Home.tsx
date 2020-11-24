@@ -10,18 +10,15 @@ import {
 } from "react-native";
 import "react-native-gesture-handler";
 import React, { useState, useEffect } from "react";
-import { useRoute } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import {
   List,
   ActivityIndicator,
-  Colors,
   Button,
   FAB,
   IconButton,
-  Snackbar,
   Modal,
   Portal,
 } from "react-native-paper";
@@ -29,8 +26,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 
 import { Routes } from "../routes";
 import { Store } from "../redux/UserReducer";
-import { Admin } from "../api/admin";
-import { Culture } from "../api/culture";
+import { Admin, Culture } from "../api";
 
 const styles = StyleSheet.create({
   spinner: { top: "50%", position: "relative" },
@@ -76,7 +72,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     margin: 16,
     right: 0,
-    bottom: 64,
+    bottom: -450,
   },
   view: {
     height: "100%",
@@ -95,54 +91,14 @@ type Props = {
 };
 
 type TabProps = {
-  Cultures: { insights: Culture[] };
-  Admins: { insights: Admin };
+  Cultures: { cultures: Culture[] };
+  Admins: { admins: Admin[] };
 };
 
 const Tab = createMaterialTopTabNavigator<TabProps>();
 
 function Home(props: Props): React.ReactElement {
-  const [cultures, setCultures] = useState(null);
-  const [users, setUsers] = useState(null);
-  const [editing, setEditing] = useState<boolean>(false);
-  const [err, setErr] = useState<string>("");
-  const [showErr, setShowErr] = useState<boolean>(false);
-  const route = useRoute();
   const token = props.token;
-
-  const hideSnackbar = () => setShowErr(false);
-
-  useEffect(() => {
-    fetchCultureData();
-  }, []);
-
-  useEffect(() => {
-    fetchAdminData();
-  }, []);
-
-  const fetchCultureData = async () => {
-    let cultureNames = await Culture.list();
-    setCultures(cultureNames);
-  };
-
-  const fetchAdminData = async () => {
-    let users;
-    if (props.user.superUser) {
-      users = await Admin.list(token);
-    } else {
-      users = [props.user];
-    }
-    setUsers(users);
-  };
-
-  const ListHeader = () => {
-    //View to set in Header
-    return (
-      <View style={styles.headerFooterStyle}>
-        <Text style={styles.textStyle}>Cultural Awareness Home Page</Text>
-      </View>
-    );
-  };
 
   const ListFooter = () => {
     //View to set in Footer
@@ -164,47 +120,21 @@ function Home(props: Props): React.ReactElement {
   const handleAdminLogin = (evt) => {
     props.navigation.navigate("Login");
   };
-  const handleDisclaimer = (evt) => {
-    console.log("Pressed");
-  };
 
-  if (cultures === null)
-    return <ActivityIndicator animating={true} color={Colors.red800} />;
-
-  console.log(users);
   return (
-    // TODO:
-    // We want to refactor this code to work like the Culture view
-    // Use the same patterns/base components as Culture.tsx
-
     <View style={styles.view}>
       <Tab.Navigator initialRouteName="Cultures">
         {/* CULTURES TAB */}
         <Tab.Screen name="Cultures">
-          {() => (
-            <Cultures
-              onRefresh={async () => fetchCultureData()}
-              cultures={cultures}
-              navigation={props.navigation}
-              token={token}
-            />
-          )}
+          {() => <Cultures navigation={props.navigation} token={token} />}
         </Tab.Screen>
 
         {/* ADMINS TAB */}
-        {/* This tab should only be visible to users who are logged in how can we prevent the following component from rendering if a user is not signed in? */}
-        {/* TODO: create admins component that lists the admins, pass users to that component */}
         {token ? (
           <Tab.Screen name="Admins">
             {() => (
               <>
-                <Admins
-                  onRefresh={async () => fetchAdminData()}
-                  users={users}
-                  navigation={props.navigation}
-                  token={token}
-                  fetchData={fetchAdminData}
-                />
+                <Admins token={token} user={props.user} />
               </>
             )}
           </Tab.Screen>
@@ -212,16 +142,6 @@ function Home(props: Props): React.ReactElement {
           <></>
         )}
       </Tab.Navigator>
-      <Snackbar
-        visible={showErr}
-        onDismiss={hideSnackbar}
-        action={{
-          label: "Hide",
-          onPress: hideSnackbar,
-        }}
-      >
-        {err}
-      </Snackbar>
       {ListFooter()}
     </View>
   );
@@ -231,11 +151,7 @@ function Home(props: Props): React.ReactElement {
  * Properties for {@link Cultures}
  */
 type CultureProps = {
-  // callback called when the {@link FlatList} is refreshed
-  onRefresh: () => void;
-  // Cultures to render
-  cultures: { name: string; cultures: Culture[] }[];
-  navigation: any;
+  navigation: StackNavigationProp<Routes, "Home">;
   token: string;
 };
 
@@ -246,8 +162,15 @@ type CultureProps = {
  * @returns {React.ReactElement} React component
  */
 function Cultures(props: CultureProps): React.ReactElement {
-  const { cultures, onRefresh } = props;
-  const [refreshing, setRefreshing] = useState(false);
+  const [cultures, setCultures] = useState(null);
+  useEffect(() => {
+    fetchCultureData();
+  }, []);
+
+  const fetchCultureData = async () => {
+    let cultureNames = await Culture.list();
+    setCultures(cultureNames);
+  };
 
   if (!cultures) {
     return (
@@ -255,19 +178,12 @@ function Cultures(props: CultureProps): React.ReactElement {
     );
   }
 
-  const refresh = () => {
-    onRefresh();
-    setRefreshing(true);
-  };
-
   return (
     <SafeAreaView>
       <FlatList
         style={{ flex: 1 }}
         data={cultures}
         keyExtractor={(_, index) => index.toString()}
-        onRefresh={() => refresh()}
-        refreshing={refreshing}
         renderItem={({ item }) => {
           return (
             <List.Item
@@ -297,13 +213,8 @@ function Cultures(props: CultureProps): React.ReactElement {
  * Properties for {@link Users}
  */
 type AdminProps = {
-  // callback called when the {@link FlatList} is refreshed
-  onRefresh: () => void;
-  // Users to render
-  users: { name: string; email: string; superUser: boolean }[];
-  navigation: any;
   token: string;
-  fetchData: Function;
+  user: Admin;
 };
 
 /**
@@ -313,14 +224,26 @@ type AdminProps = {
  * @returns {React.ReactElement} React component
  */
 function Admins(props: AdminProps): React.ReactElement {
-  const { users, onRefresh } = props;
-  const [refreshing, setRefreshing] = useState(false);
+  const [users, setUsers] = useState(null);
   const [visible, setVisible] = React.useState(false);
+  useEffect(() => {
+    fetchAdminData();
+  }, []);
+
+  const fetchAdminData = async () => {
+    let users;
+    if (props.user.superUser) {
+      users = await Admin.list(props.token);
+    } else {
+      users = [props.user];
+    }
+    setUsers(users);
+  };
 
   const onDelete = (email: string) => {
     //TODO: not refreshing the data on client side
     Admin.delete(email, props.token);
-    props.fetchData();
+    fetchAdminData();
   };
 
   const onEdit = (user: {
@@ -330,11 +253,15 @@ function Admins(props: AdminProps): React.ReactElement {
   }) => {
     //TODO: update Admin.update() perams
     //Admin.update(email, props.token)
-    props.fetchData();
+    fetchAdminData();
   };
 
-  const onInvite = (email: string, token: string) => {
-    Admin.invite(email, token);
+  const onInvite = async (email: string) => {
+    try {
+      await Admin.invite(email, props.token);
+    } catch (err) {
+      // somehow display error
+    }
   };
 
   if (!users) {
@@ -343,31 +270,21 @@ function Admins(props: AdminProps): React.ReactElement {
     );
   }
 
-  const refresh = () => {
-    onRefresh();
-    setRefreshing(true);
-  };
-
   return (
     <SafeAreaView>
       <FlatList
         style={{ flex: 1 }}
         data={users}
         keyExtractor={(_, index) => index.toString()}
-        onRefresh={() => refresh()}
-        refreshing={refreshing}
         renderItem={({ item }) => {
           return (
             <List.Item
-              title={item.name}
-              onPress={
-                () => {
-                  Alert.alert("user pressed", item.name, [
-                    { text: "OK", onPress: () => console.log("OK Pressed") },
-                  ]);
-                }
-                //props.navigation.navigate("Culture", { cultureName: item.name })
-              }
+              title={item.email}
+              onPress={() => {
+                Alert.alert("user pressed", item.name, [
+                  { text: "OK", onPress: () => console.log("OK Pressed") },
+                ]);
+              }}
               right={() =>
                 props.token ? (
                   <>
