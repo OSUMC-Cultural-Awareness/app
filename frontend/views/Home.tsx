@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
   },
   inviteModal: {
     padding: 20,
-    background: 'white'
-  }
+    background: "white",
+  },
 });
 
 type Props = {
@@ -171,7 +171,7 @@ function Home(props: Props): React.ReactElement {
   if (cultures === null)
     return <ActivityIndicator animating={true} color={Colors.red800} />;
 
-  console.log(users)
+  console.log(users);
   return (
     // TODO:
     // We want to refactor this code to work like the Culture view
@@ -194,21 +194,23 @@ function Home(props: Props): React.ReactElement {
         {/* ADMINS TAB */}
         {/* This tab should only be visible to users who are logged in how can we prevent the following component from rendering if a user is not signed in? */}
         {/* TODO: create admins component that lists the admins, pass users to that component */}
-        {
-          token ? <Tab.Screen name="Admins">
-          {() => (
-            <>
-            <Admins
-              onRefresh={async () => fetchAdminData()}
-              users={users}
-              navigation={props.navigation}
-              token={token}
-              fetchData={fetchAdminData}
-            />
-          </>
-          )}
-        </Tab.Screen> : <></>
-        }
+        {token ? (
+          <Tab.Screen name="Admins">
+            {() => (
+              <>
+                <Admins
+                  onRefresh={async () => fetchAdminData()}
+                  users={users}
+                  navigation={props.navigation}
+                  token={token}
+                  fetchData={fetchAdminData}
+                />
+              </>
+            )}
+          </Tab.Screen>
+        ) : (
+          <></>
+        )}
       </Tab.Navigator>
       <Snackbar
         visible={showErr}
@@ -317,19 +319,23 @@ function Admins(props: AdminProps): React.ReactElement {
 
   const onDelete = (email: string) => {
     //TODO: not refreshing the data on client side
-    Admin.delete(email, props.token)
-    props.fetchData()
-  }
+    Admin.delete(email, props.token);
+    props.fetchData();
+  };
 
-  const onEdit = (user: {email:string, name: string, superUser: boolean}) => {
+  const onEdit = (user: {
+    email: string;
+    name: string;
+    superUser: boolean;
+  }) => {
     //TODO: update Admin.update() perams
     //Admin.update(email, props.token)
-    props.fetchData()
-  }
+    props.fetchData();
+  };
 
   const onInvite = (email: string, token: string) => {
-    Admin.invite(email, token)
-  }
+    Admin.invite(email, token);
+  };
 
   if (!users) {
     return (
@@ -359,20 +365,17 @@ function Admins(props: AdminProps): React.ReactElement {
                   Alert.alert("user pressed", item.name, [
                     { text: "OK", onPress: () => console.log("OK Pressed") },
                   ]);
-              }
+                }
                 //props.navigation.navigate("Culture", { cultureName: item.name })
               }
               right={() =>
                 props.token ? (
                   <>
-                  <IconButton
-                    icon="pencil"
-                    onPress={() => onEdit(item)}
-                  />
-                  <IconButton
-                    icon="delete"
-                    onPress={() => onDelete(item.email)}
-                  />
+                    <IconButton icon="pencil" onPress={() => onEdit(item)} />
+                    <IconButton
+                      icon="delete"
+                      onPress={() => onDelete(item.email)}
+                    />
                   </>
                 ) : null
               }
@@ -383,16 +386,12 @@ function Admins(props: AdminProps): React.ReactElement {
       <FAB
         icon="plus"
         style={styles.fab}
-        onPress= {
-          () => setVisible(!visible)}
+        onPress={() => setVisible(!visible)}
       />
       <Portal>
-        <Modal
-          visible={visible}
-          contentContainerStyle={styles.inviteModal}
-        >
-          <Text>Example Modal.  Click outside this area to dismiss.</Text>
-      </Modal>
+        <Modal visible={visible} contentContainerStyle={styles.inviteModal}>
+          <Text>Example Modal. Click outside this area to dismiss.</Text>
+        </Modal>
       </Portal>
     </SafeAreaView>
   );
