@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, FlatList, SafeAreaView, View } from "react-native";
+import {
+  StyleSheet,
+  FlatList,
+  SafeAreaView,
+  View,
+  Linking,
+  // Clipboard is deprecated, but necessary because of incompatibility with Expo
+  // See https://github.com/react-native-clipboard/clipboard/issues/71#issuecomment-701138494
+  Clipboard,
+} from "react-native";
 
 import {
   getFocusedRouteNameFromRoute,
@@ -15,11 +24,13 @@ import {
   ActivityIndicator,
   IconButton,
   FAB,
+  Divider,
   List,
   Paragraph,
   Button,
   Title,
   Snackbar,
+  Menu,
 } from "react-native-paper";
 
 import {
@@ -450,6 +461,8 @@ type InsightCardProps = {
  */
 function InsightCard(props: InsightCardProps): React.ReactElement {
   const { insight, index, editing, onPress } = props;
+  const [showMenu, setShowMenu] = useState(false);
+  const link = insight.source.data;
 
   return (
     <Card style={Styles.card} onPress={() => editing && onPress(index)}>
@@ -458,7 +471,29 @@ function InsightCard(props: InsightCardProps): React.ReactElement {
         <Paragraph>{insight.information}</Paragraph>
       </Card.Content>
       <Card.Actions>
-        <IconButton icon="link" size={20} />
+        {link && Linking.canOpenURL(link) && (
+          <Menu
+            visible={showMenu}
+            onDismiss={() => setShowMenu(false)}
+            anchor={
+              <IconButton
+                icon="link"
+                size={20}
+                onPress={() => setShowMenu(true)}
+              />
+            }
+          >
+            <Menu.Item
+              title="Copy link"
+              onPress={() => Clipboard.setString(link)}
+            />
+            <Divider />
+            <Menu.Item
+              title="Open link"
+              onPress={() => Linking.openURL(link)}
+            />
+          </Menu>
+        )}
         {editing && (
           <IconButton
             icon="delete"
