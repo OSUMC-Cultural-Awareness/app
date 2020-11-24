@@ -26,7 +26,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 
 import { Routes } from "../routes";
 import { Store } from "../redux/UserReducer";
-import { Admin, Culture } from "../api";
+import { Admin, Culture, Ledger } from "../api";
 
 const styles = StyleSheet.create({
   spinner: { top: "50%", position: "relative" },
@@ -188,18 +188,37 @@ function Cultures(props: CultureProps): React.ReactElement {
               onPress={() =>
                 props.navigation.navigate("Culture", { cultureName: item.name })
               }
-              right={() =>
-                props.token ? (
+              right={() => (
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
+                  }}
+                >
                   <IconButton
-                    icon="delete"
-                    onPress={() => Culture.delete(item.name, props.token)}
+                    icon="download"
+                    onPress={() => Ledger.add(item.name)}
                   />
-                ) : null
-              }
+                  {props.token && (
+                    <IconButton
+                      icon="delete"
+                      onPress={() => Culture.delete(item.name, props.token)}
+                    />
+                  )}
+                </View>
+              )}
             />
           );
         }}
       />
+      {props.token && (
+        <FAB
+          icon="plus"
+          style={styles.fab}
+          onPress={() => setCultures([...cultures, ""])}
+        ></FAB>
+      )}
     </SafeAreaView>
   );
 }
