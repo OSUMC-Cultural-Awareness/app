@@ -6,7 +6,10 @@ const INITIAL_STATE = { user: { ...defaultAdmin }, token: "" };
 
 export type Store = { user: { user: Admin; token: string } };
 
-const userReducer = (state = INITIAL_STATE, action) => {
+const userReducer = (
+  state = INITIAL_STATE,
+  action: { type: string; payload: any }
+) => {
   switch (action.type) {
     case "UPDATE_USER":
       return { ...action.payload };
