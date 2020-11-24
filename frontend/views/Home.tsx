@@ -237,11 +237,13 @@ function Admins(props: AdminProps): React.ReactElement {
     setUsers(users);
   };
 
-  const onDelete = (email: string) => {
-    //TODO: not refreshing the data on client side
-    Admin.delete(email, props.token);
-    const newUsers = users.filter((email) => email === email);
-    setUsers(newUsers);
+  const onDelete = async (email: string) => {
+    try {
+      await Admin.delete(email, props.token);
+    } catch {
+      // show error message
+    }
+    fetchAdminData();
   };
 
   const onEdit = (user: {
@@ -250,15 +252,19 @@ function Admins(props: AdminProps): React.ReactElement {
     superUser: boolean;
   }) => {
     //TODO: update Admin.update() perams
-    //Admin.update(email, props.token)
-    fetchAdminData();
+    try {
+      //Admin.update(email, props.token)
+      fetchAdminData();
+    } catch {
+      // show error message
+    }
   };
 
   const onInvite = async (email: string) => {
     try {
       await Admin.invite(email, props.token);
     } catch (err) {
-      // somehow display error
+      // show error message
     }
   };
 
