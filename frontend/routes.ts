@@ -29,4 +29,6 @@ export type Routes = {
    * email between logins.
    */
   Login: undefined;
+
+  Settings: undefined;
 };
