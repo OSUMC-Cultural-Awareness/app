@@ -240,7 +240,8 @@ function Admins(props: AdminProps): React.ReactElement {
   const onDelete = (email: string) => {
     //TODO: not refreshing the data on client side
     Admin.delete(email, props.token);
-    fetchAdminData();
+    const newUsers = users.filter((email) => email === email);
+    setUsers(newUsers);
   };
 
   const onEdit = (user: {
