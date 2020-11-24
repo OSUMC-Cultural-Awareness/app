@@ -154,7 +154,6 @@ function Home(props: Props) {
             />
           );
         }}
-        //ListEmptyComponent={EmptyListMessage}
       />
       {props.token && <FAB icon="plus" style={styles.fab} onPress={() => setCultures([...cultures, ""])}></FAB>}
     </SafeAreaView>
