@@ -124,12 +124,9 @@ function Home(props: Props): React.ReactElement {
   return (
     <View style={styles.view}>
       <Tab.Navigator initialRouteName="Cultures">
-        {/* CULTURES TAB */}
         <Tab.Screen name="Cultures">
           {() => <Cultures navigation={props.navigation} token={token} />}
         </Tab.Screen>
-
-        {/* ADMINS TAB */}
         {token ? (
           <Tab.Screen name="Admins">
             {() => (
