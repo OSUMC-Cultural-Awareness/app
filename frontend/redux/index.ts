@@ -5,7 +5,7 @@ import { THEME_INITIAL_STATE, themeReducer } from "./ThemeReducer";
 import { updateUser, resetUser } from "./UserAction";
 import { updateTheme } from "./ThemeAction";
 
-import { ThemeType } from "../constants";
+import { ThemeType } from "../theme";
 
 export const Reducer = combineReducers({
   theme: themeReducer,

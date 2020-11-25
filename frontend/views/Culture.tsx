@@ -125,7 +125,8 @@ function CultureView(props: Props): React.ReactElement {
     const newCulture = new Culture(
       culture.name,
       culture.generalInsights,
-      culture.specializedInsights
+      culture.specializedInsights,
+      culture.modified
     );
 
     setCulture(newCulture);

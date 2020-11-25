@@ -1,4 +1,4 @@
-import { ThemeType } from "../constants";
+import { ThemeType } from "../theme";
 
 export const THEME_INITIAL_STATE = "Dark";
 
