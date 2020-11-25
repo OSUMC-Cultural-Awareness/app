@@ -64,7 +64,6 @@ function ThemeToggler(props: Props): React.ReactElement {
           <Checkbox
             {...props}
             status={theme === "Dark" ? "checked" : "unchecked"}
-            color={Colors.grey800}
           />
         )}
       />
