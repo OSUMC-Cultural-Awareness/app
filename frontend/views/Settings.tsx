@@ -1,9 +1,11 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Linking } from "react-native";
 
 import { Divider, List, IconButton } from "react-native-paper";
+
 import ThemeToggler from "./ThemeToggler";
 import DownloadedCultures from "./DownloadedCultures";
+import { disclaimerURL } from "../constants";
 
 // HACK: This is so that icons line up with other icons on the
 // Settings page.
@@ -29,7 +31,7 @@ export default function Settings(): React.ReactElement {
       <Divider />
       <List.Item
         title="Disclaimer"
-        onPress={() => console.log("hi")}
+        onPress={() => Linking.openURL(disclaimerURL)}
         left={(props) => (
           <List.Icon
             {...props}
