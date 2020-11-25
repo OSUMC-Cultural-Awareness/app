@@ -8,7 +8,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { registerRootComponent } from "expo";
 
-import { Home, Login, CultureView, EditInsight, Register } from "./views";
+import {
+  Home,
+  Login,
+  CultureView,
+  EditInsight,
+  Register,
+  Recovery,
+} from "./views";
 
 import { Routes } from "./routes";
 import { Theme } from "./constants";
@@ -42,6 +49,7 @@ function App() {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="EditInsight" component={EditInsight} />
+            <Stack.Screen name="Recovery" component={Recovery} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

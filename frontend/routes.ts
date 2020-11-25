@@ -29,4 +29,10 @@ export type Routes = {
    * email between logins.
    */
   Login: undefined;
+
+  /**
+   * Allows Admin account recovery, requires the token and updates the Admin
+   * in the Api in order to update their password.
+   */
+  Recovery: { token: string; email: string };
 };
