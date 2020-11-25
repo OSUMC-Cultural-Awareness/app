@@ -53,7 +53,6 @@ export class Api {
     }
 
     let json = await response.json();
-    //console.log(json);
     if (!response.ok) {
       throw new ApiError(json["msg"], response.status);
     }
