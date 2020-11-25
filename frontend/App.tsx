@@ -5,8 +5,6 @@ import { Provider } from "react-redux";
 import { createStore } from "redux";
 import {
   Provider as PaperProvider,
-  Button,
-  Avatar,
   DarkTheme as PaperDarkTheme,
   DefaultTheme as PaperDefaultTheme,
 } from "react-native-paper";
@@ -27,6 +25,7 @@ import {
   EditInsight,
   Register,
   Settings,
+  Header,
 } from "./views";
 
 import { Routes } from "./routes";
@@ -83,15 +82,9 @@ function App() {
             <Stack.Screen
               name="Culture"
               component={CultureView}
-              options={{
-                headerRight: () => (
-                  <Button onPress={() => console.log("button pressed")}>
-                    <Avatar.Text size={36} label="NH" />
-                  </Button>
-                ),
-              }}
+              options={Header}
             />
-            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Home" component={Home} options={Header} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="EditInsight" component={EditInsight} />
