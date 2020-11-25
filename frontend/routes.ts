@@ -35,4 +35,10 @@ export type Routes = {
    * in the Api in order to update their password.
    */
   Recovery: { token: string; email: string };
+
+  /**
+   * Settings page displays downloaded cultures, dark theme, and disclaimer
+   * for application.
+   */
+  Settings: undefined;
 };

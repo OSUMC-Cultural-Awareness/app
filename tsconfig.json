@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "module": "ES2015",
+    "module": "ES2020",
     "moduleResolution": "node",
     "removeComments": true,
     "preserveConstEnums": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "lib": ["ES2015"],
+    "lib": ["ES2017"],
     "sourceMap": true,
     "skipLibCheck": true,
     "jsx": "react-native"

@@ -46,11 +46,13 @@ export class Culture {
    * @param {string} name
    * @param {GeneralInsight[]} generalInsights
    * @param {SpecializedInsight} specializedInsights
+   * @param {number} modified Epoch timestamp
    */
   constructor(
     public name: string,
     public generalInsights: GeneralInsight[],
-    public specializedInsights: SpecializedInsight
+    public specializedInsights: SpecializedInsight,
+    public modified: number
   ) {}
 
   /**
@@ -68,7 +70,8 @@ export class Culture {
     return new this(
       json["name"],
       json["general_insights"],
-      json["specialized_insights"]
+      json["specialized_insights"],
+      json["modified"]
     );
   }
 

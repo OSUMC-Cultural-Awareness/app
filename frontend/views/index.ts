@@ -4,5 +4,16 @@ import Register from "./Register";
 import Home from "./Home";
 import EditInsight from "./EditInsight";
 import Recovery from "./Recovery";
+import Settings from "./Settings";
+import Header from "./Header";
 
-export { CultureView, Login, Home, EditInsight, Register, Recovery };
+export {
+  CultureView,
+  Login,
+  Home,
+  EditInsight,
+  Register,
+  Recovery,
+  Settings,
+  Header,
+};
