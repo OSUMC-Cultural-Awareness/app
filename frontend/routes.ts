@@ -30,5 +30,9 @@ export type Routes = {
    */
   Login: undefined;
 
+  /**
+   * Settings page displays downloaded cultures, dark theme, and disclaimer
+   * for application.
+   */
   Settings: undefined;
 };
