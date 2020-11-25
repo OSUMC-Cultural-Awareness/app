@@ -49,9 +49,6 @@ export namespace Ledger {
         }
       }
     );
-
-    const data = JSON.stringify({ cultures: cultures });
-    await AsyncStorage.setItem(LOCATION, data);
   }
 
   /**
