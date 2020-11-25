@@ -1,4 +1,4 @@
-import { DefaultTheme } from "react-native-paper";
+import { DefaultTheme, DarkTheme } from "react-native-paper";
 import * as Yup from "yup";
 
 export const API_URL = "http://localhost:5000/api/v1";
@@ -7,6 +7,26 @@ export const colors = {
   ...DefaultTheme.colors,
   primary: "#1e88e5",
   accent: "#1e88e5",
+};
+
+export const lightTheme = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#1e88e5",
+    accent: "#1e88e5",
+  },
+};
+
+export const darkTheme = {
+  ...DarkTheme,
+  roundness: 2,
+  colors: {
+    ...DarkTheme.colors,
+    primary: "#1e88e5",
+    accent: "#1e88e5",
+  },
 };
 
 export type ThemeType = "Dark" | "Light";

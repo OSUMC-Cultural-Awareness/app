@@ -3,11 +3,7 @@ import React, { useState, useEffect } from "react";
 import "react-native-gesture-handler";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
-import {
-  Provider as PaperProvider,
-  DarkTheme as PaperDarkTheme,
-  DefaultTheme as PaperDefaultTheme,
-} from "react-native-paper";
+import { Provider as PaperProvider } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connect } from "react-redux";
 
@@ -30,7 +26,7 @@ import {
 } from "./views";
 
 import { Routes } from "./routes";
-import { colors, ThemeStorage, ThemeType } from "./constants";
+import { lightTheme, darkTheme, ThemeStorage, ThemeType } from "./constants";
 import { Reducer, updateTheme, Store } from "./redux";
 
 const store = createStore(Reducer);
@@ -83,19 +79,12 @@ function Navigator(props: NavigatorProps): React.ReactElement {
     prefixes: ["/"],
   };
 
-  const paperThemeMode = theme === "Dark" ? PaperDarkTheme : PaperDefaultTheme;
-
-  const paperTheme = {
-    ...paperThemeMode,
-    ...colors,
-  };
-
   return (
     <NavigationContainer
       linking={linking}
       theme={theme === "Dark" ? DarkTheme : DefaultTheme}
     >
-      <PaperProvider theme={paperTheme}>
+      <PaperProvider theme={theme === "Dark" ? darkTheme : lightTheme}>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
             name="Culture"
