@@ -42,7 +42,7 @@ import {
 } from "../api";
 
 import { Routes } from "../routes";
-import { Store } from "../redux/UserReducer";
+import { Store } from "../redux";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Culture">;
@@ -125,7 +125,8 @@ function CultureView(props: Props): React.ReactElement {
     const newCulture = new Culture(
       culture.name,
       culture.generalInsights,
-      culture.specializedInsights
+      culture.specializedInsights,
+      culture.modified
     );
 
     setCulture(newCulture);

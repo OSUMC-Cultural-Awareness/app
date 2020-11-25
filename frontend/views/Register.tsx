@@ -16,9 +16,8 @@ import { RouteProp } from "@react-navigation/native";
 import { useFormik } from "formik";
 
 import { Admin, AuthPayload } from "../api";
-import { updateUser } from "../redux/UserAction";
+import { updateUser, Store } from "../redux";
 import { Routes } from "../routes";
-import { Store } from "../redux/UserReducer";
 import {
   RegisterHelpText,
   RegisterValidationSchema,

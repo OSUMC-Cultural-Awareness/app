@@ -17,9 +17,8 @@ import { useFormik } from "formik";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Admin, AuthPayload } from "../api";
-import { updateUser } from "../redux/UserAction";
+import { updateUser, Store } from "../redux";
 import { Routes } from "../routes";
-import { Store } from "../redux/UserReducer";
 import { LoginValidationSchema } from "../constants";
 
 type Props = {

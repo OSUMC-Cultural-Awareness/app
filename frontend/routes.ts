@@ -29,4 +29,10 @@ export type Routes = {
    * email between logins.
    */
   Login: undefined;
+
+  /**
+   * Settings page displays downloaded cultures, dark theme, and disclaimer
+   * for application.
+   */
+  Settings: undefined;
 };
