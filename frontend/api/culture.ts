@@ -69,9 +69,9 @@ export class Culture {
 
     return new this(
       json["name"],
-      json["modified"],
       json["general_insights"],
-      json["specialized_insights"]
+      json["specialized_insights"],
+      json["modified"]
     );
   }
 
