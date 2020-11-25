@@ -5,7 +5,7 @@ import { List, Button, IconButton } from "react-native-paper";
 // is importing Dayjs really worth it for something as simple as relative times?
 // Not sure, but it's the easiest thing to do and is well maintained.
 import dayjs from "dayjs";
-import * as relativeTime from "dayjs/plugin/relativeTime";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 import { Ledger } from "../api";
 
