@@ -157,7 +157,15 @@ function Login(props: Props): React.ReactElement {
   const recoverAccount = async () => {
     await validateField("email");
     if (errors.email === undefined) {
-      console.log(`Send recovery email to ${values.email}`);
+      try {
+        await Admin.recover(values.email);
+        setErr(`Sent email to ${values.email}`);
+        setSnackbar(true);
+      } catch (err) {
+        console.error("Failed to send recovery email: ", err);
+        setErr(err.toString());
+        setSnackbar(true);
+      }
     } else {
       setSnackbar(true);
       setErr("Account recovery requires a valid Email");
