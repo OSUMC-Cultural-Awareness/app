@@ -5,7 +5,13 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Button, TextInput, Snackbar, HelperText } from "react-native-paper";
+import {
+  Title,
+  Button,
+  TextInput,
+  Snackbar,
+  HelperText,
+} from "react-native-paper";
 
 import { Routes } from "../routes";
 import { Admin } from "../api";
@@ -52,6 +58,8 @@ const Styles = StyleSheet.create({
   view: { flex: 1, justifyContent: "space-evenly", overflow: "hidden" },
 
   input: { margin: 5, padding: 15 },
+
+  title: { alignSelf: "center" },
 });
 
 /**
@@ -106,6 +114,7 @@ export default function Recovery(props: Props): React.ReactElement {
 
   return (
     <View style={Styles.view}>
+      <Title style={Styles.title}>Let's create a new password!</Title>
       <View style={Styles.input}>
         <TextInput
           mode="outlined"
