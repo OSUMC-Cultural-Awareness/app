@@ -49,25 +49,6 @@ export namespace Ledger {
         }
       }
     );
-
-    const data = JSON.stringify({ cultures: cultures });
-    await AsyncStorage.setItem(LOCATION, data);
-  }
-
-  /**
-   * Fetches, Compress information about a provided culture.
-   *
-   * @param {string} name of culture
-   *
-   * @throws network errors from {@link fetch}
-   * @throws zlib errors from {@link Pako}
-   * @throws JSON errors from {@link JSON}
-   *
-   * @returns {Promise<string>} compressed bytes
-   */
-  async function compress(name: string): Promise<string> {
-    const info = await Culture.get(name);
-    return Pako.deflate(JSON.stringify(info), { to: "string" });
   }
 
   /**
@@ -81,11 +62,12 @@ export namespace Ledger {
    */
   export async function list(): Promise<Map<string, number>> {
     const data = await AsyncStorage.getItem(LOCATION);
-    if (data === null) {
+    if (!data) {
       return new Map();
     }
 
-    return JSON.parse(data).cultures;
+    let ledger = JSON.parse(data)["cultures"];
+    return new Map(Object.entries(ledger));
   }
 
   /**
@@ -106,6 +88,18 @@ export namespace Ledger {
   }
 
   /**
+   * saveLedger save the ledger to storage
+   *
+   * @param {Map} cultures to save
+   */
+  function saveLedger(cultures: Map<string, number>) {
+    let ledger = { cultures: {} };
+    cultures.forEach((val, key) => (ledger.cultures[key] = val));
+
+    AsyncStorage.setItem(LOCATION, JSON.stringify(ledger));
+  }
+
+  /**
    * Add a culture to {@link AsyncStorage}
    *
    * @param {string} culture
@@ -118,8 +112,13 @@ export namespace Ledger {
    * @throw pako errors from {@link Pako}
    */
   export async function add(culture: string) {
-    const data = await compress(culture);
-    AsyncStorage.setItem(culture, data.toString());
+    const info = await Culture.get(culture);
+    const compressed = Pako.deflate(JSON.stringify(info), { to: "string" });
+    AsyncStorage.setItem(culture, compressed.toString());
+
+    let cultures = await list();
+    cultures.set(culture, info.modified);
+    saveLedger(cultures);
   }
 
   /**
@@ -131,10 +130,13 @@ export namespace Ledger {
    * @param {string} culture to remove
    */
   export async function remove(culture: string) {
-    const cultures = await list();
+    let cultures = await list();
 
     if (cultures.has(culture)) {
       AsyncStorage.removeItem(culture);
     }
+
+    cultures.delete(culture);
+    saveLedger(cultures);
   }
 }

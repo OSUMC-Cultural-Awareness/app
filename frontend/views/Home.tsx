@@ -1,31 +1,22 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-  SafeAreaView,
-  Image,
-  Alert,
-} from "react-native";
-import "react-native-gesture-handler";
 import React, { useState, useEffect } from "react";
+import { StyleSheet, View, FlatList, SafeAreaView, Alert } from "react-native";
 import { connect } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
-import {
-  List,
-  ActivityIndicator,
-  Button,
-  FAB,
-  IconButton,
-  Modal,
-  Portal,
-} from "react-native-paper";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import {
+  ActivityIndicator,
+  List,
+  IconButton,
+  FAB,
+  Portal,
+  Modal,
+  Text,
+} from "react-native-paper";
 
 import { Routes } from "../routes";
-import { Store } from "../redux/UserReducer";
+
+import { Store } from "../redux";
 import { Admin, Culture, Ledger } from "../api";
 
 const styles = StyleSheet.create({
@@ -72,14 +63,20 @@ const styles = StyleSheet.create({
     position: "absolute",
     margin: 16,
     right: 0,
-    bottom: -450,
+    bottom: 0,
   },
+
   view: {
-    height: "100%",
+    flex: 1,
   },
+
   inviteModal: {
     padding: 20,
     background: "white",
+  },
+
+  list: {
+    flex: 1,
   },
 });
 
@@ -100,46 +97,22 @@ const Tab = createMaterialTopTabNavigator<TabProps>();
 function Home(props: Props): React.ReactElement {
   const token = props.token;
 
-  const ListFooter = () => {
-    //View to set in Footer
-    return (
-      <View style={styles.bottomFooterStyle}>
-        <Button onPress={() => console.log("Pressed!")}>
-          General Disclaimer
-        </Button>
-        <TouchableOpacity style={styles.btn} onPress={handleAdminLogin}>
-          <Image
-            source={require("../assets/admin_login.png")}
-            style={styles.img}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  const handleAdminLogin = (evt) => {
-    props.navigation.navigate("Login");
-  };
-
   return (
     <View style={styles.view}>
-      <Tab.Navigator initialRouteName="Cultures">
-        <Tab.Screen name="Cultures">
-          {() => <Cultures navigation={props.navigation} token={token} />}
-        </Tab.Screen>
-        {token ? (
-          <Tab.Screen name="Admins">
-            {() => (
-              <>
-                <Admins token={token} user={props.user} />
-              </>
-            )}
+      {!token ? (
+        <Cultures navigation={props.navigation} token={token} />
+      ) : (
+        <Tab.Navigator initialRouteName="Cultures">
+          <Tab.Screen name="Cultures">
+            {() => <Cultures navigation={props.navigation} token={token} />}
           </Tab.Screen>
-        ) : (
-          <></>
-        )}
-      </Tab.Navigator>
-      {ListFooter()}
+          {token && (
+            <Tab.Screen name="Admins">
+              {() => <Admins token={token} user={props.user} />}
+            </Tab.Screen>
+          )}
+        </Tab.Navigator>
+      )}
     </View>
   );
 }
@@ -161,13 +134,13 @@ type CultureProps = {
 function Cultures(props: CultureProps): React.ReactElement {
   const [cultures, setCultures] = useState(null);
   useEffect(() => {
+    const fetchCultureData = async () => {
+      let cultureNames = await Culture.list();
+      setCultures(cultureNames);
+    };
+
     fetchCultureData();
   }, []);
-
-  const fetchCultureData = async () => {
-    let cultureNames = await Culture.list();
-    setCultures(cultureNames);
-  };
 
   if (!cultures) {
     return (
@@ -178,7 +151,6 @@ function Cultures(props: CultureProps): React.ReactElement {
   return (
     <SafeAreaView>
       <FlatList
-        style={{ flex: 1 }}
         data={cultures}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => {
@@ -222,8 +194,6 @@ function Cultures(props: CultureProps): React.ReactElement {
     </SafeAreaView>
   );
 }
-
-/* ADMIN */
 
 /**
  * Properties for {@link Users}

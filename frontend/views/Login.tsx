@@ -17,9 +17,8 @@ import { useFormik } from "formik";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Admin, AuthPayload } from "../api";
-import { updateUser } from "../redux/UserAction";
+import { updateUser, Store } from "../redux";
 import { Routes } from "../routes";
-import { Store } from "../redux/UserReducer";
 import { LoginValidationSchema } from "../constants";
 
 type Props = {
@@ -157,7 +156,15 @@ function Login(props: Props): React.ReactElement {
   const recoverAccount = async () => {
     await validateField("email");
     if (errors.email === undefined) {
-      console.log(`Send recovery email to ${values.email}`);
+      try {
+        await Admin.recover(values.email);
+        setErr(`Sent email to ${values.email}`);
+        setSnackbar(true);
+      } catch (err) {
+        console.error("Failed to send recovery email: ", err);
+        setErr(err.toString());
+        setSnackbar(true);
+      }
     } else {
       setSnackbar(true);
       setErr("Account recovery requires a valid Email");

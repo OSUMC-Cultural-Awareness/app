@@ -1,17 +1,7 @@
-import { DefaultTheme } from "react-native-paper";
 import * as Yup from "yup";
 
 // export const API_URL = "http://localhost:5000/api/v1";
 export const API_URL = "https://www.osumc-cultural-awareness.com/api/v1";
-
-export const Theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: "#1e88e5",
-    accent: "#1e88e5",
-  },
-};
 
 /**
  * Login Validation Schema, a Yup Schema for basic validation for Login not nearly as extensive as Register,
@@ -67,3 +57,5 @@ export const RegisterValidationSchema = Yup.object().shape({
 });
 
 export const TermsOfServiceURL = "http://www.google.com";
+
+export const disclaimerURL = "http://www.google.com";

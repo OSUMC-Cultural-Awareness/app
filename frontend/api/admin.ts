@@ -111,6 +111,51 @@ export class Admin {
   }
 
   /**
+   * update an {@link Admin} only allowing them to update
+   * their password.
+   *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
+   * @param {string} email - email of admin
+   * @param {string} password - validate password
+   * @param {string} passwordConfirmation - MUST match passwordConfirmation
+   * @param {string} token - JSON Web Token
+   * @returns {Promise<void>}
+   */
+  static async updatePassword(
+    email: string,
+    password: string,
+    passwordConfirmation: string,
+    token: string
+  ): Promise<void> {
+    await Api.put(
+      `/admins/${email}`,
+      {
+        email: email,
+        password: password,
+        password_confirmation: passwordConfirmation,
+      },
+      token
+    );
+  }
+
+  /**
+   * recover an {@link Admin} with their email.
+   *
+   * @throws {@link ApiError}
+   * @throws {@link OfflineError}
+   *
+   * @param {string} email - email of admin to recover
+   *
+   * @returns {Promise<string>} server response
+   */
+  static async recover(email: string): Promise<string> {
+    const res = await Api.post("/admins/recover", { email: email });
+    return res["msg"];
+  }
+
+  /**
    * delete an {@link Admin}.
    *
    * @throws {@link ApiError}
