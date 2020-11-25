@@ -118,8 +118,13 @@ export namespace Ledger {
    * @throw pako errors from {@link Pako}
    */
   export async function add(culture: string) {
-    const data = await compress(culture);
-    AsyncStorage.setItem(culture, data.toString());
+    const info = await Culture.get(culture);
+    const compressed = Pako.deflate(JSON.stringify(info), { to: "string" });
+    AsyncStorage.setItem(culture, compressed.toString());
+
+    let cultures = await list();
+    cultures.set(culture, info.modified);
+    AsyncStorage.setItem(LOCATION, JSON.stringify(cultures));
   }
 
   /**
@@ -131,10 +136,14 @@ export namespace Ledger {
    * @param {string} culture to remove
    */
   export async function remove(culture: string) {
-    const cultures = await list();
+    let cultures = await list();
 
     if (cultures.has(culture)) {
       AsyncStorage.removeItem(culture);
     }
+
+    cultures.delete(culture);
+
+    AsyncStorage.setItem(LOCATION, JSON.stringify(cultures));
   }
 }
