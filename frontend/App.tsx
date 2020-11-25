@@ -9,6 +9,7 @@ import {
   DefaultTheme as PaperDefaultTheme,
 } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { connect } from "react-redux";
 
 import {
   NavigationContainer,
@@ -30,21 +31,11 @@ import {
 
 import { Routes } from "./routes";
 import { colors, ThemeStorage, ThemeType } from "./constants";
-import { Reducer } from "./redux";
-import { updateTheme } from "./redux/ThemeAction";
+import { Reducer, updateTheme, Store } from "./redux";
 
 const store = createStore(Reducer);
 
 function App() {
-  const [theme, setTheme] = useState<ThemeType>("Light");
-
-  const Stack = createStackNavigator<Routes>();
-  const linking = {
-    prefixes: ["/"],
-  };
-
-  store.subscribe(() => setTheme(store.getState().theme as ThemeType));
-
   useEffect(() => {
     const getTheme = async () => {
       let theme: ThemeType;
@@ -64,6 +55,34 @@ function App() {
     getTheme();
   }, []);
 
+  return (
+    <Provider store={store}>
+      <NavigatorScreen />
+    </Provider>
+  );
+}
+
+type NavigatorProps = {
+  theme: ThemeType;
+};
+
+/**
+ * Navigator contained inside of {@link App} manages navigation and theming.
+ *
+ * @remark This component isn't just inside of {@link App} because it needs to connect
+ * to the Redux store in order to properly re-render when a change to the theme is done.
+ *
+ * @param {NavigatorProps} props
+ * @returns {React.ReactElement}
+ */
+function Navigator(props: NavigatorProps): React.ReactElement {
+  const { theme } = props;
+
+  const Stack = createStackNavigator<Routes>();
+  const linking = {
+    prefixes: ["/"],
+  };
+
   const paperThemeMode = theme === "Dark" ? PaperDarkTheme : PaperDefaultTheme;
 
   const paperTheme = {
@@ -72,28 +91,33 @@ function App() {
   };
 
   return (
-    <Provider store={store}>
-      <NavigationContainer
-        linking={linking}
-        theme={theme === "Dark" ? DarkTheme : DefaultTheme}
-      >
-        <PaperProvider theme={paperTheme}>
-          <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen
-              name="Culture"
-              component={CultureView}
-              options={Header}
-            />
-            <Stack.Screen name="Home" component={Home} options={Header} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
-            <Stack.Screen name="EditInsight" component={EditInsight} />
-            <Stack.Screen name="Settings" component={Settings} />
-          </Stack.Navigator>
-        </PaperProvider>
-      </NavigationContainer>
-    </Provider>
+    <NavigationContainer
+      linking={linking}
+      theme={theme === "Dark" ? DarkTheme : DefaultTheme}
+    >
+      <PaperProvider theme={paperTheme}>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen
+            name="Culture"
+            component={CultureView}
+            options={Header}
+          />
+          <Stack.Screen name="Home" component={Home} options={Header} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="EditInsight" component={EditInsight} />
+          <Stack.Screen name="Settings" component={Settings} />
+        </Stack.Navigator>
+      </PaperProvider>
+    </NavigationContainer>
   );
 }
+
+const NavigatorScreen = connect(
+  (state: Store) => ({
+    theme: state.theme,
+  }),
+  null
+)(Navigator);
 
 export default registerRootComponent(App);
