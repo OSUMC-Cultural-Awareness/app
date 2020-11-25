@@ -77,28 +77,14 @@ function DarkThemeToggler(props: DarkThemeToggler): React.ReactElement {
     getTheme();
   }, []);
 
-  // Unmount useEffect
-  useEffect(() => {
-    const setTheme = async () => {
-      // TODO: Figure out why these need to be swapped.
-      const actualTheme = theme === "Dark" ? "Light" : "Dark";
-
-      try {
-        await AsyncStorage.setItem(ThemeStorage, actualTheme);
-      } catch (err) {
-        console.log("failed to set theme");
-      }
-    };
-
-    return async () => await setTheme();
-  });
-
-  const handleChange = () => {
-    console.log("Current theme", theme);
+  const handleChange = async () => {
     const newTheme = theme === "Dark" ? "Light" : "Dark";
-    updateTheme(newTheme);
-    console.log(newTheme);
     onChange(newTheme);
+    try {
+      await AsyncStorage.setItem(ThemeStorage, newTheme);
+    } catch (err) {
+      console.log("failed to set theme");
+    }
   };
 
   return (
