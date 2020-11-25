@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import "react-native-gesture-handler";
 import { Provider } from "react-redux";
@@ -26,7 +26,7 @@ import {
 } from "./views";
 
 import { Routes } from "./routes";
-import { lightTheme, darkTheme, ThemeStorage, ThemeType } from "./constants";
+import { lightTheme, darkTheme, ThemeStorage, ThemeType } from "./theme";
 import { Reducer, updateTheme, Store } from "./redux";
 
 const store = createStore(Reducer);

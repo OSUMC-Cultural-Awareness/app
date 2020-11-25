@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Routes } from "../routes";
 import { Store, updateTheme, updateUser } from "../redux";
-import { ThemeStorage, ThemeType } from "../constants";
+import { ThemeStorage, ThemeType } from "../theme";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Settings">;
