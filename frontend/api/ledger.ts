@@ -55,22 +55,6 @@ export namespace Ledger {
   }
 
   /**
-   * Fetches, Compress information about a provided culture.
-   *
-   * @param {string} name of culture
-   *
-   * @throws network errors from {@link fetch}
-   * @throws zlib errors from {@link Pako}
-   * @throws JSON errors from {@link JSON}
-   *
-   * @returns {Promise<string>} compressed bytes
-   */
-  async function compress(name: string): Promise<string> {
-    const info = await Culture.get(name);
-    return Pako.deflate(JSON.stringify(info), { to: "string" });
-  }
-
-  /**
    * List all downloaded cultures (keys) and their modified times (values)
    * as a Map<string, number>.
    *
@@ -81,11 +65,12 @@ export namespace Ledger {
    */
   export async function list(): Promise<Map<string, number>> {
     const data = await AsyncStorage.getItem(LOCATION);
-    if (data === null) {
+    if (!data) {
       return new Map();
     }
 
-    return JSON.parse(data).cultures;
+    let ledger = JSON.parse(data)["cultures"];
+    return new Map(Object.entries(ledger));
   }
 
   /**
@@ -103,6 +88,18 @@ export namespace Ledger {
     const storedData = await AsyncStorage.getItem(culture);
     const data: string = Pako.inflate(storedData, { to: "string" });
     return JSON.parse(data);
+  }
+
+  /**
+   * saveLedger save the ledger to storage
+   *
+   * @param {Map} cultures to save
+   */
+  function saveLedger(cultures: Map<string, number>) {
+    let ledger = { cultures: {} };
+    cultures.forEach((val, key) => (ledger.cultures[key] = val));
+
+    AsyncStorage.setItem(LOCATION, JSON.stringify(ledger));
   }
 
   /**
@@ -124,7 +121,7 @@ export namespace Ledger {
 
     let cultures = await list();
     cultures.set(culture, info.modified);
-    AsyncStorage.setItem(LOCATION, JSON.stringify(cultures));
+    saveLedger(cultures);
   }
 
   /**
@@ -143,7 +140,6 @@ export namespace Ledger {
     }
 
     cultures.delete(culture);
-
-    AsyncStorage.setItem(LOCATION, JSON.stringify(cultures));
+    saveLedger(cultures);
   }
 }
