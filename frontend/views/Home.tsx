@@ -1,15 +1,6 @@
-//import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-  SafeAreaView,
-  Image,
-} from "react-native";
+import React from "react";
+import { StyleSheet, FlatList, SafeAreaView } from "react-native";
 import "react-native-gesture-handler";
-import * as React from "react";
 import { useState, useEffect } from "react";
 import { Culture } from "../api/culture";
 import { connect } from "react-redux";
@@ -19,7 +10,6 @@ import {
   List,
   ActivityIndicator,
   Colors,
-  Button,
   FAB,
   IconButton,
 } from "react-native-paper";
@@ -28,44 +18,15 @@ import { Routes } from "../routes";
 import { Store } from "../redux";
 
 const styles = StyleSheet.create({
-  emptyListStyle: {
-    padding: 10,
-    fontSize: 18,
-    textAlign: "center",
-  },
-  itemStyle: {
-    padding: 10,
-  },
-  img: {
-    padding: 35,
-    height: 70,
-    width: "25%",
-  },
-  headerFooterStyle: {
-    width: "100%",
-    height: 45,
-    backgroundColor: "#606070",
-  },
-  bottomFooterStyle: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    height: 80,
-    backgroundColor: "#606070",
-  },
-  textStyle: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 18,
-    padding: 7,
-  },
-  btn: {},
   fab: {
     position: "absolute",
     margin: 16,
     right: 0,
     bottom: 0,
+  },
+
+  list: {
+    flex: 1,
   },
 });
 
@@ -87,51 +48,15 @@ function Home(props: Props) {
     fetchData();
   }, []);
 
-  const ListHeader = () => {
-    //View to set in Header
-    return (
-      <View style={styles.headerFooterStyle}>
-        <Text style={styles.textStyle}>Cultural Awareness Home Page</Text>
-      </View>
-    );
-  };
-
-  const ListFooter = () => {
-    //View to set in Footer
-    return (
-      <View style={styles.bottomFooterStyle}>
-        <Button onPress={() => console.log("Pressed!")}>
-          General Disclaimer
-        </Button>
-        <TouchableOpacity style={styles.btn} onPress={handleAdminLogin}>
-          <Image
-            source={require("../assets/admin_login.png")}
-            style={styles.img}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  const handleAdminLogin = (evt) => {
-    props.navigation.navigate("Login");
-    //alert('Pressed!')
-  };
-  const handleDisclaimer = (evt) => {
-    console.log("Pressed");
-  };
-
-  if (cultures === null)
+  if (cultures === null) {
     return <ActivityIndicator animating={true} color={Colors.red800} />;
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <FAB icon="plus" style={styles.fab}></FAB>
+    <SafeAreaView style={styles.list}>
       <FlatList
-        style={{ flex: 1 }}
         data={cultures}
         keyExtractor={(_, index) => index.toString()}
-        ListFooterComponent={ListFooter}
         renderItem={({ item }) => {
           return (
             <List.Item
@@ -150,8 +75,8 @@ function Home(props: Props) {
             />
           );
         }}
-        //ListEmptyComponent={EmptyListMessage}
       />
+      {props.token && <FAB icon="plus" style={styles.fab} />}
     </SafeAreaView>
   );
 }
