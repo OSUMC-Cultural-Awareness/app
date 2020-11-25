@@ -4,6 +4,7 @@
     "moduleResolution": "node",
     "removeComments": true,
     "preserveConstEnums": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "lib": ["ES2017"],
     "sourceMap": true,
