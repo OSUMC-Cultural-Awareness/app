@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -8,10 +8,8 @@ import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { updateUser } from "../redux/UserAction";
-import { updateTheme } from "../redux/ThemeAction";
 import { Routes } from "../routes";
-import { Store } from "../redux/UserReducer";
+import { Store, updateTheme, updateUser } from "../redux";
 import { ThemeStorage, ThemeType } from "../constants";
 
 type Props = {

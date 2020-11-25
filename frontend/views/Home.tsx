@@ -25,7 +25,7 @@ import {
 } from "react-native-paper";
 
 import { Routes } from "../routes";
-import { Store } from "../redux/UserReducer";
+import { Store } from "../redux";
 
 const styles = StyleSheet.create({
   emptyListStyle: {

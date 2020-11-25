@@ -31,10 +31,10 @@ import {
 
 import { Routes } from "./routes";
 import { colors, ThemeStorage, ThemeType } from "./constants";
-import userReducer from "./redux/UserReducer";
+import { Reducer } from "./redux";
 import { updateTheme } from "./redux/ThemeAction";
 
-const store = createStore(userReducer);
+const store = createStore(Reducer);
 
 function App() {
   const [theme, setTheme] = useState<ThemeType>("Light");
