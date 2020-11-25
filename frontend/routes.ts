@@ -31,6 +31,12 @@ export type Routes = {
   Login: undefined;
 
   /**
+   * Allows Admin account recovery, requires the token and updates the Admin
+   * in the Api in order to update their password.
+   */
+  Recovery: { token: string; email: string };
+
+  /**
    * Settings page displays downloaded cultures, dark theme, and disclaimer
    * for application.
    */

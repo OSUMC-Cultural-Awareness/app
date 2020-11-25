@@ -21,6 +21,7 @@ import {
   CultureView,
   EditInsight,
   Register,
+  Recovery,
   Settings,
   Header,
 } from "./views";
@@ -96,6 +97,7 @@ function Navigator(props: NavigatorProps): React.ReactElement {
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="EditInsight" component={EditInsight} />
           <Stack.Screen name="Settings" component={Settings} />
+          <Stack.Screen name="Recovery" component={Recovery} />
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>
