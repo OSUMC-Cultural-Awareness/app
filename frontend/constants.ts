@@ -2,7 +2,7 @@ import { DefaultTheme } from "react-native-paper";
 import * as Yup from "yup";
 
 // export const API_URL = "http://localhost:5000/api/v1";
-export const API_URL = "http://18.189.142.71:5000/api/v1";
+export const API_URL = "http://www.osumc-cultural-awareness.com:5000/api/v1";
 
 export const Theme = {
   ...DefaultTheme,
