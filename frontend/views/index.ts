@@ -1,4 +1,4 @@
-import CultureView from "./Culture";
+import Culture from "./Culture";
 import Login from "./Login";
 import Register from "./Register";
 import Home from "./Home";
@@ -8,7 +8,7 @@ import Settings from "./Settings";
 import Header from "./Header";
 
 export {
-  CultureView,
+  Culture,
   Login,
   Home,
   EditInsight,

@@ -1,4 +1,4 @@
-import { Admin } from "../api/admin";
+import { Admin } from "../lib";
 import { Store } from ".";
 
 export const USER_INITIAL_STATE = { user: { ...new Admin("", "") }, token: "" };

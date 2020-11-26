@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-
 import { View, StyleSheet } from "react-native";
+
 import {
   Button,
   TextInput,
@@ -16,10 +16,10 @@ import { RouteProp } from "@react-navigation/native";
 import { useFormik } from "formik";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { Admin, AuthPayload } from "../api";
-import { updateUser, Store } from "../redux";
-import { Routes } from "../routes";
-import { LoginValidationSchema } from "../constants";
+import { Admin, AuthPayload } from "../../lib";
+import { updateUser, Store } from "../../redux";
+import { Routes } from "../../routes";
+import Validation from "./validation";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Login">;
@@ -71,8 +71,7 @@ const Styles = StyleSheet.create({
  */
 function Login(props: Props): React.ReactElement {
   const [remember, setRemember] = useState(false);
-  const [snackbar, setSnackbar] = useState(false);
-  const [err, setErr] = useState("");
+  const [msg, setMsg] = useState("");
   const [obscurePass, SetObscurePass] = useState(true);
 
   // useRefs for Formik Validation
@@ -89,7 +88,7 @@ function Login(props: Props): React.ReactElement {
     setFieldValue,
     validateField,
   } = useFormik({
-    validationSchema: LoginValidationSchema,
+    validationSchema: Validation,
     initialValues: initialValues,
     onSubmit: (values) => login(values),
   });
@@ -127,8 +126,7 @@ function Login(props: Props): React.ReactElement {
     try {
       res = await Admin.login(email, password);
     } catch (err) {
-      setSnackbar(true);
-      setErr(err.toString());
+      setMsg(err.toString());
       return;
     }
 
@@ -158,16 +156,13 @@ function Login(props: Props): React.ReactElement {
     if (errors.email === undefined) {
       try {
         await Admin.recover(values.email);
-        setErr(`Sent email to ${values.email}`);
-        setSnackbar(true);
+        setMsg(`Sent email to ${values.email}`);
       } catch (err) {
         console.error("Failed to send recovery email: ", err);
-        setErr(err.toString());
-        setSnackbar(true);
+        setMsg(err.toString());
       }
     } else {
-      setSnackbar(true);
-      setErr("Account recovery requires a valid Email");
+      setMsg("Account recovery requires a valid Email");
     }
   };
 
@@ -229,11 +224,11 @@ function Login(props: Props): React.ReactElement {
         Trouble logging in?
       </Button>
       <Snackbar
-        visible={snackbar}
-        onDismiss={() => setSnackbar(false)}
-        action={{ label: "Ok", onPress: () => setSnackbar(false) }}
+        visible={msg !== ""}
+        onDismiss={() => setMsg("")}
+        action={{ label: "Ok", onPress: () => setMsg("") }}
       >
-        {err}
+        {msg}
       </Snackbar>
     </View>
   );

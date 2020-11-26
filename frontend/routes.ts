@@ -1,4 +1,4 @@
-import { Culture } from "./api";
+import { Culture } from "./lib";
 
 /**
  * React Navigation Routes

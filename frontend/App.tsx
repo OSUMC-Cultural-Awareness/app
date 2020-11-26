@@ -18,7 +18,7 @@ import { registerRootComponent } from "expo";
 import {
   Home,
   Login,
-  CultureView,
+  Culture,
   EditInsight,
   Register,
   Recovery,
@@ -87,11 +87,7 @@ function Navigator(props: NavigatorProps): React.ReactElement {
     >
       <PaperProvider theme={theme === "Dark" ? darkTheme : lightTheme}>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen
-            name="Culture"
-            component={CultureView}
-            options={Header}
-          />
+          <Stack.Screen name="Culture" component={Culture} options={Header} />
           <Stack.Screen name="Home" component={Home} options={Header} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
