@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import {
-  Linking,
-  StyleSheet,
-  // Clipboard is deprecated, but necessary because of incompatibility with Expo
-  // See https://github.com/react-native-clipboard/clipboard/issues/71#issuecomment-701138494
-  Clipboard,
-} from "react-native";
+
+// Clipboard is deprecated, but necessary because of incompatibility with Expo
+// See https://github.com/react-native-clipboard/clipboard/issues/71#issuecomment-701138494
+import { Linking, Clipboard } from "react-native";
 
 import {
   Card,
@@ -18,15 +15,7 @@ import {
 
 import { GeneralInsight } from "../../lib";
 
-const Styles = StyleSheet.create({
-  spinner: { top: "50%", position: "relative" },
-
-  card: {
-    padding: 10,
-    marginVertical: 5,
-    marginHorizontal: 5,
-  },
-});
+import Styles from "./style";
 
 /**
  * Properties for {@link InsightCard}

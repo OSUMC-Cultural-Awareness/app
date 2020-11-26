@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, FlatList, SafeAreaView } from "react-native";
+import { FlatList, SafeAreaView } from "react-native";
 
 import { ActivityIndicator } from "react-native-paper";
 
 import { GeneralInsight } from "../../lib";
 
-const Styles = StyleSheet.create({
-  spinner: { top: "50%", position: "relative" },
-});
+import Styles from "./style";
 
 /**
  * Properties for {@link Insights}

@@ -1,13 +1,8 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 
 import { FAB } from "react-native-paper";
 
-const Styles = StyleSheet.create({
-  fab: {
-    // TODO: Emulate Fixed for the Floating Action Button
-  },
-});
+import Styles from "./style";
 
 /**
  * Properties for {@link EditFAB}

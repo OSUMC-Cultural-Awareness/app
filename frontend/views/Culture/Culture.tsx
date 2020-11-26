@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import {
   getFocusedRouteNameFromRoute,
@@ -16,6 +16,7 @@ import EditFAB from "./EditFab";
 import InsightCard from "./InsightCard";
 import Insights from "./Insights";
 import ToolsFAB from "./ToolsFAB";
+import Styles from "./style";
 
 import {
   Culture,
@@ -40,16 +41,6 @@ type TabProps = {
 };
 
 const Tab = createMaterialTopTabNavigator<TabProps>();
-
-const Styles = StyleSheet.create({
-  spinner: { top: "50%", position: "relative" },
-
-  specialAddInsight: {
-    padding: 10,
-    marginVertical: 5,
-    marginHorizontal: 5,
-  },
-});
 
 const ExampleInsight = {
   summary: "summary",
