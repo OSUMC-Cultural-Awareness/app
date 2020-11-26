@@ -18,7 +18,9 @@ import { useFormik } from "formik";
 import { Admin, AuthPayload } from "../../lib";
 import { updateUser, Store } from "../../redux";
 import { Routes } from "../../routes";
-import { RegisterHelpText, TermsOfServiceURL } from "../../constants";
+import { TermsOfServiceURL } from "../../constants";
+
+import RegisterHelpText from "./explanationText";
 import Validation from "./validation";
 
 type Props = {
