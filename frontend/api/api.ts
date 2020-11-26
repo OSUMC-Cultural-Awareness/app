@@ -1,4 +1,4 @@
-import { API_URL } from "../constants";
+import { API_URL } from "../../env.json";
 
 /**
  * An ApiError returned from an {@link Api} method.

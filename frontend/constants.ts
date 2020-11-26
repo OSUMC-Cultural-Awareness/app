@@ -1,8 +1,5 @@
 import * as Yup from "yup";
 
-// export const API_URL = "http://localhost:5000/api/v1";
-export const API_URL = "https://www.osumc-cultural-awareness.com/api/v1";
-
 /**
  * Login Validation Schema, a Yup Schema for basic validation for Login not nearly as extensive as Register,
  * but performs basic validation.
