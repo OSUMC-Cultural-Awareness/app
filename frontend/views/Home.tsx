@@ -21,44 +21,6 @@ import { Admin, Culture, Ledger } from "../api";
 
 const styles = StyleSheet.create({
   spinner: { top: "50%", position: "relative" },
-  emptyListStyle: {
-    padding: 10,
-    fontSize: 18,
-    textAlign: "center",
-  },
-  itemStyle: {
-    padding: 10,
-  },
-  img: {
-    padding: 35,
-    height: 70,
-    width: "25%",
-  },
-  headerFooterStyle: {
-    width: "100%",
-    height: 45,
-    backgroundColor: "#606070",
-  },
-  bottomFooterStyle: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    height: 70,
-    backgroundColor: "#606070",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    marginBottom: 0,
-  },
-  textStyle: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 18,
-    padding: 7,
-  },
-  btn: {},
   fab: {
     position: "absolute",
     margin: 16,
