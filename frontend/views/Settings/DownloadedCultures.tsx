@@ -115,9 +115,11 @@ export default function DownloadedCultures(): React.ReactElement {
           renderItem={DownloadedCulture}
         />
       </List.Accordion>
-      <Button mode="contained" onPress={() => update()}>
-        Update All
-      </Button>
+      {expanded && (
+        <Button mode="contained" onPress={() => update()}>
+          Update All
+        </Button>
+      )}
     </View>
   );
 }
