@@ -5,7 +5,7 @@ import { Divider, List, IconButton } from "react-native-paper";
 
 import ThemeToggler from "./ThemeToggler";
 import DownloadedCultures from "./DownloadedCultures";
-import { disclaimerURL } from "../constants";
+import { disclaimerURL } from "../../constants";
 
 // HACK: This is so that icons line up with other icons on the
 // Settings page.

@@ -4,7 +4,6 @@ import { View, StyleSheet } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import {
   Title,
   Button,
@@ -13,8 +12,9 @@ import {
   HelperText,
 } from "react-native-paper";
 
-import { Routes } from "../routes";
-import { Admin } from "../api";
+import { Routes } from "../../routes";
+import { Admin } from "../../lib";
+import Validation from "./validation";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Recovery">;
@@ -36,23 +36,6 @@ const initialValues: RecoveryFields = {
   password: "",
   passwordConfirmation: "",
 };
-
-const RecoveryValidationSchema = Yup.object().shape({
-  // Password must contain a lowercase, uppercase, one number, and a special character.
-  // Be at least 8 characters long and 64 maximum.
-  password: Yup.string()
-    .required("Required")
-    .min(8, "Must be at least 8 characters")
-    .max(64, "Too long")
-    .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]/,
-      "Must contain at least one uppercase letter, one lowercase letter, one number and one special character"
-    ),
-  // Password Confirmation must match Password
-  passwordConfirmation: Yup.string()
-    .required("Required")
-    .oneOf([Yup.ref("password"), null], "Must match password"),
-});
 
 const Styles = StyleSheet.create({
   view: { flex: 1, justifyContent: "space-evenly", overflow: "hidden" },
@@ -92,7 +75,7 @@ export default function Recovery(props: Props): React.ReactElement {
     touched,
     handleSubmit,
   } = useFormik({
-    validationSchema: RecoveryValidationSchema,
+    validationSchema: Validation,
     initialValues: initialValues,
     onSubmit: (values) => updateAccount(values),
   });

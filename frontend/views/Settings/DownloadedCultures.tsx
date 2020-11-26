@@ -7,7 +7,7 @@ import { List, Button, IconButton } from "react-native-paper";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import { Ledger } from "../api";
+import { Ledger } from "../../lib";
 
 const Styles = StyleSheet.create({
   // HACK: This is so that icons line up with other icons on the

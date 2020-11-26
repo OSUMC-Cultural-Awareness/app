@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { View } from "react-native";
 
-import { Checkbox, List, IconButton, Colors } from "react-native-paper";
+import { Checkbox, List, IconButton } from "react-native-paper";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { Store, updateTheme } from "../redux";
-import { ThemeStorage, ThemeType } from "../theme";
+import { Store, updateTheme } from "../../redux";
+import { ThemeStorage, ThemeType } from "../../theme";
 
 type Props = {
   updateTheme: (type: ThemeType) => void;
