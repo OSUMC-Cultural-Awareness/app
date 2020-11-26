@@ -5,8 +5,8 @@
 export default {
   name:
     "This is how other administrators will see you. You can always change this later.",
-  email: "You'll need to verify that you own this email account.",
+  email: "You'll need this if you ever forget your password.",
   password:
     "Strong passwords include a mix of lower case letters, uppercase letters, numbers, and special characters.",
-  passwordConfirmation: "Double check you know the password",
+  passwordConfirmation: "Double check that you know the password.",
 };
