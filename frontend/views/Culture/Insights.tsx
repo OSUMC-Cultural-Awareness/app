@@ -14,7 +14,7 @@ type InsightProps = {
   // callback called when the {@link FlatList} is refreshed
   onRefresh: () => void;
   // Insights to render
-  insights: { text: string; insights: GeneralInsight[] }[] | GeneralInsight[];
+  insights: [string, GeneralInsight[]][] | GeneralInsight[];
   // how to render the insights
   renderItem: ({ item: any }) => React.ReactElement;
 };

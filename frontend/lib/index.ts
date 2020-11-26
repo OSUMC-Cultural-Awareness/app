@@ -1,10 +1,5 @@
 import { Admin, AuthPayload } from "./admin";
-import {
-  GeneralInsight,
-  Culture,
-  SpecializedInsight,
-  specializedToArray,
-} from "./culture";
+import { GeneralInsight, Culture, SpecializedInsight } from "./culture";
 
 import { Ledger } from "./ledger";
 
@@ -19,5 +14,4 @@ export {
   OfflineError,
   GeneralInsight,
   SpecializedInsight,
-  specializedToArray,
 };

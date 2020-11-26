@@ -18,13 +18,7 @@ import Insights from "./Insights";
 import ToolsFAB from "./ToolsFAB";
 import Styles from "./style";
 
-import {
-  Culture,
-  GeneralInsight,
-  SpecializedInsight,
-  specializedToArray,
-  Ledger,
-} from "../../lib";
+import { Culture, GeneralInsight, SpecializedInsight, Ledger } from "../../lib";
 
 import { Routes } from "../../routes";
 import { Store } from "../../redux";
@@ -137,8 +131,6 @@ function CultureView(props: Props): React.ReactElement {
     );
   }
 
-  let specInsights = specializedToArray(culture.specializedInsights);
-
   /**
    * Delete an insight from a list
    *
@@ -224,7 +216,7 @@ function CultureView(props: Props): React.ReactElement {
               renderItem={(row: { item: GeneralInsight; index: number }) =>
                 InsightCardView(row.item, row.index)
               }
-              onRefresh={async () => fetchCulture()}
+              onRefresh={() => fetchCulture()}
               insights={culture.generalInsights}
             />
           )}
@@ -232,22 +224,22 @@ function CultureView(props: Props): React.ReactElement {
         <Tab.Screen name="Specialized">
           {() => (
             <Insights
-              insights={specInsights}
-              onRefresh={async () => fetchCulture()}
+              insights={Array.from(culture.specializedInsights.entries())}
+              onRefresh={() => fetchCulture()}
               renderItem={(row: {
-                item: { text: string; insights: GeneralInsight[] };
+                item: [string, GeneralInsight[]];
                 index: number;
               }) => {
-                const { text, insights } = row.item;
+                const [title, insights] = row.item;
                 return (
-                  <List.Accordion title={text} id={row.index}>
+                  <List.Accordion title={title} id={row.index}>
                     {insights.map((item: GeneralInsight, index: number) =>
-                      InsightCardView(item, [text, index])
+                      InsightCardView(item, [title, index])
                     )}
                     {editing && (
                       <Button
                         icon="plus"
-                        onPress={() => addSpecializedInsight(text)}
+                        onPress={() => addSpecializedInsight(title)}
                         mode="contained"
                         style={Styles.specialAddInsight}
                       >
