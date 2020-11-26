@@ -74,8 +74,7 @@ function CultureView(props: Props): React.ReactElement {
 
   let [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
-  const [err, setErr] = useState<string>("");
-  const [showErr, setShowErr] = useState<boolean>(false);
+  const [msg, setMsg] = useState<string>("");
   const route = useRoute();
 
   useEffect(() => props.navigation.setOptions({ title: cultureName }), []);
@@ -130,17 +129,16 @@ function CultureView(props: Props): React.ReactElement {
       await culture.update(token);
       setCultureInPlace(culture);
     } catch (err) {
-      setShowErr(true);
       // TODO: better error messages
       //
       // Error messages currently are cryptic ie: "Not Enough Segments" -- referring to JWT.
-      setErr(err.toString());
+      setMsg(err.toString());
       console.error(err);
     }
     setEditing(!editing);
   };
 
-  const hideSnackbar = () => setShowErr(false);
+  const hideSnackbar = () => setMsg("");
 
   if (!culture) {
     return (
@@ -284,14 +282,14 @@ function CultureView(props: Props): React.ReactElement {
           ))}
       </>
       <Snackbar
-        visible={showErr}
+        visible={msg !== ""}
         onDismiss={hideSnackbar}
         action={{
           label: "Hide",
           onPress: hideSnackbar,
         }}
       >
-        {err}
+        {msg}
       </Snackbar>
     </View>
   );

@@ -74,8 +74,7 @@ function Register(props: Props): React.ReactElement {
 
   const [obscurePass, SetObscurePass] = useState(true);
   const [obscurePassConf, SetObscurePassConf] = useState(true);
-  const [snackbar, setSnackbar] = useState(false);
-  const [err, setErr] = useState("");
+  const [msg, setMsg] = useState("");
   const [focused, setFocused] = useState<Focusable>("email");
 
   const name = useRef();
@@ -115,8 +114,7 @@ function Register(props: Props): React.ReactElement {
         token
       );
     } catch (err) {
-      setSnackbar(true);
-      setErr(err.toString());
+      setMsg(err.toString());
       return;
     }
 
@@ -244,11 +242,11 @@ function Register(props: Props): React.ReactElement {
         Register
       </Button>
       <Snackbar
-        visible={snackbar}
-        onDismiss={() => setSnackbar(false)}
-        action={{ label: "Ok", onPress: () => setSnackbar(false) }}
+        visible={msg !== ""}
+        onDismiss={() => setMsg("")}
+        action={{ label: "Ok", onPress: () => setMsg("") }}
       >
-        {err}
+        {msg}
       </Snackbar>
     </View>
   );
