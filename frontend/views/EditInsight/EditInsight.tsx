@@ -11,9 +11,9 @@ import {
   Title,
 } from "react-native-paper";
 
-import { GeneralInsight } from "../api";
+import { GeneralInsight } from "../../lib";
 
-import { Routes } from "../routes";
+import { Routes } from "../../routes";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "EditInsight">;

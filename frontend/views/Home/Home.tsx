@@ -14,10 +14,10 @@ import {
   Text,
 } from "react-native-paper";
 
-import { Routes } from "../routes";
+import { Routes } from "../../routes";
 
-import { Store } from "../redux";
-import { Admin, Culture, Ledger } from "../api";
+import { Store } from "../../redux";
+import { Admin, Culture, Ledger } from "../../lib";
 
 const styles = StyleSheet.create({
   spinner: { top: "50%", position: "relative" },

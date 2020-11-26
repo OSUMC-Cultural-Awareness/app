@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  FlatList,
-  SafeAreaView,
-  View,
-  Linking,
-  // Clipboard is deprecated, but necessary because of incompatibility with Expo
-  // See https://github.com/react-native-clipboard/clipboard/issues/71#issuecomment-701138494
-  Clipboard,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import {
   getFocusedRouteNameFromRoute,
@@ -19,19 +10,12 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import {
-  Card,
-  ActivityIndicator,
-  IconButton,
-  FAB,
-  Divider,
-  List,
-  Paragraph,
-  Button,
-  Title,
-  Snackbar,
-  Menu,
-} from "react-native-paper";
+import { ActivityIndicator, List, Button, Snackbar } from "react-native-paper";
+
+import EditFAB from "./EditFab";
+import InsightCard from "./InsightCard";
+import Insights from "./Insights";
+import ToolsFAB from "./ToolsFAB";
 
 import {
   Culture,
@@ -39,10 +23,10 @@ import {
   SpecializedInsight,
   specializedToArray,
   Ledger,
-} from "../api";
+} from "../../lib";
 
-import { Routes } from "../routes";
-import { Store } from "../redux";
+import { Routes } from "../../routes";
+import { Store } from "../../redux";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Culture">;
@@ -59,20 +43,6 @@ const Tab = createMaterialTopTabNavigator<TabProps>();
 
 const Styles = StyleSheet.create({
   spinner: { top: "50%", position: "relative" },
-
-  fab: {
-    // TODO: Emulate Fixed for the Floating Action Button
-  },
-
-  card: {
-    padding: 10,
-    marginVertical: 5,
-    marginHorizontal: 5,
-  },
-
-  editInput: {
-    width: "100%",
-  },
 
   specialAddInsight: {
     padding: 10,
@@ -324,186 +294,6 @@ function CultureView(props: Props): React.ReactElement {
         {err}
       </Snackbar>
     </View>
-  );
-}
-
-/**
- * Properties for {@link Insights}
- */
-type InsightProps = {
-  // callback called when the {@link FlatList} is refreshed
-  onRefresh: () => void;
-  // Insights to render
-  insights: { text: string; insights: GeneralInsight[] }[] | GeneralInsight[];
-  // how to render the insights
-  renderItem: ({ item: any }) => React.ReactElement;
-};
-
-/**
- * Component that displays a list of components of either {@link GeneralInsights}
- * or {{text: string, insights: GeneralInsight[]}[]}.
- *
- * @param {InsightProps} props
- * @returns {React.ReactElement} React component
- */
-function Insights(props: InsightProps): React.ReactElement {
-  const { insights, onRefresh, renderItem } = props;
-  const [refreshing, setRefreshing] = useState(false);
-
-  if (!insights) {
-    return (
-      <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
-    );
-  }
-
-  const refresh = () => {
-    onRefresh();
-    setRefreshing(true);
-  };
-
-  return (
-    <SafeAreaView>
-      <FlatList
-        data={insights}
-        keyExtractor={(_, index) => index.toString()}
-        onRefresh={() => refresh()}
-        refreshing={refreshing}
-        renderItem={renderItem}
-      />
-    </SafeAreaView>
-  );
-}
-
-/**
- * Properties for {@link EditFAB}
- */
-type EditFABProps = {
-  // onPress handles when the FAB is pressed.
-  onPress: () => void;
-};
-
-/**
- * EditFAB displays a {@link FAB} that is labeled "edit" and has a pencil icon.
- *
- * @param {EditFABProps} props
- * @returns {React.ReactElement} React component
- */
-function EditFAB(props: EditFABProps): React.ReactElement {
-  return (
-    <FAB.Group
-      style={Styles.fab}
-      icon="pencil"
-      open={false}
-      onPress={() => props.onPress()}
-      visible={true}
-      actions={[]}
-      onStateChange={() => props.onPress()}
-    />
-  );
-}
-
-/**
- * Properties for {@link ToolsFAB}
- */
-type ToolsFABProps = {
-  // onSave function called when hitting the "save" button. This button should
-  // toggle the whether this FAB is being displayed.
-  onSave: () => void;
-  // onAdd function called when hitting the "add" button.
-  onAdd: () => void;
-};
-
-/**
- * ToolsFAB displays a {@link FAB.Group} that has two sub {@link FAB} one for editing and one for saving.
- *
- * @param {ToolsFABProps} props
- * @returns {React.ReactElement} React component
- */
-function ToolsFAB(props: ToolsFABProps): React.ReactElement {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <FAB.Group
-      visible={true}
-      style={Styles.fab}
-      open={open}
-      icon={open ? "close" : "wrench"}
-      actions={[
-        { icon: "plus", onPress: () => props.onAdd() },
-        { icon: "content-save", onPress: () => props.onSave() },
-      ]}
-      onStateChange={() => setOpen(!open)}
-    />
-  );
-}
-
-/**
- * Properties for {@link InsightCard}
- */
-type InsightCardProps = {
-  key: string;
-  // Insight to display on card
-  insight: GeneralInsight;
-  // editing whether the admin is editing the current page
-  editing: boolean;
-  // index in the list of General or Specialized lists
-  index: number | [string, number];
-  // callback to be used when an insight is deleted
-  onDelete: (index: number | [string, number]) => void;
-  // callback to be used when an insight is pressed
-  onPress: (index: number | [string, number]) => void;
-};
-
-/**
- * InsightCard card to display information about an Insight
- *
- * @param {InsightCardProps} props
- * @returns {React.ReactElement} React component
- */
-function InsightCard(props: InsightCardProps): React.ReactElement {
-  const { insight, index, editing, onPress } = props;
-  const [showMenu, setShowMenu] = useState(false);
-  const link = insight.source.data;
-
-  return (
-    <Card style={Styles.card} onPress={() => editing && onPress(index)}>
-      <Card.Content>
-        <Title>{insight.summary}</Title>
-        <Paragraph>{insight.information}</Paragraph>
-      </Card.Content>
-      <Card.Actions>
-        {link && Linking.canOpenURL(link) && (
-          <Menu
-            visible={showMenu}
-            onDismiss={() => setShowMenu(false)}
-            anchor={
-              <IconButton
-                icon="link"
-                size={20}
-                onPress={() => setShowMenu(true)}
-              />
-            }
-          >
-            <Menu.Item
-              title="Copy link"
-              onPress={() => Clipboard.setString(link)}
-            />
-            <Divider />
-            <Menu.Item
-              title="Open link"
-              onPress={() => Linking.openURL(link)}
-            />
-          </Menu>
-        )}
-        {editing && (
-          <IconButton
-            icon="delete"
-            size={20}
-            onPress={() => props.onDelete(index)}
-          />
-        )}
-      </Card.Actions>
-    </Card>
   );
 }
 

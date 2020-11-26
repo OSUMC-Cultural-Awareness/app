@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-
 import { View, StyleSheet } from "react-native";
+
 import {
   Button,
   TextInput,
@@ -16,10 +16,10 @@ import { RouteProp } from "@react-navigation/native";
 import { useFormik } from "formik";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { Admin, AuthPayload } from "../api";
-import { updateUser, Store } from "../redux";
-import { Routes } from "../routes";
-import { LoginValidationSchema } from "../constants";
+import { Admin, AuthPayload } from "../../lib";
+import { updateUser, Store } from "../../redux";
+import { Routes } from "../../routes";
+import Validation from "./validation";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Login">;
@@ -89,7 +89,7 @@ function Login(props: Props): React.ReactElement {
     setFieldValue,
     validateField,
   } = useFormik({
-    validationSchema: LoginValidationSchema,
+    validationSchema: Validation,
     initialValues: initialValues,
     onSubmit: (values) => login(values),
   });
