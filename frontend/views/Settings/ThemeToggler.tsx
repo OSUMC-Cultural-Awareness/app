@@ -59,9 +59,12 @@ function ThemeToggler(props: Props): React.ReactElement {
       <List.Item
         title="Dark Theme"
         onPress={handleChange}
-        left={(props) => <IconButton {...props} icon="brightness-6" />}
+        left={(props) => (
+          <IconButton {...props} icon="brightness-6" onPress={handleChange} />
+        )}
         right={(props) => (
           <Checkbox
+            onPress={handleChange}
             {...props}
             status={theme === "Dark" ? "checked" : "unchecked"}
           />

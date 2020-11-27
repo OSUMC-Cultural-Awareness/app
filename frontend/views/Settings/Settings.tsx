@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Linking } from "react-native";
 
-import { Divider, List, IconButton } from "react-native-paper";
+import {
+  Divider,
+  List,
+  IconButton,
+  Snackbar,
+  Portal,
+} from "react-native-paper";
 
 import ThemeToggler from "./ThemeToggler";
 import DownloadedCultures from "./DownloadedCultures";
@@ -25,26 +31,46 @@ const Styles = StyleSheet.create({
  * @returns {React.ReactElement}
  */
 export default function Settings(): React.ReactElement {
+  const openLink = () => Linking.openURL(disclaimerURL);
+  const [msg, setMsg] = useState("");
+
   return (
     <View>
       <ThemeToggler />
       <Divider />
       <List.Item
         title="Disclaimer"
-        onPress={() => Linking.openURL(disclaimerURL)}
+        onPress={openLink}
         left={(props) => (
-          <List.Icon
+          <IconButton
             {...props}
             style={Styles.leftIcon}
+            onPress={openLink}
             icon="file-document-outline"
           />
         )}
         right={(props) => (
-          <IconButton {...props} icon="eye" style={Styles.rightIcon} />
+          <IconButton
+            {...props}
+            icon="eye"
+            style={Styles.rightIcon}
+            onPress={openLink}
+          />
         )}
       />
       <Divider />
-      <DownloadedCultures />
+      <DownloadedCultures
+        onUpdateFinish={(err) => setMsg(err || "Update finished")}
+      />
+      <Portal>
+        <Snackbar
+          visible={msg !== ""}
+          onDismiss={() => setMsg("")}
+          action={{ label: "Ok", onPress: () => setMsg("") }}
+        >
+          {msg}
+        </Snackbar>
+      </Portal>
     </View>
   );
 }
