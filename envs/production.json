@@ -1,0 +1,4 @@
+{
+    "ENV": "production",
+    "API_URL": "https://www.osumc-cultural-awareness.com/api/v1"
+}
