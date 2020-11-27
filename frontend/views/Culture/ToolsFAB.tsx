@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { Platform, useWindowDimensions } from "react-native";
+
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FAB } from "react-native-paper";
 
@@ -23,11 +26,26 @@ type ToolsFABProps = {
  */
 export default function ToolsFAB(props: ToolsFABProps): React.ReactElement {
   const [open, setOpen] = useState(false);
+  const window = useWindowDimensions();
+  const safeArea = useSafeAreaInsets();
+
+  // HACK: In order to get the FAB to be positioned properly on both Web and Mobile.
+  //
+  // Web: use position: fixed.
+  // Mobile: useWindowDimensions hook, this doesn't work on Web.
+  let styles = {
+    ...Styles.fab,
+    position: Platform.OS === "web" ? "fixed" : "relative",
+  };
+
+  if (Platform.OS !== "web") {
+    styles["top"] = window.height - safeArea.bottom;
+  }
 
   return (
     <FAB.Group
       visible={true}
-      style={Styles.fab}
+      style={styles as any}
       open={open}
       icon={open ? "close" : "wrench"}
       actions={[

@@ -253,17 +253,18 @@ function CultureView(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
-      <>
-        {token &&
-          (editing ? (
+      {token && (
+        <View>
+          {editing ? (
             <ToolsFAB
               onSave={() => updateCulture()}
               onAdd={addInsightOrCategory}
             />
           ) : (
             <EditFAB onPress={() => setEditing(!editing)} />
-          ))}
-      </>
+          )}
+        </View>
+      )}
       <Snackbar
         visible={msg !== ""}
         onDismiss={hideSnackbar}
