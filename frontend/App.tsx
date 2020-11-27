@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 
 import "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { Provider as PaperProvider } from "react-native-paper";
@@ -81,22 +82,24 @@ function Navigator(props: NavigatorProps): React.ReactElement {
   };
 
   return (
-    <NavigationContainer
-      linking={linking}
-      theme={theme === "Dark" ? DarkTheme : DefaultTheme}
-    >
-      <PaperProvider theme={theme === "Dark" ? darkTheme : lightTheme}>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Culture" component={Culture} options={Header} />
-          <Stack.Screen name="Home" component={Home} options={Header} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="EditInsight" component={EditInsight} />
-          <Stack.Screen name="Settings" component={Settings} />
-          <Stack.Screen name="Recovery" component={Recovery} />
-        </Stack.Navigator>
-      </PaperProvider>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer
+        linking={linking}
+        theme={theme === "Dark" ? DarkTheme : DefaultTheme}
+      >
+        <PaperProvider theme={theme === "Dark" ? darkTheme : lightTheme}>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen name="Culture" component={Culture} options={Header} />
+            <Stack.Screen name="Home" component={Home} options={Header} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="EditInsight" component={EditInsight} />
+            <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="Recovery" component={Recovery} />
+          </Stack.Navigator>
+        </PaperProvider>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 

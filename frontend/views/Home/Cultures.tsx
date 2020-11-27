@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { View, FlatList, SafeAreaView } from "react-native";
+import React from "react";
+import { View, FlatList } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { ActivityIndicator, List, IconButton, FAB } from "react-native-paper";
+import { ActivityIndicator, List, IconButton } from "react-native-paper";
 
 import { Routes } from "../../routes";
 
@@ -15,6 +15,7 @@ import styles from "./styles";
 type CultureProps = {
   navigation: StackNavigationProp<Routes, "Home">;
   token: string;
+  cultures: Culture[];
 };
 
 /**
@@ -24,26 +25,16 @@ type CultureProps = {
  * @returns {React.ReactElement} React component
  */
 export default function Cultures(props: CultureProps): React.ReactElement {
-  const [cultures, setCultures] = useState(null);
-  useEffect(() => {
-    const fetchCultureData = async () => {
-      let cultureNames = await Culture.list();
-      setCultures(cultureNames);
-    };
-
-    fetchCultureData();
-  }, []);
-
-  if (!cultures) {
+  if (!props.cultures) {
     return (
       <ActivityIndicator animating={true} size="large" style={styles.spinner} />
     );
   }
 
   return (
-    <SafeAreaView>
+    <View>
       <FlatList
-        data={cultures}
+        data={props.cultures}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => {
           return (
@@ -64,7 +55,7 @@ export default function Cultures(props: CultureProps): React.ReactElement {
                     icon="download"
                     onPress={() => Ledger.add(item.name)}
                   />
-                  {props.token && (
+                  {props.token !== "" && (
                     <IconButton
                       icon="delete"
                       onPress={() => Culture.delete(item.name, props.token)}
@@ -76,13 +67,6 @@ export default function Cultures(props: CultureProps): React.ReactElement {
           );
         }}
       />
-      {props.token && (
-        <FAB
-          icon="plus"
-          style={styles.fab}
-          onPress={() => setCultures([...cultures, ""])}
-        ></FAB>
-      )}
-    </SafeAreaView>
+    </View>
   );
 }

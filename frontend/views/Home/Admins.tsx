@@ -1,26 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { SafeAreaView, FlatList, Alert } from "react-native";
+import React from "react";
+import { FlatList, Alert, View } from "react-native";
 
-import {
-  ActivityIndicator,
-  List,
-  IconButton,
-  FAB,
-  Portal,
-  Modal,
-  Text,
-} from "react-native-paper";
+import { List, IconButton } from "react-native-paper";
 
 import { Admin } from "../../lib";
-
-import styles from "./styles";
 
 /**
  * Properties for {@link Admins}
  */
 type AdminProps = {
   token: string;
-  user: Admin;
+  admins: Admin[];
+  // Refresh admins
+  onRefresh: () => void;
 };
 
 /**
@@ -30,29 +22,15 @@ type AdminProps = {
  * @returns {React.ReactElement} React component
  */
 export default function Admins(props: AdminProps): React.ReactElement {
-  const [users, setUsers] = useState(null);
-  const [visible, setVisible] = React.useState(false);
-  useEffect(() => {
-    fetchAdminData();
-  }, []);
-
-  const fetchAdminData = async () => {
-    let users;
-    if (props.user.superUser) {
-      users = await Admin.list(props.token);
-    } else {
-      users = [props.user];
-    }
-    setUsers(users);
-  };
+  const { token, admins, onRefresh } = props;
 
   const onDelete = async (email: string) => {
     try {
-      await Admin.delete(email, props.token);
+      await Admin.delete(email, token);
     } catch {
       // show error message
     }
-    fetchAdminData();
+    onRefresh();
   };
 
   const onEdit = (user: {
@@ -62,32 +40,18 @@ export default function Admins(props: AdminProps): React.ReactElement {
   }) => {
     //TODO: update Admin.update() params
     try {
-      //Admin.update(email, props.token)
-      fetchAdminData();
+      //Admin.update(email, token)
+      onRefresh();
     } catch {
       // show error message
     }
   };
 
-  const onInvite = async (email: string) => {
-    try {
-      await Admin.invite(email, props.token);
-    } catch (err) {
-      // show error message
-    }
-  };
-
-  if (!users) {
-    return (
-      <ActivityIndicator animating={true} size="large" style={styles.spinner} />
-    );
-  }
-
   return (
-    <SafeAreaView>
+    <View>
       <FlatList
         style={{ flex: 1 }}
-        data={users}
+        data={admins}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => {
           return (
@@ -99,30 +63,20 @@ export default function Admins(props: AdminProps): React.ReactElement {
                 ]);
               }}
               right={() =>
-                props.token ? (
-                  <>
+                props.token !== "" && (
+                  <View style={{ flexDirection: "row" }}>
                     <IconButton icon="pencil" onPress={() => onEdit(item)} />
                     <IconButton
                       icon="delete"
                       onPress={() => onDelete(item.email)}
                     />
-                  </>
-                ) : null
+                  </View>
+                )
               }
             />
           );
         }}
       />
-      <FAB
-        icon="plus"
-        style={styles.fab}
-        onPress={() => setVisible(!visible)}
-      />
-      <Portal>
-        <Modal visible={visible} contentContainerStyle={styles.inviteModal}>
-          <Text>Example Modal. Click outside this area to dismiss.</Text>
-        </Modal>
-      </Portal>
-    </SafeAreaView>
+    </View>
   );
 }
