@@ -19,13 +19,18 @@ const Styles = StyleSheet.create({
 
 dayjs.extend(relativeTime);
 
+type Props = {
+  // Callback fired when "Update All" is pressed.
+  onUpdateFinish: (err: string | null) => void;
+};
+
 /**
  * DownloadedCultures displays downloaded Cultures, allowing users to update all of them
  * or delete individual ones.
  *
  * @returns {React.ReactElement}
  */
-export default function DownloadedCultures(): React.ReactElement {
+export default function DownloadedCultures(props: Props): React.ReactElement {
   const [expanded, setExpanded] = useState(false);
   const [ledger, setLedger] = useState<Map<string, number>>(new Map());
 
@@ -90,7 +95,9 @@ export default function DownloadedCultures(): React.ReactElement {
     try {
       await Ledger.update();
       fetchLedger();
+      props.onUpdateFinish(null);
     } catch (err) {
+      props.onUpdateFinish(err.toString());
       console.error("Failed to update downloaded cultures: ", err);
     }
   };

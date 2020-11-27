@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Linking } from "react-native";
 
-import { Divider, List, IconButton } from "react-native-paper";
+import {
+  Divider,
+  List,
+  IconButton,
+  Snackbar,
+  Portal,
+} from "react-native-paper";
 
 import ThemeToggler from "./ThemeToggler";
 import DownloadedCultures from "./DownloadedCultures";
@@ -26,6 +32,7 @@ const Styles = StyleSheet.create({
  */
 export default function Settings(): React.ReactElement {
   const openLink = () => Linking.openURL(disclaimerURL);
+  const [msg, setMsg] = useState("");
 
   return (
     <View>
@@ -52,7 +59,18 @@ export default function Settings(): React.ReactElement {
         )}
       />
       <Divider />
-      <DownloadedCultures />
+      <DownloadedCultures
+        onUpdateFinish={(err) => setMsg(err || "Update finished")}
+      />
+      <Portal>
+        <Snackbar
+          visible={msg !== ""}
+          onDismiss={() => setMsg("")}
+          action={{ label: "Ok", onPress: () => setMsg("") }}
+        >
+          {msg}
+        </Snackbar>
+      </Portal>
     </View>
   );
 }
