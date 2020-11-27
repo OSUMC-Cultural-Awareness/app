@@ -23,7 +23,7 @@ jobs:
           expo-version: 3.x
       
       - run: yarn install
-
+      - run: yarn env:prod
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
