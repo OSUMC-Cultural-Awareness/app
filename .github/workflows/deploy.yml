@@ -12,8 +12,6 @@ on:
 jobs:
   frontend-deploy:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
@@ -23,5 +21,11 @@ jobs:
       - uses: expo/expo-github-action@v5
         with:
           expo-version: 3.x
+      
       - run: yarn install
-      - run: yarn deploy
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: web-build/
