@@ -30,8 +30,8 @@ type Props = {
 };
 
 type TabProps = {
-  General: { insights: GeneralInsight[] };
-  Specialized: { insights: SpecializedInsight };
+  general: { insights: GeneralInsight[] };
+  specialized: { insights: SpecializedInsight };
 };
 
 const Tab = createMaterialTopTabNavigator<TabProps>();
@@ -155,11 +155,11 @@ function CultureView(props: Props): React.ReactElement {
    * Add an insight to either the General or Specialized tab
    */
   const addInsightOrCategory = () => {
-    switch (getFocusedRouteNameFromRoute(route) ?? "General") {
-      case "General":
+    switch (getFocusedRouteNameFromRoute(route) ?? "general") {
+      case "general":
         culture.generalInsights.push(ExampleInsight);
         break;
-      case "Specialized":
+      case "specialized":
         culture.specializedInsights["Specialized Insight"] = [ExampleInsight];
         break;
     }
@@ -209,8 +209,8 @@ function CultureView(props: Props): React.ReactElement {
 
   return (
     <View>
-      <Tab.Navigator initialRouteName="General">
-        <Tab.Screen name="General">
+      <Tab.Navigator initialRouteName="general">
+        <Tab.Screen name="general">
           {() => (
             <Insights
               renderItem={(row: { item: GeneralInsight; index: number }) =>
@@ -221,7 +221,7 @@ function CultureView(props: Props): React.ReactElement {
             />
           )}
         </Tab.Screen>
-        <Tab.Screen name="Specialized">
+        <Tab.Screen name="specialized">
           {() => (
             <Insights
               insights={Array.from(culture.specializedInsights.entries())}
