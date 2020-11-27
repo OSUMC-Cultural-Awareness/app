@@ -21,7 +21,7 @@ type Props = {
 };
 
 const Styles = StyleSheet.create({
-  view: { flex: 1, justifyContent: "space-evenly" },
+  view: { flex: 1, justifyContent: "space-evenly", overflow: "hidden" },
 
   fab: { position: "absolute", bottom: 0, right: 0, margin: 16 },
 
