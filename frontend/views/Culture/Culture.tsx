@@ -253,7 +253,7 @@ function CultureView(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
-      {token && (
+      {token !== "" && (
         <View>
           {editing ? (
             <ToolsFAB

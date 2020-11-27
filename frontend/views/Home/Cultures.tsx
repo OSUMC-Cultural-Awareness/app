@@ -64,7 +64,7 @@ export default function Cultures(props: CultureProps): React.ReactElement {
                     icon="download"
                     onPress={() => Ledger.add(item.name)}
                   />
-                  {props.token && (
+                  {props.token !== "" && (
                     <IconButton
                       icon="delete"
                       onPress={() => Culture.delete(item.name, props.token)}
@@ -76,7 +76,7 @@ export default function Cultures(props: CultureProps): React.ReactElement {
           );
         }}
       />
-      {props.token && (
+      {props.token !== "" && (
         <FAB
           icon="plus"
           style={styles.fab}

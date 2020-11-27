@@ -99,15 +99,12 @@ export default function Admins(props: AdminProps): React.ReactElement {
                 ]);
               }}
               right={() =>
-                props.token ? (
-                  <>
+                props.token !== "" && (
                     <IconButton icon="pencil" onPress={() => onEdit(item)} />
                     <IconButton
                       icon="delete"
                       onPress={() => onDelete(item.email)}
                     />
-                  </>
-                ) : null
               }
             />
           );

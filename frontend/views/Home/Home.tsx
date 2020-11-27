@@ -32,19 +32,17 @@ function Home(props: Props): React.ReactElement {
 
   return (
     <View style={styles.view}>
-      {!token ? (
-        <Cultures navigation={props.navigation} token={token} />
-      ) : (
+      {token ? (
         <Tab.Navigator initialRouteName="Cultures">
           <Tab.Screen name="Cultures">
             {() => <Cultures navigation={props.navigation} token={token} />}
           </Tab.Screen>
-          {token && (
-            <Tab.Screen name="Admins">
-              {() => <Admins token={token} user={props.user} />}
-            </Tab.Screen>
-          )}
+          <Tab.Screen name="Admins">
+            {() => <Admins token={token} user={props.user} />}
+          </Tab.Screen>
         </Tab.Navigator>
+      ) : (
+        <Cultures navigation={props.navigation} token={""} />
       )}
     </View>
   );
