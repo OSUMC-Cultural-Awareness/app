@@ -1,7 +1,7 @@
 import { Culture } from "./lib";
 
 /**
- * React Navigation Routes
+ * React Navigation Routes, for Mobile.
  *
  * Add type definitions and parameters for routes in {@link StackNavigator}
  */
@@ -21,7 +21,23 @@ export type Routes = {
    * Admin **ONLY** route
    */
   EditInsight: { culture: Culture; index: number | [string, number] };
+
+  /**
+   * Displays Cultures allowing for downloads and seeing information
+   * about that culture and Admins.
+   *
+   * To see Admins must be logged in, to see others you need to
+   * be a superUser.
+   *
+   * Cultures can be deleted and edited.
+   */
   Home: undefined;
+
+  /**
+   * Allows creation of a new admin account.
+   *
+   * @remark Route sent via email.
+   */
   Register: { token: string };
 
   /**
@@ -41,4 +57,31 @@ export type Routes = {
    * for application.
    */
   Settings: undefined;
+};
+
+/**
+ * React Navigation links {@link Routes} to Web URLs.
+ */
+export const Linking = {
+  prefixes: ["/"],
+  config: {
+    screens: {
+      Home: "/",
+      Login: "login",
+      Register: "register/:token",
+      Recovery: "recovery/:email/:token",
+      Culture: {
+        path: "culture/:cultureName",
+        parse: {
+          cultureName: (cultureName: string) => decodeURI(cultureName),
+        },
+        screens: {
+          general: "general",
+          specialized: "specialized",
+        },
+      },
+      EditInsight: "culture/edit/:culture/:index",
+      Settings: "settings",
+    },
+  },
 };
