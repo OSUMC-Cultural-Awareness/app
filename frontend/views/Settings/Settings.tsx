@@ -25,22 +25,30 @@ const Styles = StyleSheet.create({
  * @returns {React.ReactElement}
  */
 export default function Settings(): React.ReactElement {
+  const openLink = () => Linking.openURL(disclaimerURL);
+
   return (
     <View>
       <ThemeToggler />
       <Divider />
       <List.Item
         title="Disclaimer"
-        onPress={() => Linking.openURL(disclaimerURL)}
+        onPress={openLink}
         left={(props) => (
-          <List.Icon
+          <IconButton
             {...props}
             style={Styles.leftIcon}
+            onPress={openLink}
             icon="file-document-outline"
           />
         )}
         right={(props) => (
-          <IconButton {...props} icon="eye" style={Styles.rightIcon} />
+          <IconButton
+            {...props}
+            icon="eye"
+            style={Styles.rightIcon}
+            onPress={openLink}
+          />
         )}
       />
       <Divider />
