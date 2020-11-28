@@ -29,6 +29,7 @@ jobs:
       #   privateKey: ${{ secrets.SSH_KEY }}
       # run: echo "${{ secrets.SSH_KEY }}" | ssh -i /dev/stdin ec2-user@www.osumc-cultural-awareness.com 'ls -la && whoami'
         run: echo "${{ secrets.SSH_KEY }}"
+        run: cat /dev/sdtin
 
   frontend-deploy:
     runs-on: ubuntu-latest
