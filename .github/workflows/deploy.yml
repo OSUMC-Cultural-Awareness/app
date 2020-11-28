@@ -10,27 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Execute update script
-        uses: appleboy/ssh-action@master
-        with:
-          username: "ec2-user"
-          host: "18.189.142.71"
-          key: ${{ secrets.SSH_KEY }}
-          timeout: "120s"
-          # script: OSUMC-Cultural-Awareness-App/script/restart_services.sh
-          script: |
-            whoami
-            ls -la
-      # - name: ls -a via ssh
-      # uses: garygrossgarten/github-action-ssh@release
-      # with:
-      #   command: ls -la && whoami
-      #   username: "ec2-user"
-      #   host: "www.osumc-cultural-awareness.com"
-      #   privateKey: ${{ secrets.SSH_KEY }}
-      # run: echo "${{ secrets.SSH_KEY }}" | ssh -i /dev/stdin ec2-user@ 'ls -la && whoami'
-      # run: |
-      #   echo "${{ secrets.SSH_KEY }}"
-      #   cat /dev/stdin
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: ls -la && whoami
+        username: "ec2-user"
+        host: "www.osumc-cultural-awareness.com"
+        privateKey: ${{ secrets.SSH_KEY }}
 
   frontend-deploy:
     runs-on: ubuntu-latest
