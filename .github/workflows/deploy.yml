@@ -14,7 +14,6 @@ jobs:
         with:
           username: "ec2-user"
           host: 18.189.142.71
-          port: 22
           key: ${{ secrets.SSH_KEY }}
           script: OSUMC-Cultural-Awareness-App/script/restart-services.sh
 
