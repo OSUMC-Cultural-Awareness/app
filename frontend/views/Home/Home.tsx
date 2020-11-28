@@ -46,12 +46,12 @@ function Home(props: Props): React.ReactElement {
   const window = useWindowDimensions();
   const safeArea = useSafeAreaInsets();
 
-  useEffect(() => {
-    const fetchCultures = async () => {
-      let cultureNames = await Culture.list();
-      setCultures(cultureNames);
-    };
+  const fetchCultures = async () => {
+    let cultureNames = await Culture.list();
+    setCultures(cultureNames);
+  };
 
+  useEffect(() => {
     fetchCultures();
   }, []);
 
@@ -70,7 +70,12 @@ function Home(props: Props): React.ReactElement {
 
   if (!token) {
     return (
-      <Cultures navigation={props.navigation} token={""} cultures={cultures} />
+      <Cultures
+        navigation={props.navigation}
+        token={""}
+        cultures={cultures}
+        onRefresh={() => fetchCultures()}
+      />
     );
   }
 
@@ -126,6 +131,7 @@ function Home(props: Props): React.ReactElement {
               navigation={navigation}
               token={token}
               cultures={cultures}
+              onRefresh={() => fetchCultures()}
             />
           )}
         </Tab.Screen>
