@@ -12,7 +12,7 @@ jobs:
       - name: Execute update script
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: ls -la && whoami
+          command: OSUMC-Cultural-Awareness-App/script/restart_services.sh
           username: "ec2-user"
           host: "www.osumc-cultural-awareness.com"
           privateKey: ${{ secrets.SSH_KEY }}
