@@ -100,8 +100,12 @@ function CultureView(props: Props): React.ReactElement {
         setCulture(culture);
       } catch (err) {
         console.error(err);
-        // TODO: Display Magical Unicorn Culture
-        props.navigation.navigate("Home");
+        if (!token) {
+          // TODO: Display Magical Unicorn Culture
+          props.navigation.navigate("Home");
+        } else {
+          setCulture(new Culture(cultureName, [], new Map(), Date.now()));
+        }
       }
     }
   };
