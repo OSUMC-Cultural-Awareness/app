@@ -11,6 +11,7 @@ import {
 
 import ThemeToggler from "./ThemeToggler";
 import DownloadedCultures from "./DownloadedCultures";
+import Feedback from "./Feedback";
 import { disclaimerURL } from "../../constants";
 
 // HACK: This is so that icons line up with other icons on the
@@ -58,6 +59,8 @@ export default function Settings(): React.ReactElement {
           />
         )}
       />
+      <Divider />
+      <Feedback />
       <Divider />
       <DownloadedCultures
         onUpdateFinish={(err) => setMsg(err || "Update finished")}
