@@ -12,7 +12,7 @@ export type Routes = {
    *
    * For admins it allows editing and adding information about a particular culture.
    */
-  Culture: { cultureName: string };
+  Culture: { cultureName: string; prevName?: string; dirty?: boolean };
 
   /**
    * Displays an interface to edit a {@link Culture} {@link GeneralInsight}

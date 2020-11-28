@@ -51,7 +51,7 @@ export default function EditInsight(props: Props): React.ReactElement {
 
   const insight: GeneralInsight =
     index instanceof Array
-      ? culture.specializedInsights[index[0]][index[1]]
+      ? culture.specializedInsights.get(index[0])[index[1]]
       : culture.generalInsights[index];
   const category: string = index instanceof Array ? index[0] : "";
 
@@ -62,6 +62,7 @@ export default function EditInsight(props: Props): React.ReactElement {
   const [info, setInfo] = useState<string>(insight.information);
   const [srcData, setSrcData] = useState<string>(insight.source.data);
   const [srcType, setSrcType] = useState<string>(insight.source.type);
+  const [cultureName, setCultureName] = useState<string>(culture.name);
 
   /**
    * updateCulture updates the Culture's insight for either Specialized or General
@@ -80,22 +81,46 @@ export default function EditInsight(props: Props): React.ReactElement {
     if (index instanceof Array) {
       const [key, i] = index;
 
-      let specialized = culture.specializedInsights[key];
+      let specialized = culture.specializedInsights.get(key);
       specialized[i] = newInsight;
 
       if (title !== index[0]) {
-        delete culture.specializedInsights[key];
-        culture.specializedInsights[title] = specialized;
+        culture.specializedInsights.delete(key);
+        culture.specializedInsights.set(title, specialized);
       }
     } else {
       culture.generalInsights[index] = newInsight;
     }
 
-    props.navigation.navigate("Culture", { cultureName: culture.name });
+    // set dirty if any changes have been made.
+    const prevName = culture.name;
+    const dirty =
+      category !== title ||
+      summary !== insight.summary ||
+      info !== insight.information ||
+      srcData !== insight.source.data ||
+      srcType !== insight.source.type ||
+      cultureName !== prevName;
+
+    culture.name = cultureName;
+
+    props.navigation.navigate("Culture", {
+      cultureName: culture.name,
+      prevName: prevName,
+      dirty: dirty,
+    });
   };
 
   return (
     <SafeAreaView style={Styles.view}>
+      <TextInput
+        style={Styles.input}
+        value={cultureName}
+        placeholder="Culture Name"
+        label="Culture Name"
+        mode="outlined"
+        onChangeText={(text) => setCultureName(text)}
+      />
       {isSpecialized && (
         <TextInput
           style={Styles.input}

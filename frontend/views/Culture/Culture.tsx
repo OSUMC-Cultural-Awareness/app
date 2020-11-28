@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
+import { View, Alert, Platform } from "react-native";
 
 import {
   getFocusedRouteNameFromRoute,
@@ -10,7 +10,14 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { ActivityIndicator, List, Button, Snackbar } from "react-native-paper";
+import {
+  ActivityIndicator,
+  List,
+  Button,
+  Snackbar,
+  Portal,
+  Banner,
+} from "react-native-paper";
 
 import EditFAB from "./EditFab";
 import InsightCard from "./InsightCard";
@@ -42,6 +49,13 @@ const ExampleInsight = {
   source: { data: "www.example.com", type: "link" },
 };
 
+const adminNewCultureBanner = `Welcome to a brand new Culture!
+
+1. To add a new insight hit the tool button
+2. To edit an insight click on it
+3. Don't forget to save!
+`;
+
 /**
  * CultureView displays information about a specific culture. The name of the culture
  * to query the API for is specified in `props.route.params`.
@@ -56,16 +70,61 @@ const ExampleInsight = {
 function CultureView(props: Props): React.ReactElement {
   const cultureName = props.route.params ? props.route.params.cultureName : "";
   const token = props.token || "";
+  const navigation = props.navigation;
 
   let [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>("");
+  const [banner, setBanner] = useState(false);
+  const [dirty, setDirty] = useState(props.route.params.dirty || false);
   const route = useRoute();
 
-  useEffect(() => props.navigation.setOptions({ title: cultureName }), []);
+  useEffect(() => props.navigation.setOptions({ title: cultureName }), [
+    cultureName,
+  ]);
   useEffect(() => {
     fetchCulture();
   }, []);
+
+  // Prevent leaving with unsaved changes
+  React.useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        const unsaved = dirty || props.route.params.dirty;
+
+        if (!unsaved) {
+          return;
+        }
+
+        e.preventDefault();
+
+        if (Platform.OS === "web") {
+          // @ts-ignore
+          const leave = confirm(
+            "You have unsaved changes. Are you sure you want to discard them and leave the screen?"
+          );
+
+          if (leave) {
+            navigation.dispatch(e.data.action);
+          }
+        } else {
+          Alert.alert(
+            "Discard changes?",
+            "You have unsaved changes. Are you sure you want to discard them and leave the screen?",
+            [
+              { text: "Don't leave", style: "cancel", onPress: () => {} },
+              {
+                text: "Discard",
+                style: "destructive",
+                onPress: () => navigation.dispatch(e.data.action),
+              },
+            ],
+            { cancelable: false }
+          );
+        }
+      }),
+    [navigation, dirty, props.route.params.dirty]
+  );
 
   /**
    * Updates the Culture in place by calling `setCulture`.
@@ -83,6 +142,7 @@ function CultureView(props: Props): React.ReactElement {
       culture.modified
     );
 
+    setDirty(true);
     setCulture(newCulture);
   };
 
@@ -100,8 +160,14 @@ function CultureView(props: Props): React.ReactElement {
         setCulture(culture);
       } catch (err) {
         console.error(err);
-        // TODO: Display Magical Unicorn Culture
-        props.navigation.navigate("Home");
+        if (!token) {
+          // TODO: Display Magical Unicorn Culture
+          props.navigation.navigate("Home");
+        } else {
+          setBanner(true);
+          setEditing(true);
+          setCulture(new Culture(cultureName, [], new Map(), Date.now()));
+        }
       }
     }
   };
@@ -113,6 +179,20 @@ function CultureView(props: Props): React.ReactElement {
     try {
       await culture.update(token);
       setCultureInPlace(culture);
+      setDirty(false);
+      navigation.setParams({
+        cultureName: cultureName,
+        dirty: false,
+        prevName: props.route.params.prevName,
+      });
+
+      if (props.route.params.prevName) {
+        try {
+          await Culture.delete(props.route.params.prevName, token);
+        } catch (err) {
+          setMsg(err.toString());
+        }
+      }
     } catch (err) {
       // TODO: better error messages
       //
@@ -139,10 +219,13 @@ function CultureView(props: Props): React.ReactElement {
   const deleteInsight = (index: number | [string, number]) => {
     if (index instanceof Array) {
       const [key, i] = index;
-      culture.specializedInsights[key].splice(i, 1);
+      const val = culture.specializedInsights.get(key);
+      val.splice(i, 1);
 
-      if (culture.specializedInsights[key].length === 0) {
-        delete culture.specializedInsights[key];
+      culture.specializedInsights.set(key, val);
+
+      if (val.length === 0) {
+        culture.specializedInsights.delete(key);
       }
     } else {
       culture.generalInsights.splice(index, 1);
@@ -160,7 +243,9 @@ function CultureView(props: Props): React.ReactElement {
         culture.generalInsights.push(ExampleInsight);
         break;
       case "specialized":
-        culture.specializedInsights["Specialized Insight"] = [ExampleInsight];
+        culture.specializedInsights.set("Specialized Insight", [
+          ExampleInsight,
+        ]);
         break;
     }
 
@@ -173,7 +258,10 @@ function CultureView(props: Props): React.ReactElement {
    * @param {string} key of specializedInsight
    */
   const addSpecializedInsight = (key: string) => {
-    culture.specializedInsights[key].push(ExampleInsight);
+    culture.specializedInsights.set(key, [
+      ...culture.specializedInsights.get(key),
+      ExampleInsight,
+    ]);
 
     setCultureInPlace(culture);
   };
@@ -209,6 +297,15 @@ function CultureView(props: Props): React.ReactElement {
 
   return (
     <View>
+      {token !== "" && (
+        <Banner
+          icon="alert"
+          visible={banner}
+          actions={[{ label: "Ok", onPress: () => setBanner(false) }]}
+        >
+          {adminNewCultureBanner}
+        </Banner>
+      )}
       <Tab.Navigator initialRouteName="general">
         <Tab.Screen name="general">
           {() => (
@@ -265,16 +362,18 @@ function CultureView(props: Props): React.ReactElement {
           )}
         </View>
       )}
-      <Snackbar
-        visible={msg !== ""}
-        onDismiss={hideSnackbar}
-        action={{
-          label: "Hide",
-          onPress: hideSnackbar,
-        }}
-      >
-        {msg}
-      </Snackbar>
+      <Portal>
+        <Snackbar
+          visible={msg !== ""}
+          onDismiss={hideSnackbar}
+          action={{
+            label: "Hide",
+            onPress: hideSnackbar,
+          }}
+        >
+          {msg}
+        </Snackbar>
+      </Portal>
     </View>
   );
 }
