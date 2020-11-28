@@ -99,6 +99,7 @@ function CultureView(props: Props): React.ReactElement {
         e.preventDefault();
 
         if (Platform.OS === "web") {
+          // @ts-ignore
           const leave = confirm(
             "You have unsaved changes. Are you sure you want to discard them and leave the screen?"
           );
