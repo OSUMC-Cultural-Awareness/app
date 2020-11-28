@@ -143,10 +143,13 @@ function CultureView(props: Props): React.ReactElement {
   const deleteInsight = (index: number | [string, number]) => {
     if (index instanceof Array) {
       const [key, i] = index;
-      culture.specializedInsights[key].splice(i, 1);
+      const val = culture.specializedInsights.get(key);
+      val.splice(i, 1);
 
-      if (culture.specializedInsights[key].length === 0) {
-        delete culture.specializedInsights[key];
+      culture.specializedInsights.set(key, val);
+
+      if (val.length === 0) {
+        culture.specializedInsights.delete(key);
       }
     } else {
       culture.generalInsights.splice(index, 1);
@@ -164,7 +167,9 @@ function CultureView(props: Props): React.ReactElement {
         culture.generalInsights.push(ExampleInsight);
         break;
       case "specialized":
-        culture.specializedInsights["Specialized Insight"] = [ExampleInsight];
+        culture.specializedInsights.set("Specialized Insight", [
+          ExampleInsight,
+        ]);
         break;
     }
 
@@ -177,7 +182,10 @@ function CultureView(props: Props): React.ReactElement {
    * @param {string} key of specializedInsight
    */
   const addSpecializedInsight = (key: string) => {
-    culture.specializedInsights[key].push(ExampleInsight);
+    culture.specializedInsights.set(key, [
+      ...culture.specializedInsights.get(key),
+      ExampleInsight,
+    ]);
 
     setCultureInPlace(culture);
   };
