@@ -9,13 +9,14 @@ jobs:
   backend-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+      - name: Execute update script
+        uses: appleboy/ssh-action@master
         with:
+          username: "ec2-user"
+          host: 18.189.142.71
+          port: 22
           key: ${{ secrets.SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-      - name: Exec update script
-        run: ssh -i ec2-user@18.189.142.71 OSUMC-Cultural-Awareness-App/script/restart-services.sh
+          script: OSUMC-Cultural-Awareness-App/script/restart-services.sh
 
   frontend-deploy:
     runs-on: ubuntu-latest
