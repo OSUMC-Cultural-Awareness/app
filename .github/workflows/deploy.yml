@@ -4,7 +4,19 @@ on:
   push:
     branches:
       - master
+
 jobs:
+  backend-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Exec update script
+        run: ssh -i ec2-user@18.189.142.71 OSUMC-Cultural-Awareness-App/script/restart-services.sh
+
   frontend-deploy:
     runs-on: ubuntu-latest
     steps:
