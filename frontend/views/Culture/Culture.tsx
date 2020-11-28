@@ -10,7 +10,14 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { ActivityIndicator, List, Button, Snackbar } from "react-native-paper";
+import {
+  ActivityIndicator,
+  List,
+  Button,
+  Snackbar,
+  Portal,
+  Banner,
+} from "react-native-paper";
 
 import EditFAB from "./EditFab";
 import InsightCard from "./InsightCard";
@@ -42,6 +49,13 @@ const ExampleInsight = {
   source: { data: "www.example.com", type: "link" },
 };
 
+const adminNewCultureBanner = `Welcome to a brand new Culture!
+
+1. To add a new insight hit the tool button
+2. To edit an insight click on it
+3. Don't forget to save!
+`;
+
 /**
  * CultureView displays information about a specific culture. The name of the culture
  * to query the API for is specified in `props.route.params`.
@@ -60,6 +74,7 @@ function CultureView(props: Props): React.ReactElement {
   let [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>("");
+  const [banner, setBanner] = useState(false);
   const route = useRoute();
 
   useEffect(() => props.navigation.setOptions({ title: cultureName }), []);
@@ -104,6 +119,8 @@ function CultureView(props: Props): React.ReactElement {
           // TODO: Display Magical Unicorn Culture
           props.navigation.navigate("Home");
         } else {
+          setBanner(true);
+          setEditing(true);
           setCulture(new Culture(cultureName, [], new Map(), Date.now()));
         }
       }
@@ -221,6 +238,15 @@ function CultureView(props: Props): React.ReactElement {
 
   return (
     <View>
+      {token !== "" && (
+        <Banner
+          icon="alert"
+          visible={banner}
+          actions={[{ label: "Ok", onPress: () => setBanner(false) }]}
+        >
+          {adminNewCultureBanner}
+        </Banner>
+      )}
       <Tab.Navigator initialRouteName="general">
         <Tab.Screen name="general">
           {() => (
@@ -277,16 +303,18 @@ function CultureView(props: Props): React.ReactElement {
           )}
         </View>
       )}
-      <Snackbar
-        visible={msg !== ""}
-        onDismiss={hideSnackbar}
-        action={{
-          label: "Hide",
-          onPress: hideSnackbar,
-        }}
-      >
-        {msg}
-      </Snackbar>
+      <Portal>
+        <Snackbar
+          visible={msg !== ""}
+          onDismiss={hideSnackbar}
+          action={{
+            label: "Hide",
+            onPress: hideSnackbar,
+          }}
+        >
+          {msg}
+        </Snackbar>
+      </Portal>
     </View>
   );
 }
