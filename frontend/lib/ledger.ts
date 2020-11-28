@@ -84,7 +84,7 @@ export namespace Ledger {
   export async function read(culture: string): Promise<Culture> {
     const storedData = await AsyncStorage.getItem(culture);
     if (!storedData) {
-      throw new Error(`${culture}: culture not found`);
+      throw new Error(`${culture}: culture download not found`);
     }
 
     const data: string = Pako.inflate(storedData, { to: "string" });
