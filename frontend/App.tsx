@@ -27,7 +27,7 @@ import {
   Header,
 } from "./views";
 
-import { Routes } from "./routes";
+import { Routes, Linking } from "./routes";
 import { lightTheme, darkTheme, ThemeStorage, ThemeType } from "./theme";
 import { Reducer, updateTheme, Store } from "./redux";
 
@@ -77,14 +77,11 @@ function Navigator(props: NavigatorProps): React.ReactElement {
   const { theme } = props;
 
   const Stack = createStackNavigator<Routes>();
-  const linking = {
-    prefixes: ["/"],
-  };
 
   return (
     <SafeAreaProvider>
       <NavigationContainer
-        linking={linking}
+        linking={Linking}
         theme={theme === "Dark" ? DarkTheme : DefaultTheme}
       >
         <PaperProvider theme={theme === "Dark" ? darkTheme : lightTheme}>

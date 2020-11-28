@@ -40,7 +40,7 @@ function RightHeaderButton(props: Props): React.ReactElement {
           <IconButton icon="dots-vertical" onPress={() => setMenu(true)} />
         ) : (
           <Button onPress={() => setMenu(true)}>
-            <Avatar.Text size={32} label={name.substr(0, 2)} />
+            <Avatar.Text size={32} label={name[0]} />
           </Button>
         )
       }
