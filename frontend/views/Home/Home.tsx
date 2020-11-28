@@ -77,7 +77,10 @@ function Home(props: Props): React.ReactElement {
   const onAdd = () => {
     switch (getFocusedRouteNameFromRoute(route) ?? "Cultures") {
       case "Cultures":
-        setCultures([...cultures, "Culture"]);
+        setCultures([
+          ...cultures,
+          { name: "New Culture", modified: Date.now() },
+        ]);
         break;
       case "Admins":
         setInviteModal(true);
