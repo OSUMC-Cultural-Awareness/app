@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
+import { View, Alert, Platform } from "react-native";
 
 import {
   getFocusedRouteNameFromRoute,
@@ -70,17 +70,60 @@ const adminNewCultureBanner = `Welcome to a brand new Culture!
 function CultureView(props: Props): React.ReactElement {
   const cultureName = props.route.params ? props.route.params.cultureName : "";
   const token = props.token || "";
+  const navigation = props.navigation;
 
   let [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>("");
   const [banner, setBanner] = useState(false);
+  const [dirty, setDirty] = useState(props.route.params.dirty || false);
   const route = useRoute();
 
-  useEffect(() => props.navigation.setOptions({ title: cultureName }), []);
+  useEffect(() => props.navigation.setOptions({ title: cultureName }), [
+    cultureName,
+  ]);
   useEffect(() => {
     fetchCulture();
   }, []);
+
+  // Prevent leaving with unsaved changes
+  React.useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        const unsaved = dirty || props.route.params.dirty;
+
+        if (!unsaved) {
+          return;
+        }
+
+        e.preventDefault();
+
+        if (Platform.OS === "web") {
+          const leave = confirm(
+            "You have unsaved changes. Are you sure you want to discard them and leave the screen?"
+          );
+
+          if (leave) {
+            navigation.dispatch(e.data.action);
+          }
+        } else {
+          Alert.alert(
+            "Discard changes?",
+            "You have unsaved changes. Are you sure you want to discard them and leave the screen?",
+            [
+              { text: "Don't leave", style: "cancel", onPress: () => {} },
+              {
+                text: "Discard",
+                style: "destructive",
+                onPress: () => navigation.dispatch(e.data.action),
+              },
+            ],
+            { cancelable: false }
+          );
+        }
+      }),
+    [navigation, dirty, props.route.params.dirty]
+  );
 
   /**
    * Updates the Culture in place by calling `setCulture`.
@@ -98,6 +141,7 @@ function CultureView(props: Props): React.ReactElement {
       culture.modified
     );
 
+    setDirty(true);
     setCulture(newCulture);
   };
 
@@ -134,6 +178,20 @@ function CultureView(props: Props): React.ReactElement {
     try {
       await culture.update(token);
       setCultureInPlace(culture);
+      setDirty(false);
+      navigation.setParams({
+        cultureName: cultureName,
+        dirty: false,
+        prevName: props.route.params.prevName,
+      });
+
+      if (props.route.params.prevName) {
+        try {
+          await Culture.delete(props.route.params.prevName, token);
+        } catch (err) {
+          setMsg(err.toString());
+        }
+      }
     } catch (err) {
       // TODO: better error messages
       //
