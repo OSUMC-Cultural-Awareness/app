@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Execute update script
-      uses: garygrossgarten/github-action-ssh@release
-      with:
-        command: ls -la && whoami
-        username: "ec2-user"
-        host: "www.osumc-cultural-awareness.com"
-        privateKey: ${{ secrets.SSH_KEY }}
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: ls -la && whoami
+          username: "ec2-user"
+          host: "www.osumc-cultural-awareness.com"
+          privateKey: ${{ secrets.SSH_KEY }}
 
   frontend-deploy:
     runs-on: ubuntu-latest
