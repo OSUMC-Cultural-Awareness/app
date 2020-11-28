@@ -21,12 +21,13 @@ jobs:
       #       whoami
       #       ls -la
       # - name: ls -a via ssh
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          command: ls -la && whoami
-          username: "ec2-user"
-          host: "www.osumc-cultural-awareness.com"
-          privateKey: ${{ secrets.SSH_KEY }}
+        # uses: garygrossgarten/github-action-ssh@release
+        # with:
+        #   command: ls -la && whoami
+        #   username: "ec2-user"
+        #   host: "www.osumc-cultural-awareness.com"
+        #   privateKey: ${{ secrets.SSH_KEY }}
+        - run: which ssh
 
   frontend-deploy:
     runs-on: ubuntu-latest
