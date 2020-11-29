@@ -296,7 +296,7 @@ function CultureView(props: Props): React.ReactElement {
   };
 
   return (
-    <View>
+    <View style={Styles.view}>
       {token !== "" && (
         <Banner
           icon="alert"

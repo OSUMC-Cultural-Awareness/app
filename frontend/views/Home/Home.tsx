@@ -123,7 +123,7 @@ function Home(props: Props): React.ReactElement {
   }
 
   return (
-    <View>
+    <View style={styles.view}>
       <Tab.Navigator initialRouteName="Cultures">
         <Tab.Screen name="Cultures">
           {() => (
