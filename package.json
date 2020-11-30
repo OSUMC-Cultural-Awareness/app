@@ -1,6 +1,6 @@
 {
   "main": "node_modules/expo/AppEntry.js",
-  "homepage": "https://freeman91.github.io/OSUMC-Cultural-Awareness-App/",
+  "homepage": "https://osumc-cultural-awareness.github.io/app/",
   "scripts": {
     "start": "yarn env:dev && expo start",
     "env:dev": "node script/setup-envs.js development",
