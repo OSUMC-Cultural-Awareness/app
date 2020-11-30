@@ -8,10 +8,8 @@
   <p align="center">
     This app is intended for health care professionals, to aid in their understanding of the cultural norms of their patients
   </p>
-  <img src="https://github.com/freeman91/OSUMC-Cultural-Awareness-App/workflows/Frontend/badge.svg" alt="Frontend CI"/>
-  <img src="https://github.com/freeman91/OSUMC-Cultural-Awareness-App/workflows/Api/badge.svg" alt="Api CI"/>
-  <img src="https://github.com/freeman91/OSUMC-Cultural-Awareness-App/workflows/Deploy/badge.svg" alt="Api CI"/>
-  <a href="https://coveralls.io/github/freeman91/OSUMC-Cultural-Awareness-App?branch=master"><img src="https://coveralls.io/repos/github/freeman91/OSUMC-Cultural-Awareness-App/badge.svg?branch=master" alt="Api Coverage"/> </a>
+  <img src="https://github.com/freeman91/OSUMC-Cultural-Awareness-App/workflows/Frontend/badge.svg" alt="CI"/>
+  <img src="https://github.com/freeman91/OSUMC-Cultural-Awareness-App/workflows/Deploy/badge.svg" alt="CD"/>
 </div>
 
 <!-- TABLE OF CONTENTS -->
@@ -32,28 +30,30 @@
 - [Contributors](#contributors)
 - [Acknowledgements](#acknowledgements)
 
-***
+---
 
 ## About The Project
+
 ### Tech Stack
 
-- MongoDB  
-- Python-Flask  
-- Node  
-- React-Native  
-
+- MongoDB
+- Python-Flask
+- Node
+- React-Native
 
 ### Backend Production Environment
+
 Amazon Linux 2 free-tier image running gunicorn and nginx services. Contact @freeman91 for ssh credentials.  
 [Gunicorn](https://gunicorn.org/#docs) (Green Unicorn) is a Python WSGI HTTP Server for UNIX.  
 Using [NginX](https://nginx.org/en/) as a HTTP and reverse proxy server, routing HTTP and HTTPS traffic to gunicorn through a socket file.  
-Listening for http/s requests on www.osumc-cultural-awareness.com.  
+Listening for http/s requests on www.osumc-cultural-awareness.com.
 
 ### Frontend Production Environment
+
 Utlizing [Github Pages](https://pages.github.com/) to deploy a web build of the React Native application.  
 [Live React Native App](https://freeman91.github.io/OSUMC-Cultural-Awareness-App/)
 
-***
+---
 
 ## Getting Started
 
@@ -118,7 +118,8 @@ docker-compose down
 
 After building, api service is up and running on localhost:5000.
 
-5. Start Expo, React Native service 
+5. Start Expo, React Native service
+
 ```sh
 yarn start
 ```
@@ -130,24 +131,27 @@ pipenv shell
 python -m pytest
 ```
 
-***
+---
 
 ## Deployment
+
 `.github/workflows/deploy.yml` is automatically deploying the frontend and the backend to their respective environments. If either of those fail, you may need to deploy manually.
 
 ### Backend
+
 This will deploy the latest master, if you want to deploy another branch, follow these [instructions](https://github.com/freeman91/OSUMC-Cultural-Awareness-App/blob/master/docs/deployment.md#deploy-manually).
 
 ```sh
 script/deploy_production_server.sh /path/to/key
-```  
+```
 
-### Frontend 
+### Frontend
+
 ```sh
 yarn deploy
 ```
 
-***
+---
 
 ## Contributors
 
