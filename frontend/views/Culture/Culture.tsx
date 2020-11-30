@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Alert, Platform } from "react-native";
 
 import {
@@ -372,19 +372,13 @@ function CultureView(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
+      {token !== "" && editing && (
+        <ToolsFAB onSave={() => updateCulture()} onAdd={addInsightOrCategory} />
+      )}
+      {token !== "" && !editing && (
+        <EditFAB onPress={() => setEditing(!editing)} />
+      )}
       <Portal>
-        {token !== "" && (
-          <View style={Platform.OS !== "web" ? Styles.view : undefined}>
-            {editing ? (
-              <ToolsFAB
-                onSave={() => updateCulture()}
-                onAdd={addInsightOrCategory}
-              />
-            ) : (
-              <EditFAB onPress={() => setEditing(!editing)} />
-            )}
-          </View>
-        )}
         <Snackbar
           visible={msg !== ""}
           onDismiss={hideSnackbar}

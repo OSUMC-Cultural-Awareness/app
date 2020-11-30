@@ -136,8 +136,8 @@ function Home(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
+      <FAB icon="plus" style={fabStyles as any} onPress={onAdd} />
       <Portal>
-        <FAB icon="plus" style={fabStyles as any} onPress={onAdd} />
         <Modal visible={inviteModal} onDismiss={() => setInviteModal(false)}>
           <Text>Example Modal. Click outside this area to dismiss.</Text>
         </Modal>
