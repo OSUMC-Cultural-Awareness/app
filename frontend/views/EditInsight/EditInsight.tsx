@@ -8,6 +8,7 @@ import {
   TextInput,
   Divider,
   RadioButton,
+  Portal,
   Title,
 } from "react-native-paper";
 
@@ -170,7 +171,9 @@ export default function EditInsight(props: Props): React.ReactElement {
         mode="outlined"
         onChangeText={(text) => setSrcData(text)}
       />
-      <FAB style={Styles.fab} icon="check" onPress={updateCulture} />
+      <Portal>
+        <FAB style={Styles.fab} icon="check" onPress={updateCulture} />
+      </Portal>
     </SafeAreaView>
   );
 }
