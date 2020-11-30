@@ -20,7 +20,7 @@ import {
 } from "react-native-paper";
 
 import EditFAB from "./EditFab";
-import InsightCard from "./InsightCard";
+import InsightCard, { Action } from "./InsightCard";
 import Insights from "./Insights";
 import ToolsFAB from "./ToolsFAB";
 import Styles from "./style";
@@ -205,6 +205,21 @@ function CultureView(props: Props): React.ReactElement {
 
   const hideSnackbar = () => setMsg("");
 
+  const onCardAction = (action: Action) => {
+    if (action === "copy") {
+      setMsg("Link copied!");
+      return;
+    }
+
+    switch (action.type) {
+      case "open":
+        setMsg(`Opening ${action.link}`);
+        break;
+      case "delete":
+        setMsg(`Deleting ${action.summary}`);
+    }
+  };
+
   if (!culture) {
     return (
       <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
@@ -284,6 +299,7 @@ function CultureView(props: Props): React.ReactElement {
         index={index}
         editing={editing}
         insight={insight}
+        onAction={onCardAction}
         onPress={(index) =>
           props.navigation.navigate("EditInsight", {
             culture: culture,
@@ -367,7 +383,7 @@ function CultureView(props: Props): React.ReactElement {
           visible={msg !== ""}
           onDismiss={hideSnackbar}
           action={{
-            label: "Hide",
+            label: "Ok",
             onPress: hideSnackbar,
           }}
         >
