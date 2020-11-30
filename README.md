@@ -8,8 +8,8 @@
   <p align="center">
     This app is intended for health care professionals, to aid in their understanding of the cultural norms of their patients
   </p>
-  <img src="https://github.com/freeman91/OSUMC-Cultural-Awareness-App/workflows/Frontend/badge.svg" alt="CI"/>
-  <img src="https://github.com/freeman91/OSUMC-Cultural-Awareness-App/workflows/Deploy/badge.svg" alt="CD"/>
+  <img src="https://github.com/OSUMC-Cultural-Awareness/app/workflows/CI/badge.svg" alt="CI"/>
+  <img src="https://github.com/OSUMC-Cultural-Awareness/app/workflows/CD/badge.svg" alt="CD"/>
 </div>
 
 <!-- TABLE OF CONTENTS -->
