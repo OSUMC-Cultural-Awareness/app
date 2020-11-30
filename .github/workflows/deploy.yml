@@ -6,17 +6,6 @@ on:
       - main
 
 jobs:
-  backend-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Execute update script
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          command: OSUMC-Cultural-Awareness-App/script/restart_services.sh
-          username: "ec2-user"
-          host: "www.osumc-cultural-awareness.com"
-          privateKey: ${{ secrets.SSH_KEY }}
-
   deploy:
     runs-on: ubuntu-latest
     steps:
