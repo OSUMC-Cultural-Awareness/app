@@ -37,8 +37,9 @@ export default function Insights(props: InsightProps): React.ReactElement {
   }
 
   const refresh = () => {
-    onRefresh();
     setRefreshing(true);
+    onRefresh();
+    setRefreshing(false);
   };
 
   return (
