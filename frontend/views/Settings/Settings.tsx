@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Linking } from "react-native";
+import { ScrollView, StyleSheet, Linking } from "react-native";
 
 import {
   Divider,
@@ -8,10 +8,17 @@ import {
   Snackbar,
   Portal,
 } from "react-native-paper";
+import { connect } from "react-redux";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { bindActionCreators, Dispatch } from "redux";
+
+import { resetUser, Store } from "../../redux";
+import { Routes } from "../../routes";
 
 import ThemeToggler from "./ThemeToggler";
 import DownloadedCultures from "./DownloadedCultures";
 import Feedback from "./Feedback";
+import AccountSettings from "./AccountSettings";
 import { disclaimerURL } from "../../constants";
 
 // HACK: This is so that icons line up with other icons on the
@@ -26,17 +33,26 @@ const Styles = StyleSheet.create({
   },
 });
 
+type Props = {
+  resetUser: () => void;
+  navigation: StackNavigationProp<Routes, "Settings">;
+  token: string;
+  email: string;
+};
+
 /**
  * Settings page displays downloaded cultures, disclaimer, and dark theme toggler.
  *
  * @returns {React.ReactElement}
  */
-export default function Settings(): React.ReactElement {
+function Settings(props: Props): React.ReactElement {
+  const { token, email, resetUser, navigation } = props;
+
   const openLink = () => Linking.openURL(disclaimerURL);
   const [msg, setMsg] = useState("");
 
   return (
-    <View>
+    <ScrollView>
       <ThemeToggler />
       <Divider />
       <List.Item
@@ -60,6 +76,13 @@ export default function Settings(): React.ReactElement {
         )}
       />
       <Divider />
+      <AccountSettings
+        email={email}
+        navigation={navigation}
+        token={token}
+        logout={resetUser}
+      />
+      <Divider />
       <Feedback />
       <Divider />
       <DownloadedCultures
@@ -74,6 +97,28 @@ export default function Settings(): React.ReactElement {
           {msg}
         </Snackbar>
       </Portal>
-    </View>
+    </ScrollView>
   );
 }
+
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      resetUser,
+    },
+    dispatch
+  );
+
+export default connect(
+  (
+    state: Store,
+    ownProps: {
+      navigation: StackNavigationProp<Routes, "Settings">;
+    }
+  ) => ({
+    token: state.user.token,
+    email: state.user.user.email,
+    navigation: ownProps.navigation,
+  }),
+  mapDispatchToProps
+)(Settings);

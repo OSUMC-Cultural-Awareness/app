@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
+import { View } from "react-native";
 
-import { IconButton, Avatar, Button, Menu } from "react-native-paper";
+import { IconButton, Avatar, Button } from "react-native-paper";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
 
-import { resetUser, Store } from "../redux";
+import { Store } from "../redux";
 import { Routes } from "../routes";
 
 type Props = {
@@ -15,8 +15,6 @@ type Props = {
     Routes,
     "Culture" | "Home" | "Settings" | "Login" | "Register"
   >;
-  // Redux action in order to reset the User
-  resetUser: () => void;
 };
 
 /**
@@ -27,60 +25,23 @@ type Props = {
  * @returns {React.ReactElement}
  */
 function RightHeaderButton(props: Props): React.ReactElement {
-  const { name, navigation, resetUser } = props;
-
-  const [menu, setMenu] = useState(false);
+  const { name, navigation } = props;
 
   return (
-    <Menu
-      visible={menu}
-      onDismiss={() => setMenu(false)}
-      anchor={
-        name === "" ? (
-          <IconButton icon="dots-vertical" onPress={() => setMenu(true)} />
-        ) : (
-          <Button onPress={() => setMenu(true)}>
-            <Avatar.Text size={32} label={name[0]} />
-          </Button>
-        )
-      }
-    >
-      <Menu.Item
-        onPress={() => {
-          navigation.navigate("Settings");
-          setMenu(false);
-        }}
-        title="Settings"
-      />
+    <View>
       {name === "" ? (
-        <Menu.Item
-          title="Log in"
-          onPress={() => {
-            navigation.navigate("Login");
-            setMenu(false);
-          }}
+        <IconButton
+          icon="dots-vertical"
+          onPress={() => navigation.navigate("Settings")}
         />
       ) : (
-        <Menu.Item
-          onPress={() => {
-            resetUser();
-            navigation.navigate("Home");
-            setMenu(false);
-          }}
-          title="Log out"
-        />
+        <Button onPress={() => navigation.navigate("Settings")}>
+          <Avatar.Text size={32} label={name[0]} />
+        </Button>
       )}
-    </Menu>
+    </View>
   );
 }
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      resetUser,
-    },
-    dispatch
-  );
 
 const HeaderButton = connect(
   (
@@ -95,7 +56,7 @@ const HeaderButton = connect(
     name: state.user.user.name,
     navigation: ownProps.navigation,
   }),
-  mapDispatchToProps
+  null
 )(RightHeaderButton);
 
 export default ({ navigation }) => ({
