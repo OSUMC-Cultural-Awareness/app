@@ -76,18 +76,6 @@ export default function AccountSettings(props: Props): React.ReactElement {
     }
   };
 
-  if (!token) {
-    return (
-      <Button
-        icon="login"
-        mode="contained"
-        onPress={() => navigation.navigate("Login")}
-      >
-        Log In
-      </Button>
-    );
-  }
-
   return (
     <View>
       <List.Accordion
@@ -119,17 +107,31 @@ export default function AccountSettings(props: Props): React.ReactElement {
           />
         )}
       </List.Accordion>
-      {token !== "" && expanded && (
-        <Button
-          icon="logout"
-          mode="contained"
-          onPress={() => {
-            logout();
-            navigation.navigate("Home");
-          }}
-        >
-          Log Out
-        </Button>
+      {expanded && (
+        <View>
+          {!token ? (
+            <Button
+              icon="login"
+              mode="contained"
+              onPress={() => {
+                navigation.navigate("Login");
+              }}
+            >
+              Log In
+            </Button>
+          ) : (
+            <Button
+              icon="logout"
+              mode="contained"
+              onPress={() => {
+                logout();
+                navigation.navigate("Home");
+              }}
+            >
+              Log Out
+            </Button>
+          )}
+        </View>
       )}
     </View>
   );
