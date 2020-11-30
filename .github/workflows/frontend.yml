@@ -22,7 +22,7 @@ jobs:
 
       - name: Prettier
         run: |
-          yarn run prettier --check frontend
+          yarn run prettier --check src
 
       - name: Typescript
         run: |
