@@ -1,7 +1,7 @@
 import React from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 
-import { IconButton, Avatar, Button } from "react-native-paper";
+import { IconButton, Avatar, TouchableRipple } from "react-native-paper";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { connect } from "react-redux";
 
@@ -17,6 +17,11 @@ type Props = {
   >;
 };
 
+const styles = StyleSheet.create({
+  view: { flex: 1, justifyContent: "center" },
+  ripple: { marginRight: 15 },
+});
+
 /**
  * RightHeaderButton right header button displays '...' if not logged in
  * and an avatar if logged in. Allows the user to navigate to Settings page or log out.
@@ -28,16 +33,19 @@ function RightHeaderButton(props: Props): React.ReactElement {
   const { name, navigation } = props;
 
   return (
-    <View>
+    <View style={styles.view}>
       {name === "" ? (
         <IconButton
           icon="dots-vertical"
           onPress={() => navigation.navigate("Settings")}
         />
       ) : (
-        <Button onPress={() => navigation.navigate("Settings")}>
+        <TouchableRipple
+          style={styles.ripple}
+          onPress={() => navigation.navigate("Settings")}
+        >
           <Avatar.Text size={32} label={name[0]} />
-        </Button>
+        </TouchableRipple>
       )}
     </View>
   );
