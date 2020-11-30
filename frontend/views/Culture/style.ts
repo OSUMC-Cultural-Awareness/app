@@ -9,13 +9,13 @@ export default StyleSheet.create({
     marginHorizontal: 5,
   },
 
+  view: {
+    flex: 1,
+  },
+
   card: {
     padding: 10,
     marginVertical: 5,
     marginHorizontal: 5,
-  },
-
-  fab: {
-    // TODO: Emulate Fixed for the Floating Action Button
   },
 });

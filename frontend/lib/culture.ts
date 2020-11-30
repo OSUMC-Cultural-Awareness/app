@@ -118,9 +118,14 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async update(token: string): Promise<void> {
+    let specializedInsightsObj = {};
+    this.specializedInsights.forEach(
+      (val, key) => (specializedInsightsObj[key] = val)
+    );
+
     const data = {
       general_insights: this.generalInsights,
-      specialized_insights: this.specializedInsights,
+      specialized_insights: specializedInsightsObj,
       name: this.name,
     };
 

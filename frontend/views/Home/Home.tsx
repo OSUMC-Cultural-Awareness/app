@@ -106,24 +106,15 @@ function Home(props: Props): React.ReactElement {
     );
   }
 
-  // HACK: In order to get the FAB to be positioned properly on both Web and Mobile.
-  //
-  // Web: use position: fixed.
-  // Mobile: useWindowDimensions hook, this doesn't work on Web.
   const fabStyles = {
+    position: Platform.OS === "web" ? "fixed" : "absolute",
     margin: 16,
     right: 0,
-    position: Platform.OS === "web" ? "fixed" : "absolute",
+    bottom: 0,
   };
 
-  if (Platform.OS !== "web") {
-    fabStyles["top"] = window.height - safeArea.bottom;
-  } else {
-    fabStyles["bottom"] = 0;
-  }
-
   return (
-    <View>
+    <View style={styles.view}>
       <Tab.Navigator initialRouteName="Cultures">
         <Tab.Screen name="Cultures">
           {() => (

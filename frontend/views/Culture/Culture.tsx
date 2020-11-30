@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Alert, Platform } from "react-native";
 
 import {
@@ -20,7 +20,7 @@ import {
 } from "react-native-paper";
 
 import EditFAB from "./EditFab";
-import InsightCard from "./InsightCard";
+import InsightCard, { Action } from "./InsightCard";
 import Insights from "./Insights";
 import ToolsFAB from "./ToolsFAB";
 import Styles from "./style";
@@ -205,6 +205,21 @@ function CultureView(props: Props): React.ReactElement {
 
   const hideSnackbar = () => setMsg("");
 
+  const onCardAction = (action: Action) => {
+    if (action === "copy") {
+      setMsg("Link copied!");
+      return;
+    }
+
+    switch (action.type) {
+      case "open":
+        setMsg(`Opening ${action.link}`);
+        break;
+      case "delete":
+        setMsg(`Deleting ${action.summary}`);
+    }
+  };
+
   if (!culture) {
     return (
       <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
@@ -284,6 +299,7 @@ function CultureView(props: Props): React.ReactElement {
         index={index}
         editing={editing}
         insight={insight}
+        onAction={onCardAction}
         onPress={(index) =>
           props.navigation.navigate("EditInsight", {
             culture: culture,
@@ -296,7 +312,7 @@ function CultureView(props: Props): React.ReactElement {
   };
 
   return (
-    <View>
+    <View style={Styles.view}>
       {token !== "" && (
         <Banner
           icon="alert"
@@ -313,7 +329,10 @@ function CultureView(props: Props): React.ReactElement {
               renderItem={(row: { item: GeneralInsight; index: number }) =>
                 InsightCardView(row.item, row.index)
               }
-              onRefresh={() => fetchCulture()}
+              onRefresh={() => {
+                fetchCulture();
+                setDirty(false);
+              }}
               insights={culture.generalInsights}
             />
           )}
@@ -322,7 +341,10 @@ function CultureView(props: Props): React.ReactElement {
           {() => (
             <Insights
               insights={Array.from(culture.specializedInsights.entries())}
-              onRefresh={() => fetchCulture()}
+              onRefresh={() => {
+                fetchCulture();
+                setDirty(false);
+              }}
               renderItem={(row: {
                 item: [string, GeneralInsight[]];
                 index: number;
@@ -350,24 +372,18 @@ function CultureView(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
-      {token !== "" && (
-        <View>
-          {editing ? (
-            <ToolsFAB
-              onSave={() => updateCulture()}
-              onAdd={addInsightOrCategory}
-            />
-          ) : (
-            <EditFAB onPress={() => setEditing(!editing)} />
-          )}
-        </View>
+      {token !== "" && editing && (
+        <ToolsFAB onSave={() => updateCulture()} onAdd={addInsightOrCategory} />
+      )}
+      {token !== "" && !editing && (
+        <EditFAB onPress={() => setEditing(!editing)} />
       )}
       <Portal>
         <Snackbar
           visible={msg !== ""}
           onDismiss={hideSnackbar}
           action={{
-            label: "Hide",
+            label: "Ok",
             onPress: hideSnackbar,
           }}
         >
