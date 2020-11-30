@@ -12,5 +12,5 @@
     "skipLibCheck": true,
     "jsx": "react-native"
   },
-  "include": ["frontend/**/*"]
+  "include": ["src/**/*"]
 }

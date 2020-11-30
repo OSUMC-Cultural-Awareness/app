@@ -1,13 +1,13 @@
 {
   "expo": {
-    "entryPoint": "./frontend/App.tsx",
+    "entryPoint": "./src/App.tsx",
     "name": "Cultural Awareness",
-    "slug": "web",
+    "slug": "OSUMC-Cultural-Awareness",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./frontend/assets/icon.png",
+    "icon": "./assets/icon.png",
     "splash": {
-      "image": "./frontend/assets/splash.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,7 +19,7 @@
       "supportsTablet": true
     },
     "web": {
-      "favicon": "./frontend/assets/favicon.png"
+      "favicon": "./assets/favicon.png"
     },
     "androidStatusBar": {
       "barStyle": "light-content"
