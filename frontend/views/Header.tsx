@@ -43,7 +43,7 @@ function RightHeaderButton(props: Props): React.ReactElement {
   );
 }
 
-const HeaderButton = connect(
+export const HeaderButton = connect(
   (
     state: Store,
     ownProps: {

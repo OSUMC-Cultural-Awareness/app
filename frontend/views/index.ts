@@ -5,7 +5,7 @@ import Home from "./Home";
 import EditInsight from "./EditInsight";
 import Recovery from "./Recovery";
 import Settings from "./Settings";
-import Header from "./Header";
+import Header, { HeaderButton } from "./Header";
 
 export {
   Culture,
@@ -16,4 +16,5 @@ export {
   Recovery,
   Settings,
   Header,
+  HeaderButton,
 };
