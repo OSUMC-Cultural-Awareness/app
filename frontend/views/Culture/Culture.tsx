@@ -329,7 +329,10 @@ function CultureView(props: Props): React.ReactElement {
               renderItem={(row: { item: GeneralInsight; index: number }) =>
                 InsightCardView(row.item, row.index)
               }
-              onRefresh={() => fetchCulture()}
+              onRefresh={() => {
+                fetchCulture();
+                setDirty(false);
+              }}
               insights={culture.generalInsights}
             />
           )}
@@ -338,7 +341,10 @@ function CultureView(props: Props): React.ReactElement {
           {() => (
             <Insights
               insights={Array.from(culture.specializedInsights.entries())}
-              onRefresh={() => fetchCulture()}
+              onRefresh={() => {
+                fetchCulture();
+                setDirty(false);
+              }}
               renderItem={(row: {
                 item: [string, GeneralInsight[]];
                 index: number;
