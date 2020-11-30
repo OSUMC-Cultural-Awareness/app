@@ -106,21 +106,12 @@ function Home(props: Props): React.ReactElement {
     );
   }
 
-  // HACK: In order to get the FAB to be positioned properly on both Web and Mobile.
-  //
-  // Web: use position: fixed.
-  // Mobile: useWindowDimensions hook, this doesn't work on Web.
   const fabStyles = {
+    position: Platform.OS === "web" ? "fixed" : "absolute",
     margin: 16,
     right: 0,
-    position: Platform.OS === "web" ? "fixed" : "absolute",
+    bottom: 0,
   };
-
-  if (Platform.OS !== "web") {
-    fabStyles["top"] = window.height - safeArea.bottom;
-  } else {
-    fabStyles["bottom"] = 0;
-  }
 
   return (
     <View style={styles.view}>
@@ -145,8 +136,8 @@ function Home(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
-      <FAB icon="plus" style={fabStyles as any} onPress={onAdd} />
       <Portal>
+        <FAB icon="plus" style={fabStyles as any} onPress={onAdd} />
         <Modal visible={inviteModal} onDismiss={() => setInviteModal(false)}>
           <Text>Example Modal. Click outside this area to dismiss.</Text>
         </Modal>
