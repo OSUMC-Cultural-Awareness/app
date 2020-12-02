@@ -13,10 +13,11 @@ import {
   Modal,
   Text,
   ActivityIndicator,
+  Snackbar,
 } from "react-native-paper";
 
 import { Store } from "../../redux";
-import { Admin, Culture } from "../../lib";
+import { Admin, Culture, OfflineError, Ledger } from "../../lib";
 import { Routes } from "../../routes";
 
 import Cultures from "./Cultures";
@@ -45,10 +46,26 @@ function Home(props: Props): React.ReactElement {
   const [inviteModal, setInviteModal] = useState(false);
   const window = useWindowDimensions();
   const safeArea = useSafeAreaInsets();
+  const [msg, setMsg] = useState("");
+  const [offline, setOffline] = useState(false)
 
   const fetchCultures = async () => {
-    let cultureNames = await Culture.list();
-    setCultures(cultureNames);
+    try {
+      const cultures = await Culture.list();
+      setCultures(cultures);
+    } catch (err) {
+      if (err instanceof OfflineError) {
+        const ledger = await Ledger.list();
+        let cultures = [];
+        ledger.forEach(
+          (val, key) => cultures.push({ name: key, modified: cultures[key] })
+        );
+        setCultures(cultures)
+        setOffline(true)
+      } else {
+        setMsg(err.toString())
+      }
+    }
   };
 
   useEffect(() => {
@@ -75,6 +92,7 @@ function Home(props: Props): React.ReactElement {
         token={""}
         cultures={cultures}
         onRefresh={() => fetchCultures()}
+        offline={offline}
       />
     );
   }
@@ -123,6 +141,7 @@ function Home(props: Props): React.ReactElement {
               token={token}
               cultures={cultures}
               onRefresh={() => fetchCultures()}
+              offline={offline}
             />
           )}
         </Tab.Screen>
@@ -138,6 +157,15 @@ function Home(props: Props): React.ReactElement {
       </Tab.Navigator>
       <FAB icon="plus" style={fabStyles as any} onPress={onAdd} />
       <Portal>
+        <Snackbar
+          visible={msg != ""}
+          onDismiss={() => setMsg("")}
+          action={{
+            label: 'Undo', onPress: () =>
+              setMsg("")
+          }}>
+          {msg}
+        </Snackbar>
         <Modal visible={inviteModal} onDismiss={() => setInviteModal(false)}>
           <Text>Example Modal. Click outside this area to dismiss.</Text>
         </Modal>
