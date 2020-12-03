@@ -37,7 +37,7 @@ const initialValues: RecoveryFields = {
   passwordConfirmation: "",
 };
 
-const Styles = StyleSheet.create({
+const styles = StyleSheet.create({
   view: { flex: 1, justifyContent: "space-evenly", overflow: "hidden" },
 
   input: { margin: 5, padding: 15 },
@@ -96,9 +96,9 @@ export default function Recovery(props: Props): React.ReactElement {
   };
 
   return (
-    <View style={Styles.view}>
-      <Title style={Styles.title}>Let's create a new password!</Title>
-      <View style={Styles.input}>
+    <View style={styles.view}>
+      <Title style={styles.title}>Let's create a new password!</Title>
+      <View style={styles.input}>
         <TextInput
           mode="outlined"
           label="password"
@@ -120,7 +120,7 @@ export default function Recovery(props: Props): React.ReactElement {
           <HelperText type="error">{errors.password}</HelperText>
         )}
       </View>
-      <View style={Styles.input}>
+      <View style={styles.input}>
         <TextInput
           mode="outlined"
           label="password confirmation"

@@ -45,7 +45,7 @@ const initialValues: LoginFields = {
   password: "",
 };
 
-const Styles = StyleSheet.create({
+const styles = StyleSheet.create({
   view: {
     flex: 1,
     justifyContent: "space-evenly",
@@ -164,7 +164,7 @@ function Login(props: Props): React.ReactElement {
   };
 
   return (
-    <View style={Styles.view}>
+    <View style={styles.view}>
       <View>
         <TextInput
           autoFocus={true}
@@ -213,7 +213,7 @@ function Login(props: Props): React.ReactElement {
         Log In
       </Button>
       <Button
-        style={Styles.recover}
+        style={styles.recover}
         mode="text"
         onPress={recoverAccount}
         uppercase={false}
