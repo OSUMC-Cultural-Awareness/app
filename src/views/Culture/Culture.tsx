@@ -17,6 +17,7 @@ import {
   Snackbar,
   Portal,
   Banner,
+  FAB,
 } from "react-native-paper";
 
 import EditFAB from "./EditFab";
@@ -376,7 +377,17 @@ function CultureView(props: Props): React.ReactElement {
         <ToolsFAB onSave={() => updateCulture()} onAdd={addInsightOrCategory} />
       )}
       {token !== "" && !editing && (
-        <EditFAB onPress={() => setEditing(!editing)} />
+        <FAB.Group
+          icon="pencil"
+          style={
+            Platform.OS === "web" ? ({ position: "fixed" } as any) : undefined
+          }
+          open={false}
+          onPress={() => setEditing(!editing)}
+          visible={true}
+          actions={[]}
+          onStateChange={() => setEditing(!editing)}
+        />
       )}
       <Portal>
         <Snackbar
