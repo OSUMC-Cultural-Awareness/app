@@ -36,7 +36,7 @@ export class Culture {
     public generalInsights: GeneralInsight[],
     public specializedInsights: SpecializedInsight,
     public modified: number
-  ) {}
+  ) { }
 
   /**
    * Get information about a {@link Culture}.
