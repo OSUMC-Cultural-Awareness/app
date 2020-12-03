@@ -66,12 +66,13 @@ export class Culture {
    * @throws {@link ApiError}
    * @throws {@link OfflineError}
    *
-   * @returns {Promise<{ name: string; modified: number }[]>}
+   * @returns {Promise<Map<string, number>>}
    */
-  static async list(): Promise<{ name: string; modified: number }[]> {
-    let json = await Api.get("/cultures");
+  static async list(): Promise<Map<string, number>> {
+    const json = await Api.get("/cultures");
+    const data: { name: string; modified: number }[] = json["cultures"];
 
-    return json["cultures"];
+    return new Map(data.map((culture) => [culture.name, culture.modified]));
   }
 
   /**

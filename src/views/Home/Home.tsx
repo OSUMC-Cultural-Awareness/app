@@ -60,7 +60,7 @@ const Tab = createMaterialTopTabNavigator<TabProps>();
 function Home(props: Props): React.ReactElement {
   const { token, route, navigation, user, theme } = props;
 
-  const [cultures, setCultures] = useState(null);
+  const [cultures, setCultures] = useState<Map<string, number>>(null);
   const [admins, setAdmins] = useState(null);
   const [inviteModal, setInviteModal] = React.useState(false);
   const [msg, setMsg] = useState<string>("");
@@ -112,7 +112,7 @@ function Home(props: Props): React.ReactElement {
       <Cultures
         navigation={props.navigation}
         token={""}
-        cultures={cultures}
+        cultures={cultures?.entries()}
         onRefresh={() => fetchCultures()}
       />
     );
@@ -121,10 +121,9 @@ function Home(props: Props): React.ReactElement {
   const onAdd = () => {
     switch (getFocusedRouteNameFromRoute(route) ?? "Cultures") {
       case "Cultures":
-        setCultures([
-          ...cultures,
-          { name: "New Culture", modified: Date.now() },
-        ]);
+        setCultures(
+          new Map([...cultures.entries(), ["New Culture", Date.now()]])
+        );
         break;
       case "Admins":
         setInviteModal(true);
@@ -165,7 +164,7 @@ function Home(props: Props): React.ReactElement {
             <Cultures
               navigation={navigation}
               token={token}
-              cultures={cultures}
+              cultures={cultures?.entries()}
               onRefresh={() => fetchCultures()}
             />
           )}

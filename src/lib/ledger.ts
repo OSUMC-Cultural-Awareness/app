@@ -40,14 +40,11 @@ export namespace Ledger {
     const updatedCultures = await Culture.list();
     let cultures = await list();
 
-    updatedCultures.forEach(
-      async (culture: { name: string; modified: number }) => {
-        const { name, modified } = culture;
-        if (cultures.has(name) && cultures.get(name) < modified) {
-          add(name);
-        }
+    updatedCultures.forEach(async (modified: number, name: string) => {
+      if (cultures.has(name) && cultures.get(name) < modified) {
+        add(name);
       }
-    );
+    });
   }
 
   /**
