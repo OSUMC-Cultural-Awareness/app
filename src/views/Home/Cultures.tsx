@@ -30,6 +30,7 @@ export default function Cultures(props: CultureProps): React.ReactElement {
   const { cultures, onRefresh, token, navigation } = props;
   const [searchQuery, setSearchQuery] = useState(undefined);
   const [showSearch, setShowSearch] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useLayoutEffect(() => {
     const header = Header({
@@ -77,6 +78,12 @@ export default function Cultures(props: CultureProps): React.ReactElement {
       <FlatList
         data={searchResults()}
         keyExtractor={(_, index) => index.toString()}
+        onRefresh={() => {
+          setRefreshing(true);
+          onRefresh();
+          setRefreshing(false);
+        }}
+        refreshing={refreshing}
         renderItem={({ item }) => {
           return (
             <List.Item
