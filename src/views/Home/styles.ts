@@ -25,10 +25,6 @@ export default StyleSheet.create({
     flex: 1,
   },
 
-  fab: {
-    // TODO: Emulate Fixed for the Floating Action Button
-  },
-
   div: {
     margin: "5px",
   },
