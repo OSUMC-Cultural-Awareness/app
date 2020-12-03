@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { View, FlatList } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ActivityIndicator, List, IconButton } from "react-native-paper";
@@ -7,6 +7,7 @@ import { Routes } from "../../routes";
 
 import { Culture, Ledger } from "../../lib";
 
+import Header from "../Header";
 import styles from "./styles";
 
 /**
@@ -26,7 +27,22 @@ type CultureProps = {
  * @returns {React.ReactElement} React component
  */
 export default function Cultures(props: CultureProps): React.ReactElement {
-  const { cultures, onRefresh, token } = props;
+  const { cultures, onRefresh, token, navigation } = props;
+  const [searchQuery, setSearchQuery] = useState(undefined);
+  const [showSearch, setShowSearch] = useState(false);
+
+  useLayoutEffect(() => {
+    const header = Header({
+      title: "Cultural Awareness",
+      searchQuery: searchQuery,
+      showSearch: showSearch,
+      onSearchChange: (text: string) => setSearchQuery(text),
+      onSearchStart: () => setShowSearch(true),
+      onCancel: () => setShowSearch(false),
+    });
+
+    navigation.setOptions(header({ navigation }));
+  }, [navigation, showSearch, searchQuery]);
 
   if (!cultures) {
     return (
@@ -43,10 +59,23 @@ export default function Cultures(props: CultureProps): React.ReactElement {
     onRefresh();
   };
 
+  const searchResults = (): Culture[] => {
+    return cultures.filter((culture) => {
+      if (!searchQuery) {
+        return true;
+      }
+
+      const name = culture.name.toLowerCase();
+      const query = searchQuery.toLowerCase();
+
+      return name.includes(query);
+    });
+  };
+
   return (
     <View>
       <FlatList
-        data={cultures}
+        data={searchResults()}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => {
           return (

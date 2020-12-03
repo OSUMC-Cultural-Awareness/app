@@ -23,8 +23,6 @@ import {
   Register,
   Recovery,
   Settings,
-  Header,
-  HeaderButton,
 } from "./views";
 
 import { Routes, Linking } from "./routes";
@@ -85,15 +83,8 @@ function Navigator(props: NavigatorProps): React.ReactElement {
     >
       <PaperProvider theme={theme === "Dark" ? darkTheme : lightTheme}>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Culture" component={Culture} options={Header} />
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={({ navigation }) => ({
-              headerRight: () => <HeaderButton navigation={navigation} />,
-              title: "Cultural Awareness",
-            })}
-          />
+          <Stack.Screen name="Culture" component={Culture} />
+          <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="EditInsight" component={EditInsight} />
