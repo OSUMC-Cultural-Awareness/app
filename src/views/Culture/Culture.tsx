@@ -378,9 +378,7 @@ function CultureView(props: Props): React.ReactElement {
       {token !== "" && !editing && (
         <FAB.Group
           icon="pencil"
-          style={
-            Platform.OS === "web" ? ({ position: "fixed" } as any) : undefined
-          }
+          style={styles.fab}
           open={false}
           onPress={() => setEditing(!editing)}
           visible={true}

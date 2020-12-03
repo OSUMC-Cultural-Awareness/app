@@ -143,13 +143,6 @@ function Home(props: Props): React.ReactElement {
 
   const hideSnackbar = () => setMsg("");
 
-  const styleFAB = {
-    position: Platform.OS === "web" ? "fixed" : "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  };
-
   if (!admins) {
     return (
       <ActivityIndicator animating={true} size="large" style={styles.spinner} />
@@ -179,7 +172,7 @@ function Home(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
-      <FAB style={styleFAB as any} icon="plus" onPress={onAdd} />
+      <FAB style={styles.fab} icon="plus" onPress={onAdd} />
       <Portal>
         <Modal
           visible={inviteModal}
