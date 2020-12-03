@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, useWindowDimensions, Platform } from "react-native";
+import { View, Platform } from "react-native";
 
 import { connect } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Portal,
   Modal,
@@ -81,9 +80,6 @@ function Home(props: Props): React.ReactElement {
     initialValues: initialValues,
     onSubmit: (values) => invite(values),
   });
-
-  const window = useWindowDimensions();
-  const safeArea = useSafeAreaInsets();
 
   const fetchCultures = async () => {
     let cultureNames = await Culture.list();
