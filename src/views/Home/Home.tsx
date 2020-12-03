@@ -144,17 +144,12 @@ function Home(props: Props): React.ReactElement {
 
   const hideSnackbar = () => setMsg("");
 
-  //Sets position of the FAB depending on the platform
-  let styleFAB = {
-    right: 16,
-    position: Platform.OS === "web" ? "fixed" : "relative",
+  const styleFAB = {
+    position: Platform.OS === "web" ? "fixed" : "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
   };
-
-  if (Platform.OS !== "web") {
-    styleFAB["top"] = window.height - safeArea.bottom;
-  } else {
-    styleFAB["bottom"] = 16;
-  }
 
   if (!admins) {
     return (
