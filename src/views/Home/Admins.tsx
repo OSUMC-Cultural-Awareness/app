@@ -48,7 +48,7 @@ type AdminProps = {
   theme: string;
   user: Admin;
   onRefresh: () => void;
-  navigation: StackNavigationProp<Routes, "Home">;
+  searchQuery?: string;
 };
 
 /**
@@ -58,27 +58,12 @@ type AdminProps = {
  * @returns {React.ReactElement} React component
  */
 function Admins(props: AdminProps): React.ReactElement {
-  const { user, theme, token, admins, onRefresh, navigation } = props;
+  const { user, theme, token, admins, onRefresh, searchQuery } = props;
 
   const [deleteModal, setDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [msg, setMsg] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState(undefined);
-  const [showSearch, setShowSearch] = useState(false);
-
-  useLayoutEffect(() => {
-    const header = Header({
-      title: "Cultural Awareness",
-      searchQuery: searchQuery,
-      showSearch: showSearch,
-      onSearchChange: (text: string) => setSearchQuery(text),
-      onSearchStart: () => setShowSearch(true),
-      onCancel: () => setShowSearch(false),
-    });
-
-    navigation.setOptions(header({ navigation }));
-  }, [navigation, showSearch, searchQuery]);
 
   const name = useRef();
 

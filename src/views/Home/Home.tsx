@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { View, Platform } from "react-native";
 
 import { connect } from "react-redux";
@@ -25,6 +25,7 @@ import { Routes } from "../../routes";
 import Cultures from "./Cultures";
 import Admins from "./Admins";
 import styles from "./styles";
+import Header from "../Header";
 import { EmailValidation } from "./validation";
 
 type Props = {
@@ -64,6 +65,22 @@ function Home(props: Props): React.ReactElement {
   const [admins, setAdmins] = useState(null);
   const [inviteModal, setInviteModal] = React.useState(false);
   const [msg, setMsg] = useState<string>("");
+
+  const [searchQuery, setSearchQuery] = useState(undefined);
+  const [showSearch, setShowSearch] = useState(false);
+
+  useLayoutEffect(() => {
+    const header = Header({
+      title: "Cultural Awareness",
+      searchQuery: searchQuery,
+      showSearch: showSearch,
+      onSearchChange: (text: string) => setSearchQuery(text),
+      onSearchStart: () => setShowSearch(true),
+      onCancel: () => setShowSearch(false),
+    });
+
+    navigation.setOptions(header({ navigation }));
+  }, [navigation, showSearch, searchQuery]);
 
   const email = useRef();
 
@@ -110,6 +127,7 @@ function Home(props: Props): React.ReactElement {
         token={""}
         cultures={cultures}
         onRefresh={() => fetchCultures()}
+        searchQuery={searchQuery}
       />
     );
   }
@@ -162,6 +180,7 @@ function Home(props: Props): React.ReactElement {
               navigation={navigation}
               token={token}
               cultures={cultures}
+              searchQuery={searchQuery}
               onRefresh={() => fetchCultures()}
             />
           )}
@@ -172,7 +191,7 @@ function Home(props: Props): React.ReactElement {
               token={token}
               admins={admins}
               onRefresh={() => fetchAdmins()}
-              navigation={navigation}
+              searchQuery={searchQuery}
             />
           )}
         </Tab.Screen>
