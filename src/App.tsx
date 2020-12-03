@@ -28,8 +28,9 @@ import {
 } from "./views";
 
 import { Routes, Linking } from "./routes";
-import { lightTheme, darkTheme, ThemeStorage, ThemeType } from "./theme";
+import { lightTheme, darkTheme, ThemeType } from "./theme";
 import { Reducer, updateTheme, Store } from "./redux";
+import { Storage } from "./storage";
 
 const store = createStore(Reducer);
 
@@ -38,7 +39,7 @@ function App() {
     const getTheme = async () => {
       let theme: ThemeType;
       try {
-        theme = (await AsyncStorage.getItem(ThemeStorage)) as ThemeType;
+        theme = (await AsyncStorage.getItem(Storage.Theme)) as ThemeType;
       } catch (err) {
         theme = "Light";
       }

@@ -6,6 +6,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Routes } from "../../routes";
+import { Storage } from "../../storage";
 
 type Props = {
   token: string;
@@ -38,7 +39,7 @@ export default function AccountSettings(props: Props): React.ReactElement {
     const getEmail = async () => {
       let email: string;
       try {
-        email = await AsyncStorage.getItem("@rememberedEmail");
+        email = await AsyncStorage.getItem(Storage.RememberedEmail);
       } catch (err) {
         setRemember(false);
         return;
@@ -56,7 +57,7 @@ export default function AccountSettings(props: Props): React.ReactElement {
     switch (remember) {
       case true:
         try {
-          await AsyncStorage.removeItem("@rememberedEmail");
+          await AsyncStorage.removeItem(Storage.RememberedEmail);
         } catch (err) {
           setRemember(false);
           return;
@@ -66,7 +67,7 @@ export default function AccountSettings(props: Props): React.ReactElement {
         break;
       case false:
         try {
-          await AsyncStorage.setItem("@rememberedEmail", email);
+          await AsyncStorage.setItem(Storage.RememberedEmail, email);
         } catch (err) {
           setRemember(false);
           return;
