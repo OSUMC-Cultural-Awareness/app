@@ -63,10 +63,12 @@ export default function Cultures(props: CultureProps): React.ReactElement {
                     justifyContent: "flex-end",
                   }}
                 >
-                  {!offline && <IconButton
-                    icon="download"
-                    onPress={() => Ledger.add(item.name)}
-                  />}
+                  {!offline && (
+                    <IconButton
+                      icon="download"
+                      onPress={() => Ledger.add(item.name)}
+                    />
+                  )}
                   {token !== "" && (
                     <IconButton
                       icon="delete"

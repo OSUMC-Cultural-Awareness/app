@@ -47,7 +47,7 @@ function Home(props: Props): React.ReactElement {
   const window = useWindowDimensions();
   const safeArea = useSafeAreaInsets();
   const [msg, setMsg] = useState("");
-  const [offline, setOffline] = useState(false)
+  const [offline, setOffline] = useState(false);
 
   const fetchCultures = async () => {
     try {
@@ -58,20 +58,19 @@ function Home(props: Props): React.ReactElement {
         try {
           const ledger = await Ledger.list();
           let cultures = [];
-          ledger.forEach(
-            (val, key) => cultures.push({ name: key, modified: cultures[key] })
+          ledger.forEach((val, key) =>
+            cultures.push({ name: key, modified: cultures[key] })
           );
-          setCultures(cultures)
-          setOffline(true)
+          setCultures(cultures);
+          setOffline(true);
         } catch (err) {
-          setMsg(err.toString())
+          setMsg(err.toString());
         }
+      } else {
+        setMsg(err.toString());
       }
-      else {
-        setMsg(err.toString())
-      }
-    };
-  }
+    }
+  };
 
   useEffect(() => {
     fetchCultures();
@@ -166,9 +165,10 @@ function Home(props: Props): React.ReactElement {
           visible={msg != ""}
           onDismiss={() => setMsg("")}
           action={{
-            label: 'Undo', onPress: () =>
-              setMsg("")
-          }}>
+            label: "Undo",
+            onPress: () => setMsg(""),
+          }}
+        >
           {msg}
         </Snackbar>
         <Modal visible={inviteModal} onDismiss={() => setInviteModal(false)}>
