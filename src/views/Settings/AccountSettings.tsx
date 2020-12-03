@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 
 import { Checkbox, List, IconButton, Button } from "react-native-paper";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Routes } from "../../routes";
 import { Storage } from "../../storage";
+import styles from "./styles";
 
 type Props = {
   token: string;
@@ -14,14 +15,6 @@ type Props = {
   email: string;
   navigation: StackNavigationProp<Routes, "Settings">;
 };
-
-const Styles = StyleSheet.create({
-  // HACK: This is so that icons line up with other icons on the
-  // Settings page.
-  leftIcon: {
-    left: -5,
-  },
-});
 
 /**
  * AccountSettings displays Log in/Log out and whether or not to remember the user's email.
@@ -84,7 +77,7 @@ export default function AccountSettings(props: Props): React.ReactElement {
         onPress={() => setExpanded(!expanded)}
         title="Account"
         left={(props) => (
-          <List.Icon {...props} icon="account" style={Styles.leftIcon} />
+          <List.Icon {...props} icon="account" style={styles.leftIcon} />
         )}
       >
         {token !== "" && (

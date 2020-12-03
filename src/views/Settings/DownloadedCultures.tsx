@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList, StyleSheet } from "react-native";
+import { View, FlatList } from "react-native";
 
 import { List, Button, IconButton } from "react-native-paper";
 // is importing Dayjs really worth it for something as simple as relative times?
@@ -8,14 +8,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import { Ledger } from "../../lib";
-
-const Styles = StyleSheet.create({
-  // HACK: This is so that icons line up with other icons on the
-  // Settings page.
-  leftIcon: {
-    left: -5,
-  },
-});
+import styles from "./styles";
 
 dayjs.extend(relativeTime);
 
@@ -113,7 +106,7 @@ export default function DownloadedCultures(props: Props): React.ReactElement {
         onPress={() => setExpanded(!expanded)}
         title="Downloaded Cultures"
         left={(props) => (
-          <List.Icon {...props} icon="download" style={Styles.leftIcon} />
+          <List.Icon {...props} icon="download" style={styles.leftIcon} />
         )}
       >
         <FlatList

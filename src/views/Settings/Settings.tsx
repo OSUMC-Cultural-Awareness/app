@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, Linking } from "react-native";
+import { ScrollView, Linking } from "react-native";
 
 import {
   Divider,
@@ -14,24 +14,13 @@ import { bindActionCreators, Dispatch } from "redux";
 
 import { resetUser, Store } from "../../redux";
 import { Routes } from "../../routes";
+import { disclaimerURL } from "../../constants";
 
 import ThemeToggler from "./ThemeToggler";
 import DownloadedCultures from "./DownloadedCultures";
 import Feedback from "./Feedback";
 import AccountSettings from "./AccountSettings";
-import { disclaimerURL } from "../../constants";
-
-// HACK: This is so that icons line up with other icons on the
-// Settings page.
-const Styles = StyleSheet.create({
-  rightIcon: {
-    right: -5,
-  },
-
-  leftIcon: {
-    left: -5,
-  },
-});
+import styles from "./styles";
 
 type Props = {
   resetUser: () => void;
@@ -61,7 +50,7 @@ function Settings(props: Props): React.ReactElement {
         left={(props) => (
           <IconButton
             {...props}
-            style={Styles.leftIcon}
+            style={styles.leftIcon}
             onPress={openLink}
             icon="file-document-outline"
           />
@@ -70,7 +59,7 @@ function Settings(props: Props): React.ReactElement {
           <IconButton
             {...props}
             icon="eye"
-            style={Styles.rightIcon}
+            style={styles.rightIcon}
             onPress={openLink}
           />
         )}
