@@ -67,6 +67,9 @@ function Home(props: Props): React.ReactElement {
           setMsg(err.toString())
         }
       }
+      else {
+        setMsg(err.toString())
+      }
     };
   }
 
