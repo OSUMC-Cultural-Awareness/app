@@ -88,26 +88,17 @@ export class Admin {
    * @throws {@link ApiError}
    * @throws {@link OfflineError}
    *
-   * @param {string} password - validate password
-   * @param {string} passwordConfirmation - MUST match passwordConfirmation
+   * @param {string} email - email of admin account
+   * @param {string} name - updated name
    * @param {string} token - JSON Web Token
    * @returns {Promise<void>}
    */
-  async update(
-    password: string,
-    passwordConfirmation: string,
+  static async update(
+    email: string,
+    name: string,
     token: string
   ): Promise<void> {
-    await Api.put(
-      `/admins/${this.email}`,
-      {
-        email: this.email,
-        name: this.name,
-        password: password,
-        password_confirmation: passwordConfirmation,
-      },
-      token
-    );
+    await Api.put(`/admins/${email}`, { name }, token);
   }
 
   /**
@@ -132,7 +123,6 @@ export class Admin {
     await Api.put(
       `/admins/${email}`,
       {
-        email: email,
         password: password,
         password_confirmation: passwordConfirmation,
       },
