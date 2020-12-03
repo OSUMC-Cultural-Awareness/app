@@ -83,13 +83,62 @@ function Navigator(props: NavigatorProps): React.ReactElement {
     >
       <PaperProvider theme={theme === "Dark" ? darkTheme : lightTheme}>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Culture" component={Culture} />
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="EditInsight" component={EditInsight} />
-          <Stack.Screen name="Settings" component={Settings} />
-          <Stack.Screen name="Recovery" component={Recovery} />
+          <Stack.Screen
+            name="Culture"
+            component={Culture}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="EditInsight"
+            component={EditInsight}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="Settings"
+            component={Settings}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="Recovery"
+            component={Recovery}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>

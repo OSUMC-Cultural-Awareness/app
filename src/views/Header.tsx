@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 
 import {
   IconButton,
@@ -111,6 +111,11 @@ export default function Header(props: Props) {
     onCancel,
   } = props;
 
+  let searchBarStyles = {};
+  if (Platform.OS === "ios") {
+    searchBarStyles = { height: 30 };
+  }
+
   return ({ navigation }) => ({
     headerTitle: () => (
       <View style={styles.searchView}>
@@ -118,6 +123,7 @@ export default function Header(props: Props) {
           <Searchbar
             autoFocus={true}
             placeholder="search"
+            style={searchBarStyles}
             onChangeText={onSearchChange}
             value={searchQuery}
           />
