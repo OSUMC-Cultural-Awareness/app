@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import "react-native-gesture-handler";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
+import { StatusBar } from "expo-status-bar";
 import { Provider as PaperProvider } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connect } from "react-redux";
@@ -82,6 +83,7 @@ function Navigator(props: NavigatorProps): React.ReactElement {
       theme={theme === "Dark" ? DarkTheme : DefaultTheme}
     >
       <PaperProvider theme={theme === "Dark" ? darkTheme : lightTheme}>
+        <StatusBar style={theme === "Dark" ? "light" : "dark"} />
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
             name="Culture"
