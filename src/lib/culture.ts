@@ -115,9 +115,10 @@ export class Culture {
    * @throws {@link OfflineError}
    *
    * @param {string} token
+   * @param {string} previousName - the previous name of the Culture
    * @returns {Promise<void>}
    */
-  async update(token: string): Promise<void> {
+  async update(token: string, previousName?: string): Promise<void> {
     let specializedInsightsObj = {};
     this.specializedInsights.forEach(
       (val, key) => (specializedInsightsObj[key] = val)
@@ -129,6 +130,10 @@ export class Culture {
       name: this.name,
     };
 
-    await Api.put(`/cultures/${this.name}`, data, token);
+    await Api.put(
+      `/cultures/${previousName ? previousName : this.name}`,
+      data,
+      token
+    );
   }
 }

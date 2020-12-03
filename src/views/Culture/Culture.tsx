@@ -93,7 +93,7 @@ function CultureView(props: Props): React.ReactElement {
     });
 
     navigation.setOptions(header({ navigation }));
-  }, [navigation, showSearch, searchQuery]);
+  }, [navigation, showSearch, searchQuery, cultureName]);
 
   useEffect(() => {
     fetchCulture();
@@ -190,7 +190,7 @@ function CultureView(props: Props): React.ReactElement {
    */
   const updateCulture = async (): Promise<void> => {
     try {
-      await culture.update(token);
+      await culture.update(token, props.route.params.prevName);
       setCultureInPlace(culture);
       setDirty(false);
       navigation.setParams({
@@ -198,14 +198,6 @@ function CultureView(props: Props): React.ReactElement {
         dirty: false,
         prevName: props.route.params.prevName,
       });
-
-      if (props.route.params.prevName) {
-        try {
-          await Culture.delete(props.route.params.prevName, token);
-        } catch (err) {
-          setMsg(err.toString());
-        }
-      }
     } catch (err) {
       // TODO: better error messages
       //
