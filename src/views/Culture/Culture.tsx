@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Alert, Platform } from "react-native";
 
 import {
@@ -20,11 +20,10 @@ import {
   FAB,
 } from "react-native-paper";
 
-import EditFAB from "./EditFab";
 import InsightCard, { Action } from "./InsightCard";
 import Insights from "./Insights";
 import ToolsFAB from "./ToolsFAB";
-import Styles from "./style";
+import styles from "./style";
 
 import { Culture, GeneralInsight, SpecializedInsight, Ledger } from "../../lib";
 
@@ -223,7 +222,7 @@ function CultureView(props: Props): React.ReactElement {
 
   if (!culture) {
     return (
-      <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
+      <ActivityIndicator animating={true} size="large" style={styles.spinner} />
     );
   }
 
@@ -313,7 +312,7 @@ function CultureView(props: Props): React.ReactElement {
   };
 
   return (
-    <View style={Styles.view}>
+    <View style={styles.view}>
       {token !== "" && (
         <Banner
           icon="alert"
@@ -361,7 +360,7 @@ function CultureView(props: Props): React.ReactElement {
                         icon="plus"
                         onPress={() => addSpecializedInsight(title)}
                         mode="contained"
-                        style={Styles.specialAddInsight}
+                        style={styles.specialAddInsight}
                       >
                         {""}
                       </Button>
