@@ -95,8 +95,12 @@ function Home(props: Props): React.ReactElement {
       return;
     }
 
-    const admins = user.superUser ? await Admin.list(token) : [user];
-    setAdmins(admins);
+    try {
+      const admins = user.superUser ? await Admin.list(token) : [user];
+      setAdmins(admins);
+    } catch (err) {
+      setMsg(err.toString());
+    }
   };
 
   useEffect(() => {
