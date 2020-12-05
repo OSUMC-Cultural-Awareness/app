@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, useWindowDimensions, Platform } from "react-native";
+import { View, Platform } from "react-native";
 
 import { connect } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Portal,
   Modal,
@@ -20,7 +19,7 @@ import {
 import { useFormik } from "formik";
 
 import { Store } from "../../redux";
-import { Admin, Culture } from "../../lib";
+import { Admin, Culture, OfflineError, Ledger } from "../../lib";
 import { Routes } from "../../routes";
 
 import Cultures from "./Cultures";
@@ -65,6 +64,7 @@ function Home(props: Props): React.ReactElement {
   const [admins, setAdmins] = useState(null);
   const [inviteModal, setInviteModal] = React.useState(false);
   const [msg, setMsg] = useState<string>("");
+  const [offline, setOffline] = useState(false);
 
   const email = useRef();
 
@@ -82,12 +82,27 @@ function Home(props: Props): React.ReactElement {
     onSubmit: (values) => invite(values),
   });
 
-  const window = useWindowDimensions();
-  const safeArea = useSafeAreaInsets();
-
   const fetchCultures = async () => {
-    let cultureNames = await Culture.list();
-    setCultures(cultureNames);
+    try {
+      const cultures = await Culture.list();
+      setCultures(cultures);
+    } catch (err) {
+      if (err instanceof OfflineError) {
+        try {
+          const ledger = await Ledger.list();
+          let cultures = [];
+          ledger.forEach((_, key) =>
+            cultures.push({ name: key, modified: cultures[key] })
+          );
+          setCultures(cultures);
+          setOffline(true);
+        } catch (err) {
+          setMsg(err.toString());
+        }
+      } else {
+        setMsg(err.toString());
+      }
+    }
   };
 
   useEffect(() => {
@@ -114,6 +129,7 @@ function Home(props: Props): React.ReactElement {
         token={""}
         cultures={cultures}
         onRefresh={() => fetchCultures()}
+        offline={offline}
       />
     );
   }
@@ -167,6 +183,7 @@ function Home(props: Props): React.ReactElement {
               token={token}
               cultures={cultures}
               onRefresh={() => fetchCultures()}
+              offline={offline}
             />
           )}
         </Tab.Screen>
@@ -182,6 +199,16 @@ function Home(props: Props): React.ReactElement {
       </Tab.Navigator>
       <FAB style={styleFAB as any} icon="plus" onPress={onAdd} />
       <Portal>
+        <Snackbar
+          visible={msg != ""}
+          onDismiss={() => setMsg("")}
+          action={{
+            label: "Undo",
+            onPress: () => setMsg(""),
+          }}
+        >
+          {msg}
+        </Snackbar>
         <Modal
           visible={inviteModal}
           contentContainerStyle={
