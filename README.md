@@ -21,7 +21,7 @@ git clone https://github.com/OSUMC-Cultural-Awareness/app
 git clone https://github.com/OSUMC-Cultural-Awareness/api
 ```
 
-3. Follow instructions for [api](https://github.com/OSUMC-Cultural-Awareness/api)
+3. Follow instructions for [api](https://github.com/OSUMC-Cultural-Awareness/api/#getting-started)
 4. Install yarn packages
 
 ```sh
@@ -68,7 +68,7 @@ yarn run expo publish
 
 ## New to React Native?
 
-We all stated here at some point, here's a collection of resources we found helpful in getting started!
+We all started here at some point, here's a collection of resources we found helpful in getting started!
 
 - [React Tutorial](https://reactjs.org/tutorial/tutorial.html) Nowhere better to start than the Tutorial
   React enables you to write a declarative UI in JavaScript/Typescript in a syntax called "jsx" which looks a lot like Html.
