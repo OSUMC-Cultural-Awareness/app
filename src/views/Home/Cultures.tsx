@@ -17,6 +17,7 @@ type CultureProps = {
   token: string;
   cultures: IterableIterator<[string, number]>;
   onRefresh: () => void;
+  offline: boolean;
 };
 
 /**
@@ -26,7 +27,7 @@ type CultureProps = {
  * @returns {React.ReactElement} React component
  */
 export default function Cultures(props: CultureProps): React.ReactElement {
-  const { cultures, onRefresh, token } = props;
+  const { cultures, onRefresh, token, offline } = props;
 
   if (!cultures) {
     return (
@@ -42,7 +43,6 @@ export default function Cultures(props: CultureProps): React.ReactElement {
     }
     onRefresh();
   };
-
   return (
     <View>
       <FlatList
@@ -64,10 +64,12 @@ export default function Cultures(props: CultureProps): React.ReactElement {
                     justifyContent: "flex-end",
                   }}
                 >
-                  <IconButton
-                    icon="download"
-                    onPress={() => Ledger.add(name)}
-                  />
+                  {!offline && (
+                    <IconButton
+                      icon="download"
+                      onPress={() => Ledger.add(name)}
+                    />
+                  )}
                   {token !== "" && (
                     <IconButton
                       icon="delete"
