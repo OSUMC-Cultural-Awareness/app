@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { View, Alert, Platform } from "react-native";
 
 import {
@@ -23,6 +23,7 @@ import {
 import InsightCard, { Action } from "./InsightCard";
 import Insights from "./Insights";
 import ToolsFAB from "./ToolsFAB";
+import Header from "../Header";
 import styles from "./style";
 
 import { Culture, GeneralInsight, SpecializedInsight, Ledger } from "../../lib";
@@ -77,11 +78,23 @@ function CultureView(props: Props): React.ReactElement {
   const [msg, setMsg] = useState<string>("");
   const [banner, setBanner] = useState(false);
   const [dirty, setDirty] = useState(props.route.params.dirty || false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
   const route = useRoute();
 
-  useEffect(() => props.navigation.setOptions({ title: cultureName }), [
-    cultureName,
-  ]);
+  useLayoutEffect(() => {
+    const header = Header({
+      title: cultureName,
+      searchQuery: searchQuery,
+      showSearch: showSearch,
+      onSearchChange: (text: string) => setSearchQuery(text),
+      onSearchStart: () => setShowSearch(true),
+      onCancel: () => setShowSearch(false),
+    });
+
+    navigation.setOptions(header({ navigation }));
+  }, [navigation, showSearch, searchQuery, cultureName]);
+
   useEffect(() => {
     fetchCulture();
   }, []);
@@ -177,7 +190,7 @@ function CultureView(props: Props): React.ReactElement {
    */
   const updateCulture = async (): Promise<void> => {
     try {
-      await culture.update(token);
+      await culture.update(token, props.route.params.prevName);
       setCultureInPlace(culture);
       setDirty(false);
       navigation.setParams({
@@ -185,14 +198,6 @@ function CultureView(props: Props): React.ReactElement {
         dirty: false,
         prevName: props.route.params.prevName,
       });
-
-      if (props.route.params.prevName) {
-        try {
-          await Culture.delete(props.route.params.prevName, token);
-        } catch (err) {
-          setMsg(err.toString());
-        }
-      }
     } catch (err) {
       // TODO: better error messages
       //
@@ -311,6 +316,16 @@ function CultureView(props: Props): React.ReactElement {
     );
   };
 
+  const generalResults = generalInsightResults(
+    culture.generalInsights,
+    searchQuery
+  );
+
+  const specializedResults = specializedInsightResults(
+    culture.specializedInsights,
+    searchQuery
+  );
+
   return (
     <View style={styles.view}>
       {token !== "" && (
@@ -333,14 +348,14 @@ function CultureView(props: Props): React.ReactElement {
                 fetchCulture();
                 setDirty(false);
               }}
-              insights={culture.generalInsights}
+              insights={generalResults}
             />
           )}
         </Tab.Screen>
         <Tab.Screen name="specialized">
           {() => (
             <Insights
-              insights={Array.from(culture.specializedInsights.entries())}
+              insights={specializedResults}
               onRefresh={() => {
                 fetchCulture();
                 setDirty(false);
@@ -400,6 +415,66 @@ function CultureView(props: Props): React.ReactElement {
       </Portal>
     </View>
   );
+}
+
+/**
+ * Filers generalInsights based on search query.
+ *
+ * @param {GeneralInsight[]} insights
+ * @param {string} search query
+ *
+ * @returns filtered general insights
+ */
+function generalInsightResults(
+  insights: GeneralInsight[],
+  searchQuery: string
+): GeneralInsight[] {
+  return insights.filter((insight) => {
+    if (!searchQuery) {
+      return true;
+    }
+
+    const content = (insight.summary + insight.information).toLowerCase();
+    const query = searchQuery.toLowerCase();
+
+    return content.includes(query);
+  });
+}
+
+/**
+ * Filters specializedInsights based on search query.
+ *
+ * @param {Map<string, GeneralInsight[]>} Specialized Insights
+ * @param {string} query
+ *
+ * @returns {[string, GeneralInsight[]][]} filtered specialized insights
+ */
+function specializedInsightResults(
+  specialized: Map<string, GeneralInsight[]>,
+  query: string
+): [string, GeneralInsight[]][] {
+  const specArray = Array.from(specialized.entries());
+  const matched: [string, GeneralInsight[]][] = specArray.map(
+    ([category, insights]) => {
+      if (!query) {
+        return [category, insights];
+      }
+
+      const filtered: GeneralInsight[] = insights.filter((insight) => {
+        if (!query) {
+          return true;
+        }
+        const content = (insight.summary + insight.information).toLowerCase();
+        const q = query.toLowerCase();
+
+        return content.includes(q);
+      });
+
+      return [category, filtered];
+    }
+  );
+
+  return matched.filter(([_, insights]) => insights.length !== 0);
 }
 
 export default connect(

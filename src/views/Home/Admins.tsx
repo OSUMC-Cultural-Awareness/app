@@ -1,5 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import { FlatList, Alert, View, Platform } from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { connect } from "react-redux";
 import {
   List,
@@ -13,8 +14,11 @@ import {
 } from "react-native-paper";
 import { useFormik } from "formik";
 
+import { Routes } from "../../routes";
 import { Store } from "../../redux";
 import { Admin } from "../../lib";
+
+import Header from "../Header";
 import styles from "./styles";
 import { EmailNameValidation } from "./validation";
 
@@ -44,6 +48,7 @@ type AdminProps = {
   theme: string;
   user: Admin;
   onRefresh: () => void;
+  searchQuery?: string;
 };
 
 /**
@@ -53,7 +58,8 @@ type AdminProps = {
  * @returns {React.ReactElement} React component
  */
 function Admins(props: AdminProps): React.ReactElement {
-  const { user, theme, token, admins, onRefresh } = props;
+  const { user, theme, token, admins, onRefresh, searchQuery } = props;
+
   const [deleteModal, setDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -68,7 +74,6 @@ function Admins(props: AdminProps): React.ReactElement {
     errors,
     touched,
     handleSubmit,
-    validateField,
     setFieldValue,
   } = useFormik({
     validationSchema: EmailNameValidation,
@@ -117,10 +122,23 @@ function Admins(props: AdminProps): React.ReactElement {
     setEditModal(true);
   };
 
+  const searchResults = (): Admin[] => {
+    return admins.filter((admin) => {
+      if (!searchQuery) {
+        return true;
+      }
+
+      const name = admin.email.toLowerCase();
+      const query = searchQuery.toLowerCase();
+
+      return name.includes(query);
+    });
+  };
+
   return (
     <FlatList
       style={{ flex: 1 }}
-      data={admins}
+      data={searchResults()}
       keyExtractor={(_, index) => index.toString()}
       renderItem={({ item }) => {
         return (

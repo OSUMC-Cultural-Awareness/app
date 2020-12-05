@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import "react-native-gesture-handler";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
+import { StatusBar } from "expo-status-bar";
 import { Provider as PaperProvider } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connect } from "react-redux";
@@ -23,8 +24,6 @@ import {
   Register,
   Recovery,
   Settings,
-  Header,
-  HeaderButton,
 } from "./views";
 
 import { Routes, Linking } from "./routes";
@@ -85,21 +84,64 @@ function Navigator(props: NavigatorProps): React.ReactElement {
       theme={theme === "Dark" ? DarkTheme : DefaultTheme}
     >
       <PaperProvider theme={theme === "Dark" ? darkTheme : lightTheme}>
+        <StatusBar style={theme === "Dark" ? "light" : "dark"} />
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Culture" component={Culture} options={Header} />
+          <Stack.Screen
+            name="Culture"
+            component={Culture}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
           <Stack.Screen
             name="Home"
             component={Home}
-            options={({ navigation }) => ({
-              headerRight: () => <HeaderButton navigation={navigation} />,
-              title: "Cultural Awareness",
-            })}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
           />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="EditInsight" component={EditInsight} />
-          <Stack.Screen name="Settings" component={Settings} />
-          <Stack.Screen name="Recovery" component={Recovery} />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="EditInsight"
+            component={EditInsight}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="Settings"
+            component={Settings}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="Recovery"
+            component={Recovery}
+            options={{
+              headerTitleAlign: "left",
+              headerBackTitleVisible: false,
+            }}
+          />
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>

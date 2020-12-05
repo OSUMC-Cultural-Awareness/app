@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { View } from "react-native";
 
 import { connect } from "react-redux";
@@ -25,6 +25,7 @@ import { Routes } from "../../routes";
 import Cultures from "./Cultures";
 import Admins from "./Admins";
 import styles from "./styles";
+import Header from "../Header";
 import { EmailValidation } from "./validation";
 
 type Props = {
@@ -65,6 +66,22 @@ function Home(props: Props): React.ReactElement {
   const [inviteModal, setInviteModal] = React.useState(false);
   const [msg, setMsg] = useState<string>("");
   const [offline, setOffline] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState(undefined);
+  const [showSearch, setShowSearch] = useState(false);
+
+  useLayoutEffect(() => {
+    const header = Header({
+      title: "Cultural Awareness",
+      searchQuery: searchQuery,
+      showSearch: showSearch,
+      onSearchChange: (text: string) => setSearchQuery(text),
+      onSearchStart: () => setShowSearch(true),
+      onCancel: () => setShowSearch(false),
+    });
+
+    navigation.setOptions(header({ navigation }));
+  }, [navigation, showSearch, searchQuery]);
 
   const email = useRef();
 
@@ -129,6 +146,7 @@ function Home(props: Props): React.ReactElement {
         token={""}
         cultures={cultures?.entries()}
         onRefresh={() => fetchCultures()}
+        searchQuery={searchQuery}
         offline={offline}
       />
     );
@@ -173,6 +191,7 @@ function Home(props: Props): React.ReactElement {
             <Cultures
               navigation={navigation}
               token={token}
+              searchQuery={searchQuery}
               cultures={cultures?.entries()}
               onRefresh={() => fetchCultures()}
               offline={offline}
@@ -185,6 +204,7 @@ function Home(props: Props): React.ReactElement {
               token={token}
               admins={admins}
               onRefresh={() => fetchAdmins()}
+              searchQuery={searchQuery}
             />
           )}
         </Tab.Screen>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, FlatList } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ActivityIndicator, List, IconButton } from "react-native-paper";
@@ -17,6 +17,7 @@ type CultureProps = {
   token: string;
   cultures: IterableIterator<[string, number]>;
   onRefresh: () => void;
+  searchQuery?: string;
   offline: boolean;
 };
 
@@ -27,7 +28,8 @@ type CultureProps = {
  * @returns {React.ReactElement} React component
  */
 export default function Cultures(props: CultureProps): React.ReactElement {
-  const { cultures, onRefresh, token, offline } = props;
+  const { cultures, onRefresh, token, searchQuery, offline } = props;
+  const [refreshing, setRefreshing] = useState(false);
 
   if (!cultures) {
     return (
@@ -43,11 +45,32 @@ export default function Cultures(props: CultureProps): React.ReactElement {
     }
     onRefresh();
   };
+
+  const searchResults = (): [string, number][] => {
+    return Array.from(cultures).filter((culture) => {
+      const [name] = culture;
+      if (!searchQuery) {
+        return true;
+      }
+
+      const nameLower = name.toLowerCase();
+      const query = searchQuery.toLowerCase();
+
+      return nameLower.includes(query);
+    });
+  };
+
   return (
     <View>
       <FlatList
-        data={Array.from(cultures)}
+        data={searchResults()}
         keyExtractor={(_, index) => index.toString()}
+        onRefresh={() => {
+          setRefreshing(true);
+          onRefresh();
+          setRefreshing(false);
+        }}
+        refreshing={refreshing}
         renderItem={({ item }) => {
           const [name] = item;
           return (
