@@ -19,5 +19,5 @@ export default StyleSheet.create({
     marginHorizontal: 5,
   },
 
-  fab: { position: (Platform.OS === "web" ? "fixed" : undefined) as any },
+  fab: { position: (Platform.OS === "web" ? "fixed" : "absolute") as any },
 });
