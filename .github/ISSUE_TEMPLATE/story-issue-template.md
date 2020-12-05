@@ -1,6 +1,6 @@
 ---
 name: Story Issue Template
-about: Describe this issue template's purpose here.
+about: Create a story for sprint work
 title: "(##) Title"
 labels: app
 assignees: ''
