@@ -89,11 +89,7 @@ function Home(props: Props): React.ReactElement {
     } catch (err) {
       if (err instanceof OfflineError) {
         try {
-          const ledger = await Ledger.list();
-          let cultures = [];
-          ledger.forEach((_, key) =>
-            cultures.push({ name: key, modified: cultures[key] })
-          );
+          const cultures = await Ledger.list();
           setCultures(cultures);
           setOffline(true);
         } catch (err) {
