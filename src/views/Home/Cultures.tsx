@@ -15,7 +15,7 @@ import styles from "./styles";
 type CultureProps = {
   navigation: StackNavigationProp<Routes, "Home">;
   token: string;
-  cultures: Culture[];
+  cultures: IterableIterator<[string, number]>;
   onRefresh: () => void;
   offline: boolean;
 };
@@ -35,9 +35,9 @@ export default function Cultures(props: CultureProps): React.ReactElement {
     );
   }
 
-  const deleteCulture = async (culture: Culture) => {
+  const deleteCulture = async (name: string) => {
     try {
-      await Culture.delete(culture.name, token);
+      await Culture.delete(name, token);
     } catch (err) {
       console.error("Failed to delete culture", err);
     }
@@ -46,14 +46,15 @@ export default function Cultures(props: CultureProps): React.ReactElement {
   return (
     <View>
       <FlatList
-        data={cultures}
+        data={Array.from(cultures)}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => {
+          const [name] = item;
           return (
             <List.Item
-              title={item.name}
+              title={name}
               onPress={() =>
-                props.navigation.navigate("Culture", { cultureName: item.name })
+                props.navigation.navigate("Culture", { cultureName: name })
               }
               right={() => (
                 <View
@@ -66,13 +67,13 @@ export default function Cultures(props: CultureProps): React.ReactElement {
                   {!offline && (
                     <IconButton
                       icon="download"
-                      onPress={() => Ledger.add(item.name)}
+                      onPress={() => Ledger.add(name)}
                     />
                   )}
                   {token !== "" && (
                     <IconButton
                       icon="delete"
-                      onPress={() => deleteCulture(item)}
+                      onPress={() => deleteCulture(name)}
                     />
                   )}
                 </View>

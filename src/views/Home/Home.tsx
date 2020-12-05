@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Platform } from "react-native";
+import { View } from "react-native";
 
 import { connect } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -60,7 +60,7 @@ const Tab = createMaterialTopTabNavigator<TabProps>();
 function Home(props: Props): React.ReactElement {
   const { token, route, navigation, user, theme } = props;
 
-  const [cultures, setCultures] = useState(null);
+  const [cultures, setCultures] = useState<Map<string, number>>(null);
   const [admins, setAdmins] = useState(null);
   const [inviteModal, setInviteModal] = React.useState(false);
   const [msg, setMsg] = useState<string>("");
@@ -89,11 +89,7 @@ function Home(props: Props): React.ReactElement {
     } catch (err) {
       if (err instanceof OfflineError) {
         try {
-          const ledger = await Ledger.list();
-          let cultures = [];
-          ledger.forEach((_, key) =>
-            cultures.push({ name: key, modified: cultures[key] })
-          );
+          const cultures = await Ledger.list();
           setCultures(cultures);
           setOffline(true);
         } catch (err) {
@@ -114,8 +110,12 @@ function Home(props: Props): React.ReactElement {
       return;
     }
 
-    const admins = user.superUser ? await Admin.list(token) : [user];
-    setAdmins(admins);
+    try {
+      const admins = user.superUser ? await Admin.list(token) : [user];
+      setAdmins(admins);
+    } catch (err) {
+      setMsg(err.toString());
+    }
   };
 
   useEffect(() => {
@@ -127,7 +127,7 @@ function Home(props: Props): React.ReactElement {
       <Cultures
         navigation={props.navigation}
         token={""}
-        cultures={cultures}
+        cultures={cultures?.entries()}
         onRefresh={() => fetchCultures()}
         offline={offline}
       />
@@ -137,10 +137,9 @@ function Home(props: Props): React.ReactElement {
   const onAdd = () => {
     switch (getFocusedRouteNameFromRoute(route) ?? "Cultures") {
       case "Cultures":
-        setCultures([
-          ...cultures,
-          { name: "New Culture", modified: Date.now() },
-        ]);
+        setCultures(
+          new Map([...cultures.entries(), ["New Culture", Date.now()]])
+        );
         break;
       case "Admins":
         setInviteModal(true);
@@ -160,13 +159,6 @@ function Home(props: Props): React.ReactElement {
 
   const hideSnackbar = () => setMsg("");
 
-  const styleFAB = {
-    position: Platform.OS === "web" ? "fixed" : "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  };
-
   if (!admins) {
     return (
       <ActivityIndicator animating={true} size="large" style={styles.spinner} />
@@ -181,7 +173,7 @@ function Home(props: Props): React.ReactElement {
             <Cultures
               navigation={navigation}
               token={token}
-              cultures={cultures}
+              cultures={cultures?.entries()}
               onRefresh={() => fetchCultures()}
               offline={offline}
             />
@@ -197,7 +189,7 @@ function Home(props: Props): React.ReactElement {
           )}
         </Tab.Screen>
       </Tab.Navigator>
-      <FAB style={styleFAB as any} icon="plus" onPress={onAdd} />
+      <FAB style={styles.fab} icon="plus" onPress={onAdd} />
       <Portal>
         <Snackbar
           visible={msg != ""}

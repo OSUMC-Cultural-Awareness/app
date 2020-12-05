@@ -32,4 +32,11 @@ export default StyleSheet.create({
   deleteButton: {
     backgroundColor: "red",
   },
+
+  fab: {
+    position: (Platform.OS === "web" ? "fixed" : "absolute") as any,
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 });

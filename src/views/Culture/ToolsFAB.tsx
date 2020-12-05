@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Platform } from "react-native";
 
 import { FAB } from "react-native-paper";
+import styles from "./style";
 
 /**
  * Properties for {@link ToolsFAB}
@@ -27,7 +27,7 @@ export default function ToolsFAB(props: ToolsFABProps): React.ReactElement {
     <FAB.Group
       visible={true}
       open={open}
-      style={Platform.OS === "web" ? ({ position: "fixed" } as any) : undefined}
+      style={styles.fab}
       icon={open ? "close" : "wrench"}
       actions={[
         { icon: "plus", onPress: () => props.onAdd() },

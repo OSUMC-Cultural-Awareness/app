@@ -49,7 +49,7 @@ const initialValues: RegisterFields = {
   passwordConfirmation: "",
 };
 
-const Styles = StyleSheet.create({
+const styles = StyleSheet.create({
   view: {
     flex: 1,
     justifyContent: "space-evenly",
@@ -152,7 +152,7 @@ function Register(props: Props): React.ReactElement {
   };
 
   return (
-    <View style={Styles.view}>
+    <View style={styles.view}>
       <View>
         <TextInput
           autoFocus={true}
@@ -232,7 +232,7 @@ function Register(props: Props): React.ReactElement {
           acknowledged the
           <Text
             onPress={() => Linking.openURL(TermsOfServiceURL)}
-            style={Styles.link}
+            style={styles.link}
           >
             {" "}
             Terms of Service

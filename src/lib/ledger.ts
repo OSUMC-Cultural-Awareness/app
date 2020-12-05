@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Pako from "pako";
 
 import { Culture } from "./culture";
+import { Storage } from "../storage";
 
 /**
  * Ledger - a JavaScript Object that stores all downloaded cultures and
@@ -21,8 +22,6 @@ import { Culture } from "./culture";
  * {@link read} Read a {@link Culture} from storage
  */
 export namespace Ledger {
-  const LOCATION: string = "@ledger";
-
   /**
    * Updates all stored culture's information if they're out of date.
    *
@@ -41,14 +40,11 @@ export namespace Ledger {
     const updatedCultures = await Culture.list();
     let cultures = await list();
 
-    updatedCultures.forEach(
-      async (culture: { name: string; modified: number }) => {
-        const { name, modified } = culture;
-        if (cultures.has(name) && cultures.get(name) < modified) {
-          add(name);
-        }
+    updatedCultures.forEach(async (modified: number, name: string) => {
+      if (cultures.has(name) && cultures.get(name) < modified) {
+        add(name);
       }
-    );
+    });
   }
 
   /**
@@ -61,7 +57,7 @@ export namespace Ledger {
    * @returns {Promise<Map<string, number>>}
    */
   export async function list(): Promise<Map<string, number>> {
-    const data = await AsyncStorage.getItem(LOCATION);
+    const data = await AsyncStorage.getItem(Storage.Ledger);
     if (!data) {
       return new Map();
     }
@@ -100,7 +96,7 @@ export namespace Ledger {
     let ledger = { cultures: {} };
     cultures.forEach((val, key) => (ledger.cultures[key] = val));
 
-    AsyncStorage.setItem(LOCATION, JSON.stringify(ledger));
+    AsyncStorage.setItem(Storage.Ledger, JSON.stringify(ledger));
   }
 
   /**
