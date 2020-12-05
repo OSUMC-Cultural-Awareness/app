@@ -31,6 +31,7 @@ export default StyleSheet.create({
 
   deleteButton: {
     backgroundColor: "red",
+    margin: 5,
   },
 
   fab: {
@@ -38,5 +39,13 @@ export default StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+  },
+
+  ListActions: {
+    flexDirection: "row",
+  },
+
+  dialogButton: {
+    margin: 5,
   },
 });

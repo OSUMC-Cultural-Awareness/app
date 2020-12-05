@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { View } from "react-native";
 
 import { connect } from "react-redux";
@@ -6,17 +6,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import {
-  Portal,
-  Modal,
-  Text,
-  ActivityIndicator,
-  TextInput,
-  Button,
-  FAB,
-  Snackbar,
-} from "react-native-paper";
-import { useFormik } from "formik";
+import { Portal, ActivityIndicator, FAB, Snackbar } from "react-native-paper";
 
 import { Store } from "../../redux";
 import { Admin, Culture, OfflineError, Ledger } from "../../lib";
@@ -25,8 +15,8 @@ import { Routes } from "../../routes";
 import Cultures from "./Cultures";
 import Admins from "./Admins";
 import styles from "./styles";
+import InviteModal from "./InviteModal";
 import Header from "../Header";
-import { EmailValidation } from "./validation";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Home">;
@@ -41,25 +31,10 @@ type TabProps = {
   Admins: { admins: Admin[] };
 };
 
-/**
- * Invite Email screen fields for Formik.
- */
-type EmailField = {
-  email: string;
-};
-
-/**
- * Initial values for email field for Formik.
- */
-const initialValues: EmailField = {
-  // This field could be updated with useEffect to enter the user's saved email address.
-  email: "",
-};
-
 const Tab = createMaterialTopTabNavigator<TabProps>();
 
 function Home(props: Props): React.ReactElement {
-  const { token, route, navigation, user, theme } = props;
+  const { token, route, user, navigation } = props;
 
   const [cultures, setCultures] = useState<Map<string, number>>(null);
   const [admins, setAdmins] = useState(null);
@@ -82,22 +57,6 @@ function Home(props: Props): React.ReactElement {
 
     navigation.setOptions(header({ navigation }));
   }, [navigation, showSearch, searchQuery]);
-
-  const email = useRef();
-
-  const {
-    values,
-    handleChange,
-    handleBlur,
-    errors,
-    touched,
-    handleSubmit,
-    validateField,
-  } = useFormik({
-    validationSchema: EmailValidation,
-    initialValues: initialValues,
-    onSubmit: (values) => invite(values),
-  });
 
   const fetchCultures = async () => {
     try {
@@ -164,19 +123,6 @@ function Home(props: Props): React.ReactElement {
     }
   };
 
-  const invite = async (field: EmailField) => {
-    const { email } = field;
-    await validateField("email");
-    try {
-      await Admin.invite(email, token);
-      setInviteModal(false);
-    } catch (err) {
-      setMsg(err.toString());
-    }
-  };
-
-  const hideSnackbar = () => setMsg("");
-
   if (!admins) {
     return (
       <ActivityIndicator animating={true} size="large" style={styles.spinner} />
@@ -205,6 +151,7 @@ function Home(props: Props): React.ReactElement {
               admins={admins}
               onRefresh={() => fetchAdmins()}
               searchQuery={searchQuery}
+              onErr={(err) => setMsg(err)}
             />
           )}
         </Tab.Screen>
@@ -215,49 +162,18 @@ function Home(props: Props): React.ReactElement {
           visible={msg != ""}
           onDismiss={() => setMsg("")}
           action={{
-            label: "Undo",
+            label: "Ok",
             onPress: () => setMsg(""),
           }}
         >
           {msg}
         </Snackbar>
-        <Modal
-          visible={inviteModal}
-          contentContainerStyle={
-            theme === "Dark" ? styles.modalDark : styles.modalLight
-          }
+        <InviteModal
+          show={inviteModal}
+          token={token}
           onDismiss={() => setInviteModal(false)}
-        >
-          <Text>Invite a new admin</Text>
-          <TextInput
-            autoFocus={true}
-            textContentType="emailAddress"
-            mode="outlined"
-            left={<TextInput.Icon name="email" />}
-            error={errors.email && touched.email}
-            label="email"
-            value={values.email}
-            ref={email}
-            onBlur={handleBlur("email")}
-            onChangeText={handleChange("email")}
-          />
-          <View style={styles.div} />
-          <Button mode="contained" onPress={handleSubmit}>
-            Send Invite
-          </Button>
-        </Modal>
-      </Portal>
-      <Portal>
-        <Snackbar
-          visible={msg !== ""}
-          onDismiss={hideSnackbar}
-          action={{
-            label: "Ok",
-            onPress: hideSnackbar,
-          }}
-        >
-          {msg}
-        </Snackbar>
+          onErr={(err: string) => setMsg(err)}
+        />
       </Portal>
     </View>
   );
