@@ -1,166 +1,118 @@
-<!-- PROJECT LOGO -->
-<br />
 <div align="center">
-  <img src="./public/osu-cse-logo.jpg" alt="Logo" width="580" height="80">
-
-  <h3 align="center">OSUMC Cultural Awareness App</h3>
+  <h2 align="center">OSUMC Cultural Awareness App</h2>
 
   <p align="center">
-    This app is intended for health care professionals, to aid in their understanding of the cultural norms of their patients
+    Frontend for the OSUMC Cultural Awareness Application for Android, iOS, and Web
   </p>
-  <img src="https://github.com/OSUMC-Cultural-Awareness/app/workflows/CI/badge.svg" alt="CI"/>
-  <img src="https://github.com/OSUMC-Cultural-Awareness/app/workflows/CD/badge.svg" alt="CD"/>
+  <a href="https://github.com/OSUMC-Cultural-Awareness/app/actions?query=workflow%3ACI"><img src="https://github.com/OSUMC-Cultural-Awareness/app/workflows/CI/badge.svg" alt="CI"/></a>
+  <a href="https://github.com/OSUMC-Cultural-Awareness/app/actions?query=workflow%3ACD"><img src="https://github.com/OSUMC-Cultural-Awareness/app/workflows/CD/badge.svg" alt="CD"/></a>
+  <a href="https://osumc-cultural-awareness.github.io/app"><img src="https://img.shields.io/badge/App-View%20Live%20Web-blue" alt="Live"/></a>
+  <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="Prettier"></a>
 </div>
-
-<!-- TABLE OF CONTENTS -->
-
-## Table of Contents
-
-- [About the Project](#about-the-project)
-  - [Tech Stack](#tech-stack)
-  - [Backend Production Environment](#backend-production-environment)
-  - [Frontend Production Environment](#frontend-production-environment)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation & Configuration](#Installation-&-Configuration)
-    - [Build Backend Containers](#build-backend-containers)
-- [Deployment](#deployment)
-  - [Backend](#backend)
-  - [Frontend](#frontend)
-- [Contributors](#contributors)
-- [Acknowledgements](#acknowledgements)
-
----
-
-## About The Project
-
-### Tech Stack
-
-- MongoDB
-- Python-Flask
-- Node
-- React-Native
-
-### Backend Production Environment
-
-Amazon Linux 2 free-tier image running gunicorn and nginx services. Contact @freeman91 for ssh credentials.  
-[Gunicorn](https://gunicorn.org/#docs) (Green Unicorn) is a Python WSGI HTTP Server for UNIX.  
-Using [NginX](https://nginx.org/en/) as a HTTP and reverse proxy server, routing HTTP and HTTPS traffic to gunicorn through a socket file.  
-Listening for http/s requests on www.osumc-cultural-awareness.com.
-
-### Frontend Production Environment
-
-Utlizing [Github Pages](https://pages.github.com/) to deploy a web build of the React Native application.  
-[Live React Native App](https://freeman91.github.io/OSUMC-Cultural-Awareness-App/)
-
----
 
 ## Getting Started
 
-To set up a development environment follow these simple steps.
+1. install [nodejs](https://nodejs.org/en/download/), [yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [git](https://git-scm.com/downloads)
 
-### Prerequisites
-
-install the following packages
-
-- [Docker](https://docs.docker.com/get-docker/)
-- [python 3.8](https://www.python.org/downloads/)
-- [node](https://nodejs.org/en/download/)
-- [expo-cli](https://docs.expo.io/get-started/installation/)
-- [mongo](https://www.mongodb.com/try/download/community)(optional)
-
-### Installation & Configuration for a dev environment
-
-1. Clone this repo
-2. In app root, create .env file with the following contents. Get secrets from another dev.
+2. Clone this repository and [api](https://github.com/OSUMC-Cultural-Awareness/api)
 
 ```sh
-FLASK_ENV=development
-FLASK_APP=api/__main__.py
-FRONTEND_URL=http://localhost:19006/
-# MONGO_URI not required for the app in dev
-MONGO_URI=mongodb+srv://admin:<password>@data-cluster.tjzlp.mongodb.net/database?retryWrites=true&w=majority
-MONGO_INITDB_DATABASE=database
-MONGO_INITDB_ROOT_USERNAME=admin
-MONGO_INITDB_ROOT_PASSWORD=<password>
-MONGO_IP=172.19.199.3
-MONGO_PORT=27017
-# SECRET_KEY randomly generate, MUST be secure
-SECRET_KEY=this-is-a-secret-key-keep-it-secret
-GMAIL_ADDRESS=osumc.cultural.awareness@gmail.com
-GMAIL_PASSWORD=<password>
+git clone https://github.com/OSUMC-Cultural-Awareness/app
+git clone https://github.com/OSUMC-Cultural-Awareness/api
 ```
 
-3. Install yarn packages
+3. Follow instructions for [api](https://github.com/OSUMC-Cultural-Awareness/api)
+4. Install yarn packages
 
 ```sh
 yarn install
 ```
 
-4. Build backend docker containers
+5. Start Expo through Yarn
+
+Development should be done using a local instance of the [api](https://github.com/OSUMC-Cultural-Awareness/api), but using the production [api](https://github.com/OSUMC-Cultural-Awareness/api) is possible.
 
 ```sh
-# build db and api containers
-docker-compose up -d --build
-
-# restore your local db from the backup file
-script/restore_dev_db.sh
-
-# if db exists, might need to drop the old db before restoring
-rm -rf mongo_voume/
-
-# all container logs
-docker-compose logs -f --tail=100
-
-# Stop containers
-docker-compose down
-```
-
-After building, api service is up and running on localhost:5000.
-
-5. Start Expo, React Native service
-
-```sh
+# Local Api
 yarn start
+
+# Production Api
+yarn env:prod
+yarn run expo start
 ```
-
-- run python tests
-
-```sh
-pipenv shell
-python -m pytest
-```
-
----
 
 ## Deployment
 
-`.github/workflows/deploy.yml` is automatically deploying the frontend and the backend to their respective environments. If either of those fail, you may need to deploy manually.
+### Web Deployment
 
-### Backend
-
-This will deploy the latest master, if you want to deploy another branch, follow these [instructions](https://github.com/freeman91/OSUMC-Cultural-Awareness-App/blob/master/docs/deployment.md#deploy-manually).
+Deployment to web should be handled by [Continuous Deployment](https://github.com/OSUMC-Cultural-Awareness/app/actions?query=workflow%3ACD), but in order to deploy manually
 
 ```sh
-script/deploy_production_server.sh /path/to/key
-```
-
-### Frontend
-
-```sh
+# To deploy Web to Github Pages
+yarn env:prod
 yarn deploy
 ```
 
----
+### Expo Deployment
 
-## Contributors
+In order to deploy to Expo first you must have an account [sign up](https://expo.io/signup)
 
-- Addison Freeman, @freeman91
-- Nick Lamanna
-- Adam Claus
-- Nick Hackman
+```sh
+# Login to Expo on the command line
+yarn run expo login
 
-## Acknowledgements
+# To deploy Mobile to Expo
+yarn env:prod
+yarn run expo publish
+```
 
-- [Rajiv Ramnath]()
-- [Roy Dunfee]()
+## New to React Native?
+
+We all stated here at some point, here's a collection of resources we found helpful in getting started!
+
+- [React Tutorial](https://reactjs.org/tutorial/tutorial.html) Nowhere better to start than the Tutorial
+  React enables you to write a declarative UI in JavaScript/Typescript in a syntax called "jsx" which looks a lot like Html.
+
+  If you're wondering where to put your state, favor putting it in the parent component. Avoid using `ref`s and other hacks to get the state
+  of a child component.
+
+- [Typescript Tutorial](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html) JavaScript, but Better
+  Large applications without types can become hard to maintain and Typescript helps prevent those sleepless night bugs that can plague applications.
+
+  **In order to get the most of Typescript we suggest:**
+
+  VSCode: builtin Typescript Language Server **[preferred]**
+  Vim: [coc-tsserver](https://github.com/neoclide/coc-tsserver)
+
+  - [Style guide](https://github.com/airbnb/javascript) best practices exist for a reason
+
+- [React Functional Components and Hooks](https://reactjs.org/docs/hooks-intro.html)
+  Previously React used to have a paradigm of Class based components, but recently the project has moved to Functional Components. These components use "hooks" to manage state, call Apis and more. They're used extensively in the application so having a good grasp on hooks is necessary.
+
+- [React Native Paper](https://callstack.github.io/react-native-paper/index.html) Awesome Material Design Components
+  These Components should be used over the default React Native components for things like Buttons, TextInput, etc.
+
+- [Redux Tutorial](https://react-redux.js.org/introduction/basic-tutorial)
+  Redux is a tricky to understand, but crucial component of the application allowing the storage of [User Credentials](https://github.com/OSUMC-Cultural-Awareness/app/blob/main/src/redux/UserReducer.ts) and more between screens.
+
+  - [In depth walk through](https://www.valentinog.com/blog/redux/) explains Reducers, passing state to components and more
+
+**If there was an article that really helped you learn don't be afraid to open an Pull Request!**
+
+## Documentation
+
+Interested in why a decision was made or more about the project read the [documentation](https://github.com/OSUMC-Cultural-Awareness/docs).
+
+## Found a Bug?
+
+Please open a [bug report](https://github.com/OSUMC-Cultural-Awareness/app/issues/new?assignees=&labels=app%2C+bug&template=bug_report.md&title=) and be as descriptive and explicit as possible!
+
+_note:_ If the bug isn't reproducible the issue will be closed.
+
+## Product Owner
+
+[rdunfee2](https://github.com/rdunfee2)
+
+## License
+
+Yet to be decided upon but discussion is [taking place](https://github.com/OSUMC-Cultural-Awareness/app/issues/17).
