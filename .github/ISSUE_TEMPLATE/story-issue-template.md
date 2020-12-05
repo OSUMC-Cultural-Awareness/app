@@ -1,3 +1,12 @@
+---
+name: Story Issue Template
+about: Create a story for sprint work
+title: "(##) Title"
+labels: app
+assignees: ''
+
+---
+
 <!-- Title must start with (##) where ## is the story point value -->
 
 ## Summary

@@ -1,9 +1,39 @@
-import React from "react";
-import { FlatList, Alert, View } from "react-native";
+import React, { useState, useRef } from "react";
+import { FlatList, Alert, View, Platform } from "react-native";
+import { connect } from "react-redux";
+import {
+  List,
+  IconButton,
+  Modal,
+  Portal,
+  Text,
+  Button,
+  TextInput,
+  Snackbar,
+} from "react-native-paper";
+import { useFormik } from "formik";
 
-import { List, IconButton } from "react-native-paper";
-
+import { Store } from "../../redux";
 import { Admin } from "../../lib";
+import styles from "./styles";
+import { EmailNameValidation } from "./validation";
+
+/**
+ * Invite Email screen fields for Formik.
+ */
+type EditFields = {
+  email: string;
+  name: string;
+};
+
+/**
+ * Initial values for email field for Formik.
+ */
+const initialValues: EditFields = {
+  // This field could be updated with useEffect to enter the user's saved email address.
+  email: "",
+  name: "",
+};
 
 /**
  * Properties for {@link Admins}
@@ -11,7 +41,8 @@ import { Admin } from "../../lib";
 type AdminProps = {
   token: string;
   admins: Admin[];
-  // Refresh admins
+  theme: string;
+  user: Admin;
   onRefresh: () => void;
 };
 
@@ -21,61 +52,179 @@ type AdminProps = {
  * @param {AdminProps} props
  * @returns {React.ReactElement} React component
  */
-export default function Admins(props: AdminProps): React.ReactElement {
-  const { token, admins, onRefresh } = props;
+function Admins(props: AdminProps): React.ReactElement {
+  const { user, theme, token, admins, onRefresh } = props;
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [msg, setMsg] = useState<string>("");
 
-  const onDelete = async (email: string) => {
+  const name = useRef();
+
+  const {
+    values,
+    handleChange,
+    handleBlur,
+    errors,
+    touched,
+    handleSubmit,
+    validateField,
+    setFieldValue,
+  } = useFormik({
+    validationSchema: EmailNameValidation,
+    initialValues: initialValues,
+    onSubmit: (values) => onEdit(values),
+  });
+
+  const hideSnackbar = () => setMsg("");
+
+  const onDelete = async () => {
     try {
-      await Admin.delete(email, token);
+      await Admin.delete(selectedItem.email, token);
     } catch {
       // show error message
     }
     onRefresh();
   };
 
-  const onEdit = (user: {
-    email: string;
-    name: string;
-    superUser: boolean;
-  }) => {
-    //TODO: update Admin.update() params
+  const onEdit = async (fields: EditFields) => {
+    const { name, email } = fields;
     try {
-      //Admin.update(email, token)
+      Admin.update(email, name, props.token);
+      setEditModal(false);
       onRefresh();
     } catch {
-      // show error message
+      // TODO: show error message
     }
   };
 
+  const superUserDeleteCheck = (item: any) => {
+    if (!item.superUser && item.email != user.email)
+      return (
+        <IconButton
+          icon="delete"
+          onPress={() => {
+            setDeleteModal(true);
+            setSelectedItem(item);
+          }}
+        />
+      );
+  };
+
+  const handleEditClick = (admin: Admin) => {
+    setFieldValue("name", admin.name);
+    setFieldValue("email", admin.email);
+    setEditModal(true);
+  };
+
   return (
-    <View style={{ flex: 1 }}>
-      <FlatList
-        data={admins}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => {
-          return (
+    <FlatList
+      style={{ flex: 1 }}
+      data={admins}
+      keyExtractor={(_, index) => index.toString()}
+      renderItem={({ item }) => {
+        return (
+          <View>
             <List.Item
               title={item.email}
-              onPress={() => {
-                Alert.alert("user pressed", item.name, [
-                  { text: "OK", onPress: () => console.log("OK Pressed") },
-                ]);
-              }}
               right={() =>
                 props.token !== "" && (
                   <View style={{ flexDirection: "row" }}>
-                    <IconButton icon="pencil" onPress={() => onEdit(item)} />
                     <IconButton
-                      icon="delete"
-                      onPress={() => onDelete(item.email)}
+                      icon="pencil"
+                      onPress={() => handleEditClick(item)}
                     />
+                    {superUserDeleteCheck(item)}
                   </View>
                 )
               }
             />
-          );
-        }}
-      />
-    </View>
+            <Portal>
+              {deleteModal && (
+                <Modal
+                  visible={deleteModal}
+                  contentContainerStyle={
+                    theme === "Dark" ? styles.modalDark : styles.modalLight
+                  }
+                  onDismiss={() => setDeleteModal(false)}
+                >
+                  {/*TODO: update style for text */}
+                  <Text>
+                    Are you sure you want to delete {selectedItem.email}?
+                  </Text>
+                  <Button
+                    mode="contained"
+                    onPress={() => {
+                      onDelete();
+                      setDeleteModal(false);
+                    }}
+                    style={styles.deleteButton}
+                  >
+                    Delete
+                  </Button>
+                </Modal>
+              )}
+            </Portal>
+            <Portal>
+              {editModal && (
+                <Modal
+                  visible={editModal}
+                  contentContainerStyle={
+                    theme === "Dark" ? styles.modalDark : styles.modalLight
+                  }
+                  onDismiss={() => setEditModal(false)}
+                >
+                  {/*TODO: update style for text */}
+                  <Text>Edit admin Account</Text>
+                  <TextInput
+                    mode="outlined"
+                    left={<TextInput.Icon name="email" />}
+                    label="email"
+                    value={values.email}
+                    disabled={true}
+                  />
+                  <TextInput
+                    autoFocus={true}
+                    textContentType="name"
+                    mode="outlined"
+                    left={<TextInput.Icon name="account-badge" />}
+                    error={errors.name && touched.name}
+                    label="name"
+                    value={values.name}
+                    ref={name}
+                    onBlur={handleBlur("name")}
+                    onChangeText={handleChange("name")}
+                  />
+                  <View style={styles.div} />
+                  <Button mode="contained" onPress={handleSubmit}>
+                    Save
+                  </Button>
+                </Modal>
+              )}
+            </Portal>
+            <Portal>
+              <Snackbar
+                visible={msg !== ""}
+                onDismiss={hideSnackbar}
+                action={{
+                  label: "Ok",
+                  onPress: hideSnackbar,
+                }}
+              >
+                {msg}
+              </Snackbar>
+            </Portal>
+          </View>
+        );
+      }}
+    />
   );
 }
+
+export default connect(
+  (state: Store) => ({
+    user: state.user.user,
+    theme: state.theme,
+  }),
+  null
+)(Admins);
