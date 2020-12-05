@@ -8,7 +8,7 @@ import { Card, IconButton, Paragraph, Title } from "react-native-paper";
 
 import { GeneralInsight } from "../../lib";
 
-import Styles from "./style";
+import styles from "./style";
 
 export type Action =
   | "copy"
@@ -49,7 +49,7 @@ export default function InsightCard(
   const link = insight.source.data;
 
   return (
-    <Card style={Styles.card} onPress={() => editing && onPress(index)}>
+    <Card style={styles.card} onPress={() => editing && onPress(index)}>
       <Card.Content>
         <Title>{insight.summary}</Title>
         <Paragraph>{insight.information}</Paragraph>

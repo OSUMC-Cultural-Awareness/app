@@ -17,14 +17,14 @@ import {
   Snackbar,
   Portal,
   Banner,
+  FAB,
 } from "react-native-paper";
 
-import EditFAB from "./EditFab";
 import InsightCard, { Action } from "./InsightCard";
 import Insights from "./Insights";
 import ToolsFAB from "./ToolsFAB";
-import Styles from "./style";
 import Header from "../Header";
+import styles from "./style";
 
 import { Culture, GeneralInsight, SpecializedInsight, Ledger } from "../../lib";
 
@@ -227,7 +227,7 @@ function CultureView(props: Props): React.ReactElement {
 
   if (!culture) {
     return (
-      <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
+      <ActivityIndicator animating={true} size="large" style={styles.spinner} />
     );
   }
 
@@ -327,7 +327,7 @@ function CultureView(props: Props): React.ReactElement {
   );
 
   return (
-    <View style={Styles.view}>
+    <View style={styles.view}>
       {token !== "" && (
         <Banner
           icon="alert"
@@ -375,7 +375,7 @@ function CultureView(props: Props): React.ReactElement {
                         icon="plus"
                         onPress={() => addSpecializedInsight(title)}
                         mode="contained"
-                        style={Styles.specialAddInsight}
+                        style={styles.specialAddInsight}
                       >
                         {""}
                       </Button>
@@ -391,7 +391,15 @@ function CultureView(props: Props): React.ReactElement {
         <ToolsFAB onSave={() => updateCulture()} onAdd={addInsightOrCategory} />
       )}
       {token !== "" && !editing && (
-        <EditFAB onPress={() => setEditing(!editing)} />
+        <FAB.Group
+          icon="pencil"
+          style={styles.fab}
+          open={false}
+          onPress={() => setEditing(!editing)}
+          visible={true}
+          actions={[]}
+          onStateChange={() => setEditing(!editing)}
+        />
       )}
       <Portal>
         <Snackbar

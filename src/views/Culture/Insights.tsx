@@ -5,7 +5,7 @@ import { ActivityIndicator } from "react-native-paper";
 
 import { GeneralInsight } from "../../lib";
 
-import Styles from "./style";
+import styles from "./style";
 
 /**
  * Properties for {@link Insights}
@@ -32,7 +32,7 @@ export default function Insights(props: InsightProps): React.ReactElement {
 
   if (!insights) {
     return (
-      <ActivityIndicator animating={true} size="large" style={Styles.spinner} />
+      <ActivityIndicator animating={true} size="large" style={styles.spinner} />
     );
   }
 

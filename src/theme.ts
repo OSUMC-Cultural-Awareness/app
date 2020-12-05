@@ -21,7 +21,3 @@ export const darkTheme = {
 };
 
 export type ThemeType = "Dark" | "Light";
-
-// Location for {@link AsyncStorage} to store theme
-// "Light" or "Dark"
-export const ThemeStorage = "@theme";

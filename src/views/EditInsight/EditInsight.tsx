@@ -21,7 +21,7 @@ type Props = {
   route: RouteProp<Routes, "EditInsight">;
 };
 
-const Styles = StyleSheet.create({
+const styles = StyleSheet.create({
   view: { flex: 1, justifyContent: "space-evenly", overflow: "hidden" },
 
   fab: { position: "absolute", bottom: 0, right: 0, margin: 16 },
@@ -113,9 +113,9 @@ export default function EditInsight(props: Props): React.ReactElement {
   };
 
   return (
-    <SafeAreaView style={Styles.view}>
+    <SafeAreaView style={styles.view}>
       <TextInput
-        style={Styles.input}
+        style={styles.input}
         value={cultureName}
         placeholder="Culture Name"
         label="Culture Name"
@@ -124,7 +124,7 @@ export default function EditInsight(props: Props): React.ReactElement {
       />
       {isSpecialized && (
         <TextInput
-          style={Styles.input}
+          style={styles.input}
           value={title}
           placeholder="Title"
           label="Title"
@@ -134,7 +134,7 @@ export default function EditInsight(props: Props): React.ReactElement {
       )}
       {isSpecialized && <Divider />}
       <TextInput
-        style={Styles.input}
+        style={styles.input}
         value={summary}
         placeholder="Summary"
         label="Summary"
@@ -143,7 +143,7 @@ export default function EditInsight(props: Props): React.ReactElement {
         onChangeText={(text) => setSummary(text)}
       />
       <TextInput
-        style={Styles.input}
+        style={styles.input}
         value={info}
         mode="outlined"
         placeholder="Description"
@@ -163,7 +163,7 @@ export default function EditInsight(props: Props): React.ReactElement {
       </RadioButton.Group>
       <Divider />
       <TextInput
-        style={Styles.input}
+        style={styles.input}
         value={srcData}
         label="Source"
         placeholder="Source Information"
@@ -172,7 +172,7 @@ export default function EditInsight(props: Props): React.ReactElement {
         onChangeText={(text) => setSrcData(text)}
       />
       <Portal>
-        <FAB style={Styles.fab} icon="check" onPress={updateCulture} />
+        <FAB style={styles.fab} icon="check" onPress={updateCulture} />
       </Portal>
     </SafeAreaView>
   );

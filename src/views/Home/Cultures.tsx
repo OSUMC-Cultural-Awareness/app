@@ -15,9 +15,10 @@ import styles from "./styles";
 type CultureProps = {
   navigation: StackNavigationProp<Routes, "Home">;
   token: string;
-  cultures: Culture[];
+  cultures: IterableIterator<[string, number]>;
   onRefresh: () => void;
   searchQuery?: string;
+  offline: boolean;
 };
 
 /**
@@ -27,7 +28,7 @@ type CultureProps = {
  * @returns {React.ReactElement} React component
  */
 export default function Cultures(props: CultureProps): React.ReactElement {
-  const { cultures, onRefresh, token, searchQuery } = props;
+  const { cultures, onRefresh, token, searchQuery, offline } = props;
   const [refreshing, setRefreshing] = useState(false);
 
   if (!cultures) {
@@ -36,25 +37,26 @@ export default function Cultures(props: CultureProps): React.ReactElement {
     );
   }
 
-  const deleteCulture = async (culture: Culture) => {
+  const deleteCulture = async (name: string) => {
     try {
-      await Culture.delete(culture.name, token);
+      await Culture.delete(name, token);
     } catch (err) {
       console.error("Failed to delete culture", err);
     }
     onRefresh();
   };
 
-  const searchResults = (): Culture[] => {
-    return cultures.filter((culture) => {
+  const searchResults = (): [string, number][] => {
+    return Array.from(cultures).filter((culture) => {
+      const [name] = culture;
       if (!searchQuery) {
         return true;
       }
 
-      const name = culture.name.toLowerCase();
+      const nameLower = name.toLowerCase();
       const query = searchQuery.toLowerCase();
 
-      return name.includes(query);
+      return nameLower.includes(query);
     });
   };
 
@@ -70,11 +72,12 @@ export default function Cultures(props: CultureProps): React.ReactElement {
         }}
         refreshing={refreshing}
         renderItem={({ item }) => {
+          const [name] = item;
           return (
             <List.Item
-              title={item.name}
+              title={name}
               onPress={() =>
-                props.navigation.navigate("Culture", { cultureName: item.name })
+                props.navigation.navigate("Culture", { cultureName: name })
               }
               right={() => (
                 <View
@@ -84,14 +87,16 @@ export default function Cultures(props: CultureProps): React.ReactElement {
                     justifyContent: "flex-end",
                   }}
                 >
-                  <IconButton
-                    icon="download"
-                    onPress={() => Ledger.add(item.name)}
-                  />
+                  {!offline && (
+                    <IconButton
+                      icon="download"
+                      onPress={() => Ledger.add(name)}
+                    />
+                  )}
                   {token !== "" && (
                     <IconButton
                       icon="delete"
-                      onPress={() => deleteCulture(item)}
+                      onPress={() => deleteCulture(name)}
                     />
                   )}
                 </View>

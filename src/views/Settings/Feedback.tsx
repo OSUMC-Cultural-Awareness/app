@@ -1,33 +1,10 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 
 import { List, TextInput, Text, Button } from "react-native-paper";
 
 import { Feedback as FeedbackSender } from "../../lib";
-
-const Styles = StyleSheet.create({
-  leftIcon: {
-    left: -5,
-  },
-
-  input: {
-    padding: 20,
-  },
-
-  characterCounter: {
-    fontSize: 11,
-    right: 22,
-    position: "absolute",
-    bottom: 20,
-    paddingRight: 2,
-    paddingBottom: 2,
-  },
-
-  button: {
-    padding: 15,
-    margin: 10,
-  },
-});
+import styles from "./styles";
 
 const characterLimit = 300;
 
@@ -73,7 +50,7 @@ export default function Feedback(): React.ReactElement {
         left={(props) => (
           <List.Icon
             {...props}
-            style={Styles.leftIcon}
+            style={styles.leftIcon}
             icon="message-reply-text"
           />
         )}
@@ -86,7 +63,7 @@ export default function Feedback(): React.ReactElement {
             icon="check"
             color="green"
             mode="contained"
-            style={Styles.button}
+            style={styles.button}
             onPress={reset}
           >
             Thank you
@@ -97,7 +74,7 @@ export default function Feedback(): React.ReactElement {
             icon="alert"
             color="yellow"
             mode="contained"
-            style={Styles.button}
+            style={styles.button}
             onPress={() => setState("writing")}
           >
             Try again later
@@ -105,7 +82,7 @@ export default function Feedback(): React.ReactElement {
         )}
         {(state === "writing" || state === "sending") && (
           <TextInput
-            style={Styles.input}
+            style={styles.input}
             mode="outlined"
             multiline={true}
             label="Where can we improve?"
@@ -123,7 +100,7 @@ export default function Feedback(): React.ReactElement {
         )}
         {(state === "writing" || state === "sending") && (
           <Text
-            style={Styles.characterCounter}
+            style={styles.characterCounter}
           >{`${feedback.length}/${characterLimit}`}</Text>
         )}
       </List.Accordion>

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "entryPoint": "./src/App.tsx",
+    "entryPoint": "./src",
     "name": "Cultural Awareness",
     "slug": "OSUMC-Cultural-Awareness",
     "version": "1.0.0",

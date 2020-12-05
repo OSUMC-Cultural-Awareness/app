@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 
 export default StyleSheet.create({
   spinner: { top: "50%", position: "relative" },
@@ -18,4 +18,6 @@ export default StyleSheet.create({
     marginVertical: 5,
     marginHorizontal: 5,
   },
+
+  fab: { position: (Platform.OS === "web" ? "fixed" : undefined) as any },
 });

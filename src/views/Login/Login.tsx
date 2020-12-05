@@ -20,6 +20,7 @@ import { Admin, AuthPayload } from "../../lib";
 import { updateUser, Store } from "../../redux";
 import { Routes } from "../../routes";
 import Validation from "./validation";
+import { Storage } from "../../storage";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Login">;
@@ -44,11 +45,7 @@ const initialValues: LoginFields = {
   password: "",
 };
 
-// Used for {@link AsyncStorage} to store a user's email
-// locally on their device.
-const RememberedEmail = "@rememberedEmail";
-
-const Styles = StyleSheet.create({
+const styles = StyleSheet.create({
   view: {
     flex: 1,
     justifyContent: "space-evenly",
@@ -95,7 +92,7 @@ function Login(props: Props): React.ReactElement {
 
   useEffect(() => {
     const getEmail = async () => {
-      const email = await AsyncStorage.getItem(RememberedEmail);
+      const email = await AsyncStorage.getItem(Storage.RememberedEmail);
       if (email) {
         setFieldValue("email", email);
         setRemember(true);
@@ -132,9 +129,9 @@ function Login(props: Props): React.ReactElement {
 
     try {
       if (remember) {
-        await AsyncStorage.setItem(RememberedEmail, email);
+        await AsyncStorage.setItem(Storage.RememberedEmail, email);
       } else {
-        await AsyncStorage.removeItem(RememberedEmail);
+        await AsyncStorage.removeItem(Storage.RememberedEmail);
       }
     } catch (err) {
       console.error("Failed to set Remembered Email", err);
@@ -167,7 +164,7 @@ function Login(props: Props): React.ReactElement {
   };
 
   return (
-    <View style={Styles.view}>
+    <View style={styles.view}>
       <View>
         <TextInput
           autoFocus={true}
@@ -216,7 +213,7 @@ function Login(props: Props): React.ReactElement {
         Log In
       </Button>
       <Button
-        style={Styles.recover}
+        style={styles.recover}
         mode="text"
         onPress={recoverAccount}
         uppercase={false}

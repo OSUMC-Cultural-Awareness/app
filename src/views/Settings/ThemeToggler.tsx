@@ -7,7 +7,8 @@ import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Store, updateTheme } from "../../redux";
-import { ThemeStorage, ThemeType } from "../../theme";
+import { ThemeType } from "../../theme";
+import { Storage } from "../../storage";
 
 type Props = {
   updateTheme: (type: ThemeType) => void;
@@ -29,7 +30,7 @@ function ThemeToggler(props: Props): React.ReactElement {
     const getTheme = async () => {
       let theme: ThemeType;
       try {
-        theme = (await AsyncStorage.getItem(ThemeStorage)) as ThemeType;
+        theme = (await AsyncStorage.getItem(Storage.Theme)) as ThemeType;
       } catch (err) {
         theme = "Light";
       }
@@ -48,7 +49,7 @@ function ThemeToggler(props: Props): React.ReactElement {
     const newTheme = theme === "Dark" ? "Light" : "Dark";
     updateTheme(newTheme);
     try {
-      await AsyncStorage.setItem(ThemeStorage, newTheme);
+      await AsyncStorage.setItem(Storage.Theme, newTheme);
     } catch (err) {
       console.log("failed to set theme");
     }
