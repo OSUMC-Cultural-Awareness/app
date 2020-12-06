@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Culture Renders 1`] = `
+<Provider
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+>
+  <ForwardRef(NavigationContainer)>
+    <StackNavigator
+      initialRouteName="Culture"
+    >
+      <Screen
+        component={
+          Object {
+            "$$typeof": Symbol(react.memo),
+            "WrappedComponent": [Function],
+            "compare": null,
+            "displayName": "Connect(CultureView)",
+            "type": [Function],
+          }
+        }
+        name="Culture"
+      />
+    </StackNavigator>
+  </ForwardRef(NavigationContainer)>
+</Provider>
+`;

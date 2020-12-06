@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Recovery Renders 1`] = `
+<Provider
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+>
+  <ForwardRef(NavigationContainer)>
+    <StackNavigator
+      initialRouteName="Recovery"
+    >
+      <Screen
+        component={[Function]}
+        name="Recovery"
+      />
+    </StackNavigator>
+  </ForwardRef(NavigationContainer)>
+</Provider>
+`;
