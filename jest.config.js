@@ -30,5 +30,6 @@ module.exports = {
     "!**/jest.config.js",
     "!**/setup-envs.js",
   ],
+  timers: "fake",
+  snapshotSerializers: ["enzyme-to-json/serializer"],
 };
-
