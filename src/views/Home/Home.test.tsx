@@ -7,13 +7,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { shallow } from "enzyme";
+import renderer from "react-test-renderer";
 
 import Home from ".";
 import { USER_INITIAL_STATE, THEME_INITIAL_STATE } from "../../redux";
 import { Routes } from "../../routes";
-
-jest.useFakeTimers();
 
 const HomeTest = () => {
   const Stack = createStackNavigator<Routes>();
@@ -37,7 +35,13 @@ const HomeTest = () => {
 };
 
 describe("Home", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.clearAllMocks();
+  });
+
   test("Renders", () => {
-    expect(shallow(<HomeTest />)).toMatchSnapshot();
+    const rendered = renderer.create(<HomeTest />).toJSON();
+    expect(rendered).toMatchSnapshot();
   });
 });

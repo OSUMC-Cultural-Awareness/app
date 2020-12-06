@@ -77,7 +77,9 @@ function CultureView(props: Props): React.ReactElement {
   const [editing, setEditing] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>("");
   const [banner, setBanner] = useState(false);
-  const [dirty, setDirty] = useState(props.route.params.dirty || false);
+  const [dirty, setDirty] = useState(
+    props.route.params ? props.route.params.dirty : false
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const route = useRoute();
@@ -142,7 +144,7 @@ function CultureView(props: Props): React.ReactElement {
           );
         }
       }),
-    [navigation, dirty, props.route.params.dirty]
+    [navigation, dirty]
   );
 
   /**

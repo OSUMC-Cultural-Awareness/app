@@ -39,9 +39,9 @@ export class Api {
    *
    * @param {string} endpoint  after `http://localhost:5000/v1/`
    *
-   * @returns {Promise<Record<string, unknown>>} JSON
+   * @returns {Promise<any>} JSON
    */
-  static async get(endpoint: string): Promise<Record<string, unknown>> {
+  static async get(endpoint: string): Promise<any> {
     let response: Response;
     try {
       response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
@@ -68,12 +68,9 @@ export class Api {
    *
    * @param {string} endpoint  after `http://localhost:5000/v1/`
    * @param {string} token  JSON Web Token
-   * @returns {Promise<Record<string, unknown>>} JSON
+   * @returns {Promise<any>} JSON
    */
-  static async getAuth(
-    endpoint: string,
-    token: string
-  ): Promise<Record<string, unknown>> {
+  static async getAuth(endpoint: string, token: string): Promise<any> {
     let response: Response;
     try {
       response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
@@ -104,13 +101,13 @@ export class Api {
    * @param {string} endpoint  after `http://localhost:5000/v1/`
    * @param {Record<string, unknown>} body  JSON payload
    * @param {string} token  JSON Web Token
-   * @returns {Promise<Record<string, unknown>>} JSON
+   * @returns {Promise<any>} JSON
    */
   static async put(
     endpoint: string,
     body: Record<string, unknown> = {},
     token: string
-  ): Promise<Record<string, unknown>> {
+  ): Promise<any> {
     let response: Response;
     try {
       response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
@@ -142,12 +139,9 @@ export class Api {
    *
    * @param {string} endpoint  after `http://localhost:5000/v1/`
    * @param {string} token  JSON Web Token
-   * @returns {Promise<Record<string, unknown>>} JSON
+   * @returns {Promise<any>} JSON
    */
-  static async delete(
-    endpoint: string,
-    token: string
-  ): Promise<Record<string, unknown>> {
+  static async delete(endpoint: string, token: string): Promise<any> {
     let response: Response;
     try {
       response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
@@ -179,13 +173,13 @@ export class Api {
    * @param {string} endpoint  after `http://localhost:5000/v1/`
    * @param {Record<string, unknown>} body  Request Body
    * @param {string} auth  JSON Web Token
-   * @returns {Promise<Record<string, unknown>>} JSON
+   * @returns {Promise<any>} JSON
    */
   static async post(
     endpoint: string,
     body: Record<string, unknown> = {},
     token?: string
-  ): Promise<Record<string, unknown>> {
+  ): Promise<any> {
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",

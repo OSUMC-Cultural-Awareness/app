@@ -18,7 +18,6 @@ module.exports = {
     "android.ts",
     "android.tsx",
   ],
-  setupFilesAfterEnv: ["<rootDir>setup.tests.js"],
   collectCoverage: true,
   collectCoverageFrom: [
     "**/*.{ts,tsx,js,jsx}",
@@ -31,5 +30,4 @@ module.exports = {
     "!**/setup-envs.js",
   ],
   timers: "fake",
-  snapshotSerializers: ["enzyme-to-json/serializer"],
 };
