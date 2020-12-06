@@ -9,4 +9,5 @@ cache:
 script:
   - yarn env:dev
   - yarn run prettier --check src
+  - yarn eslint .
   - jest --coverage --silent && coveralls < coverage/lcov.info
