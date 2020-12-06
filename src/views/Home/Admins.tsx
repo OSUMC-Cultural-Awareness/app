@@ -1,6 +1,5 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
-import { FlatList, Alert, View, Platform } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import React, { useState, useRef } from "react";
+import { FlatList, View } from "react-native";
 import { connect } from "react-redux";
 import {
   List,
@@ -14,11 +13,9 @@ import {
 } from "react-native-paper";
 import { useFormik } from "formik";
 
-import { Routes } from "../../routes";
 import { Store } from "../../redux";
 import { Admin } from "../../lib";
 
-import Header from "../Header";
 import styles from "./styles";
 import { EmailNameValidation } from "./validation";
 

@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Pako from "pako";
 
 import { Culture } from "./culture";
-import { Storage } from "../storage";
+import Storage from "../storage";
 
 /**
  * Ledger - a JavaScript Object that stores all downloaded cultures and
@@ -21,7 +21,7 @@ import { Storage } from "../storage";
  * {@link list} List all Cultures in a Map<string, number>
  * {@link read} Read a {@link Culture} from storage
  */
-export namespace Ledger {
+export default class Ledger {
   /**
    * Updates all stored culture's information if they're out of date.
    *
@@ -36,13 +36,13 @@ export namespace Ledger {
    * @throws storage failures from {@link AsyncStorage}
    * @throws JSON errors from {@link JSON}
    */
-  export async function update() {
+  static async update(): Promise<void> {
     const updatedCultures = await Culture.list();
-    let cultures = await list();
+    const cultures = await Ledger.list();
 
     updatedCultures.forEach(async (modified: number, name: string) => {
       if (cultures.has(name) && cultures.get(name) < modified) {
-        add(name);
+        Ledger.add(name);
       }
     });
   }
@@ -56,13 +56,13 @@ export namespace Ledger {
    *
    * @returns {Promise<Map<string, number>>}
    */
-  export async function list(): Promise<Map<string, number>> {
+  static async list(): Promise<Map<string, number>> {
     const data = await AsyncStorage.getItem(Storage.Ledger);
     if (!data) {
       return new Map();
     }
 
-    let ledger = JSON.parse(data)["cultures"];
+    const ledger = JSON.parse(data)["cultures"];
     return new Map(Object.entries(ledger));
   }
 
@@ -77,7 +77,7 @@ export namespace Ledger {
    *
    * @returns {Promise<Culture>} culture read
    */
-  export async function read(culture: string): Promise<Culture> {
+  static async read(culture: string): Promise<Culture> {
     const storedData = await AsyncStorage.getItem(culture);
     if (!storedData) {
       throw new Error(`${culture}: culture download not found`);
@@ -92,11 +92,12 @@ export namespace Ledger {
    *
    * @param {Map} cultures to save
    */
-  function saveLedger(cultures: Map<string, number>) {
-    let ledger = { cultures: {} };
+  private static saveLedger(cultures: Map<string, number>): Promise<void> {
+    const ledger = { cultures: {} };
     cultures.forEach((val, key) => (ledger.cultures[key] = val));
 
     AsyncStorage.setItem(Storage.Ledger, JSON.stringify(ledger));
+    return;
   }
 
   /**
@@ -111,14 +112,14 @@ export namespace Ledger {
    * @throws storage failures from {@link AsyncStorage}
    * @throw pako errors from {@link Pako}
    */
-  export async function add(culture: string) {
+  static async add(culture: string): Promise<void> {
     const info = await Culture.get(culture);
     const compressed = Pako.deflate(JSON.stringify(info), { to: "string" });
     AsyncStorage.setItem(culture, compressed.toString());
 
-    let cultures = await list();
+    const cultures = await Ledger.list();
     cultures.set(culture, info.modified);
-    saveLedger(cultures);
+    Ledger.saveLedger(cultures);
   }
 
   /**
@@ -129,14 +130,14 @@ export namespace Ledger {
    *
    * @param {string} culture to remove
    */
-  export async function remove(culture: string) {
-    let cultures = await list();
+  static async remove(culture: string): Promise<void> {
+    const cultures = await Ledger.list();
 
     if (cultures.has(culture)) {
       AsyncStorage.removeItem(culture);
     }
 
     cultures.delete(culture);
-    saveLedger(cultures);
+    Ledger.saveLedger(cultures);
   }
 }

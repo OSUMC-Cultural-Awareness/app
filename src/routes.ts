@@ -73,7 +73,7 @@ export const Linking = {
       Culture: {
         path: "culture/:cultureName",
         parse: {
-          cultureName: (cultureName: string) => decodeURI(cultureName),
+          cultureName: (cultureName: string): string => decodeURI(cultureName),
         },
         screens: {
           general: "general",

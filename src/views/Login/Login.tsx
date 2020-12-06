@@ -20,7 +20,7 @@ import { Admin, AuthPayload } from "../../lib";
 import { updateUser, Store } from "../../redux";
 import { Routes } from "../../routes";
 import Validation from "./validation";
-import { Storage } from "../../storage";
+import Storage from "../../storage";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Login">;

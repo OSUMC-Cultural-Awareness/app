@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Store, updateTheme } from "../../redux";
 import { ThemeType } from "../../theme";
-import { Storage } from "../../storage";
+import * as Storage from "../../storage";
 
 type Props = {
   updateTheme: (type: ThemeType) => void;

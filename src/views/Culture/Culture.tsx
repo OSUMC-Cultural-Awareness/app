@@ -73,7 +73,7 @@ function CultureView(props: Props): React.ReactElement {
   const token = props.token || "";
   const navigation = props.navigation;
 
-  let [culture, setCulture] = useState<Culture | null>(null);
+  const [culture, setCulture] = useState<Culture | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>("");
   const [banner, setBanner] = useState(false);
@@ -112,6 +112,8 @@ function CultureView(props: Props): React.ReactElement {
         e.preventDefault();
 
         if (Platform.OS === "web") {
+          // HACK: Use Web Confirmation when on Web Platform.
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           const leave = confirm(
             "You have unsaved changes. Are you sure you want to discard them and leave the screen?"
@@ -125,7 +127,11 @@ function CultureView(props: Props): React.ReactElement {
             "Discard changes?",
             "You have unsaved changes. Are you sure you want to discard them and leave the screen?",
             [
-              { text: "Don't leave", style: "cancel", onPress: () => {} },
+              {
+                text: "Cancel",
+                style: "cancel",
+                onPress: () => e.preventDefault(),
+              },
               {
                 text: "Discard",
                 style: "destructive",
@@ -474,7 +480,7 @@ function specializedInsightResults(
     }
   );
 
-  return matched.filter(([_, insights]) => insights.length !== 0);
+  return matched.filter((topic) => topic[1].length !== 0);
 }
 
 export default connect(

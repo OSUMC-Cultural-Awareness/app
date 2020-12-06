@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
  */
 export default function EditInsight(props: Props): React.ReactElement {
   const index = props.route.params.index;
-  let { culture } = props.route.params;
+  const { culture } = props.route.params;
 
   const isSpecialized: boolean = index instanceof Array;
 
@@ -82,7 +82,7 @@ export default function EditInsight(props: Props): React.ReactElement {
     if (index instanceof Array) {
       const [key, i] = index;
 
-      let specialized = culture.specializedInsights.get(key);
+      const specialized = culture.specializedInsights.get(key);
       specialized[i] = newInsight;
 
       if (title !== index[0]) {

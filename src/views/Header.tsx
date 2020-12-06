@@ -8,7 +8,10 @@ import {
   Searchbar,
   Title,
 } from "react-native-paper";
-import { StackNavigationProp } from "@react-navigation/stack";
+import {
+  StackNavigationProp,
+  StackNavigationOptions,
+} from "@react-navigation/stack";
 import { connect } from "react-redux";
 
 import { Store } from "../redux";
@@ -101,7 +104,19 @@ type Props = {
   onCancel: () => void;
 };
 
-export default function Header(props: Props) {
+/**
+ * Header.
+ *
+ * @param {Props} props
+ */
+export default function Header(
+  props: Props
+): (props: {
+  navigation: StackNavigationProp<Routes, "Home" | "Culture">;
+}) => {
+  headerTitle: StackNavigationOptions["headerTitle"];
+  headerRight: StackNavigationOptions["headerRight"];
+} {
   const {
     title,
     showSearch,

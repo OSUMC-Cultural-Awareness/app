@@ -85,7 +85,7 @@ export default function Feedback(): React.ReactElement {
             style={styles.input}
             mode="outlined"
             multiline={true}
-            label="Where can we improve?"
+            label="How can we improve?"
             value={feedback}
             onChangeText={handleInput}
             numberOfLines={4}

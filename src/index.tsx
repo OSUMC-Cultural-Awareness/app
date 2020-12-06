@@ -29,7 +29,7 @@ import {
 import { Routes, Linking } from "./routes";
 import { lightTheme, darkTheme, ThemeType } from "./theme";
 import { Reducer, updateTheme, Store } from "./redux";
-import { Storage } from "./storage";
+import Storage from "./storage";
 
 const store = createStore(Reducer);
 
