@@ -5,7 +5,6 @@
     Frontend for the OSUMC Cultural Awareness Application for Android, iOS, and Web
   </p>
   <a href="https://travis-ci.com/OSUMC-Cultural-Awareness/app"><img src="https://travis-ci.com/OSUMC-Cultural-Awareness/app.svg?branch=main"/></a>
-  <img src="https://github.com/OSUMC-Cultural-Awareness/app/workflows/CD/badge.svg" alt="CD"/>
   <a href='https://coveralls.io/github/OSUMC-Cultural-Awareness/app?branch=main'><img src='https://coveralls.io/repos/github/OSUMC-Cultural-Awareness/app/badge.svg?branch=main' alt='Coverage Status' /></a>
   <a href="https://github.com/OSUMC-Cultural-Awareness/app/actions?query=workflow%3ACD"><img src="https://github.com/OSUMC-Cultural-Awareness/app/workflows/CD/badge.svg" alt="CD"/></a>
   <a href="https://osumc-cultural-awareness.github.io/app"><img src="https://img.shields.io/badge/App-View%20Live%20Web-blue" alt="Live"/></a>
