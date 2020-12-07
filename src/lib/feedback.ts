@@ -1,6 +1,6 @@
 import { Api } from "./api";
 
-export namespace Feedback {
+export default class Feedback {
   /**
    * send feedback to owner.
    *
@@ -10,7 +10,7 @@ export namespace Feedback {
    * @param {string} feedback - to send
    * @returns {Promise<void>}
    */
-  export async function send(feedback: string): Promise<void> {
+  static async send(feedback: string): Promise<void> {
     await Api.post("/feedback", { feedback: feedback });
   }
 }

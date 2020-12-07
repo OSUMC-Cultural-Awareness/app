@@ -24,6 +24,8 @@ instance/
 .pytest_cache/
 .coverage
 htmlcov/
+coverage
 .mypy_cache/
 node_modules
+.jest
 .expo

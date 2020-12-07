@@ -52,7 +52,7 @@ export class Api {
       throw new OfflineError(err);
     }
 
-    let json = await response.json();
+    const json = await response.json();
     if (!response.ok) {
       throw new ApiError(json["msg"], response.status);
     }
@@ -84,7 +84,7 @@ export class Api {
       throw new OfflineError(err);
     }
 
-    let json = await response.json();
+    const json = await response.json();
     if (!response.ok) {
       throw new ApiError(json["msg"], response.status);
     }
@@ -99,11 +99,15 @@ export class Api {
    * @throws {@link OfflineError}
    *
    * @param {string} endpoint  after `http://localhost:5000/v1/`
-   * @param {Object} body  JSON payload
+   * @param {Record<string, unknown>} body  JSON payload
    * @param {string} token  JSON Web Token
    * @returns {Promise<any>} JSON
    */
-  static async put(endpoint: string, body: {}, token: string): Promise<any> {
+  static async put(
+    endpoint: string,
+    body: Record<string, unknown> = {},
+    token: string
+  ): Promise<any> {
     let response: Response;
     try {
       response = await fetch(`${API_URL}${encodeURI(endpoint)}`, {
@@ -119,7 +123,7 @@ export class Api {
       throw new OfflineError(err);
     }
 
-    let json = await response.json();
+    const json = await response.json();
     if (!response.ok) {
       throw new ApiError(json["msg"], response.status);
     }
@@ -152,7 +156,7 @@ export class Api {
       new OfflineError(err);
     }
 
-    let json = await response.json();
+    const json = await response.json();
     if (!response.ok) {
       throw new ApiError(json["msg"], response.status);
     }
@@ -167,12 +171,16 @@ export class Api {
    * @throws {@link OfflineError}
    *
    * @param {string} endpoint  after `http://localhost:5000/v1/`
-   * @param {Object} body  Request Body
+   * @param {Record<string, unknown>} body  Request Body
    * @param {string} auth  JSON Web Token
    * @returns {Promise<any>} JSON
    */
-  static async post(endpoint: string, body: {}, token?: string): Promise<any> {
-    let headers = {
+  static async post(
+    endpoint: string,
+    body: Record<string, unknown> = {},
+    token?: string
+  ): Promise<any> {
+    const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
     };
@@ -192,7 +200,7 @@ export class Api {
       throw new OfflineError(err);
     }
 
-    let json = await response.json();
+    const json = await response.json();
     if (!response.ok) {
       throw new ApiError(json["msg"], response.status);
     }

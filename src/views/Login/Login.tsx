@@ -20,7 +20,7 @@ import { Admin, AuthPayload } from "../../lib";
 import { updateUser, Store } from "../../redux";
 import { Routes } from "../../routes";
 import Validation from "./validation";
-import { Storage } from "../../storage";
+import Storage from "../../storage";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "Login">;
@@ -150,16 +150,17 @@ function Login(props: Props): React.ReactElement {
    */
   const recoverAccount = async () => {
     await validateField("email");
-    if (errors.email === undefined) {
-      try {
-        await Admin.recover(values.email);
-        setMsg(`Sent email to ${values.email}`);
-      } catch (err) {
-        console.error("Failed to send recovery email: ", err);
-        setMsg(err.toString());
-      }
-    } else {
+    if (errors.email !== undefined) {
       setMsg("Account recovery requires a valid Email");
+      return;
+    }
+
+    try {
+      await Admin.recover(values.email);
+      setMsg(`Sent email to ${values.email}`);
+    } catch (err) {
+      console.error("Failed to send recovery email: ", err);
+      setMsg(err.toString());
     }
   };
 

@@ -48,7 +48,7 @@ export class Culture {
    * @returns {Promise<Culture>}
    */
   static async get(culture: string): Promise<Culture> {
-    let json = await Api.get(`/cultures/${culture}`);
+    const json = await Api.get(`/cultures/${culture}`);
 
     const { name, general_insights, specialized_insights, modified } = json;
 
@@ -120,7 +120,7 @@ export class Culture {
    * @returns {Promise<void>}
    */
   async update(token: string, previousName?: string): Promise<void> {
-    let specializedInsightsObj = {};
+    const specializedInsightsObj = {};
     this.specializedInsights.forEach(
       (val, key) => (specializedInsightsObj[key] = val)
     );

@@ -12,7 +12,7 @@ import {
   Title,
 } from "react-native-paper";
 
-import { GeneralInsight } from "../../lib";
+import { GeneralInsight, Culture } from "../../lib";
 
 import { Routes } from "../../routes";
 
@@ -32,6 +32,12 @@ const styles = StyleSheet.create({
   },
 });
 
+const ExampleInsight = {
+  summary: "summary",
+  information: "information",
+  source: { data: "www.example.com", type: "link" },
+};
+
 /**
  * EditInsight displays information for a particular insight and allows editing it.
  * Upon hitting the {@link FAB} it will bring the user back to {@Link CultureView}
@@ -45,8 +51,10 @@ const styles = StyleSheet.create({
  * @returns {React.ReactElement} React Element
  */
 export default function EditInsight(props: Props): React.ReactElement {
-  const index = props.route.params.index;
-  let { culture } = props.route.params;
+  const index = props.route.params ? props.route.params.index : 0;
+  const culture = props.route.params
+    ? props.route.params.culture
+    : new Culture("Unknown", [ExampleInsight], new Map(), 0);
 
   const isSpecialized: boolean = index instanceof Array;
 
@@ -56,7 +64,10 @@ export default function EditInsight(props: Props): React.ReactElement {
       : culture.generalInsights[index];
   const category: string = index instanceof Array ? index[0] : "";
 
-  useEffect(() => props.navigation.setOptions({ title: insight.summary }), []);
+  useEffect(
+    () => props.navigation.setOptions({ title: insight.summary || "Unknown" }),
+    []
+  );
 
   const [title, setTitle] = useState<string>(category);
   const [summary, setSummary] = useState<string>(insight.summary);
@@ -82,7 +93,7 @@ export default function EditInsight(props: Props): React.ReactElement {
     if (index instanceof Array) {
       const [key, i] = index;
 
-      let specialized = culture.specializedInsights.get(key);
+      const specialized = culture.specializedInsights.get(key);
       specialized[i] = newInsight;
 
       if (title !== index[0]) {

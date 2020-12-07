@@ -35,7 +35,7 @@ export class Admin {
    * @returns {Promise<string[]>}
    */
   static async get(email: string, token: string): Promise<Admin> {
-    let json = await Api.getAuth(`/admins/${email}`, token);
+    const json = await Api.getAuth(`/admins/${email}`, token);
     return json;
   }
 
@@ -64,7 +64,7 @@ export class Admin {
    * @returns {Promise<string[]>}
    */
   static async list(token: string): Promise<string[]> {
-    let json = await Api.getAuth("/admins", token);
+    const json = await Api.getAuth("/admins", token);
     return json["admins"];
   }
 

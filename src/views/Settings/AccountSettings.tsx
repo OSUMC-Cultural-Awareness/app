@@ -6,7 +6,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Routes } from "../../routes";
-import { Storage } from "../../storage";
+import Storage from "../../storage";
 import styles from "./styles";
 
 type Props = {
