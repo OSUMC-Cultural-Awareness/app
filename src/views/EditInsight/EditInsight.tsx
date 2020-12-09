@@ -27,7 +27,7 @@ type Props = {
 const styles = StyleSheet.create({
   view: { flex: 1, justifyContent: "space-evenly", overflow: "hidden" },
 
-  fab: { position: "absolute", bottom: 0, right: 0, margin: 16 },
+  fab: { position: "absolute", alignSelf: "center", bottom: 0, margin: 16 },
 
   input: {
     paddingHorizontal: 10,
