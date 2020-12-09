@@ -1,6 +1,14 @@
 import React, { useRef, useEffect } from "react";
+import { View } from "react-native";
+
 import { useFormik } from "formik";
-import { Dialog, TextInput, Button, useTheme } from "react-native-paper";
+import {
+  Dialog,
+  TextInput,
+  Button,
+  useTheme,
+  HelperText,
+} from "react-native-paper";
 
 import { Admin } from "../../lib";
 
@@ -45,6 +53,7 @@ export default function EditModal(props: Props): React.ReactElement {
     errors,
     touched,
     handleSubmit,
+    setErrors,
     validateForm,
     setFieldValue,
   } = useFormik({
@@ -62,6 +71,11 @@ export default function EditModal(props: Props): React.ReactElement {
     const { name, email } = fields;
 
     await validateForm();
+
+    if (name === admin.name) {
+      setErrors({ ...errors, name: "That's your current name" });
+      return;
+    }
 
     try {
       await Admin.update(email, name, token);
@@ -88,20 +102,25 @@ export default function EditModal(props: Props): React.ReactElement {
           value={values.email}
           disabled={true}
         />
-        <TextInput
-          autoFocus={true}
-          textContentType="name"
-          mode="outlined"
-          left={<TextInput.Icon name="account" />}
-          error={errors.name && touched.name}
-          onSubmitEditing={handleSubmit}
-          returnKeyType="done"
-          label="name"
-          value={values.name}
-          ref={name}
-          onBlur={handleBlur("name")}
-          onChangeText={handleChange("name")}
-        />
+        <View>
+          <TextInput
+            autoFocus={true}
+            textContentType="name"
+            mode="outlined"
+            left={<TextInput.Icon name="account" />}
+            error={errors.name && touched.name}
+            onSubmitEditing={handleSubmit}
+            returnKeyType="done"
+            label="name"
+            value={values.name}
+            ref={name}
+            onBlur={handleBlur("name")}
+            onChangeText={handleChange("name")}
+          />
+          {errors.name && touched.name && (
+            <HelperText type="error">{errors.name}</HelperText>
+          )}
+        </View>
       </Dialog.Content>
       <Dialog.Actions>
         <Button style={styles.dialogButton} onPress={onDismiss}>
