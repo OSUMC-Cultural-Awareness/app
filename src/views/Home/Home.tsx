@@ -98,16 +98,33 @@ function Home(props: Props): React.ReactElement {
     fetchAdmins();
   }, []);
 
+  const cultureNames = cultures ? [...cultures.entries()] : [];
+
   if (!token) {
     return (
-      <Cultures
-        navigation={props.navigation}
-        token={""}
-        cultures={cultures?.entries()}
-        onRefresh={() => fetchCultures()}
-        searchQuery={searchQuery}
-        offline={offline}
-      />
+      <View>
+        <Cultures
+          navigation={props.navigation}
+          token={""}
+          cultures={cultureNames}
+          onRefresh={() => fetchCultures()}
+          searchQuery={searchQuery}
+          offline={offline}
+          onMsg={(msg) => setMsg(msg)}
+        />
+        <Portal>
+          <Snackbar
+            visible={msg != ""}
+            onDismiss={() => setMsg("")}
+            action={{
+              label: "Ok",
+              onPress: () => setMsg(""),
+            }}
+          >
+            {msg}
+          </Snackbar>
+        </Portal>
+      </View>
     );
   }
 
@@ -138,9 +155,10 @@ function Home(props: Props): React.ReactElement {
               navigation={navigation}
               token={token}
               searchQuery={searchQuery}
-              cultures={cultures?.entries()}
+              cultures={cultureNames}
               onRefresh={() => fetchCultures()}
               offline={offline}
+              onMsg={(msg) => setMsg(msg)}
             />
           )}
         </Tab.Screen>
@@ -151,7 +169,7 @@ function Home(props: Props): React.ReactElement {
               admins={admins}
               onRefresh={() => fetchAdmins()}
               searchQuery={searchQuery}
-              onErr={(err) => setMsg(err)}
+              onMsg={(msg) => setMsg(msg)}
             />
           )}
         </Tab.Screen>

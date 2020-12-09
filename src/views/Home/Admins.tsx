@@ -26,7 +26,7 @@ type Props = {
   user: Admin;
   onRefresh: () => void;
   searchQuery?: string;
-  onErr: (err: string) => void;
+  onMsg: (msg: string) => void;
 };
 
 /**
@@ -36,7 +36,7 @@ type Props = {
  * @returns {React.ReactElement} React component
  */
 function Admins(props: Props): React.ReactElement {
-  const { user, token, admins, onRefresh, searchQuery, onErr } = props;
+  const { user, token, admins, onRefresh, searchQuery, onMsg } = props;
   const theme = useTheme();
 
   const [deleteModal, setDeleteModal] = useState(false);
@@ -48,7 +48,7 @@ function Admins(props: Props): React.ReactElement {
       await Admin.delete(selectedAdmin.email, token);
       onRefresh();
     } catch (err) {
-      onErr(err.toString());
+      onMsg(err.toString());
     }
   };
 
@@ -131,7 +131,7 @@ function Admins(props: Props): React.ReactElement {
                 token={token}
                 admin={selectedAdmin}
                 onDismiss={() => setEditModal(false)}
-                onErr={onErr}
+                onErr={onMsg}
                 onRefresh={onRefresh}
               />
             </Portal>
