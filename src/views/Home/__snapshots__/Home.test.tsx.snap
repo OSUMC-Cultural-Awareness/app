@@ -461,189 +461,43 @@ exports[`Home Renders 1`] = `
                         }
                       }
                     >
-                      <View
-                        accessibilityRole="progressbar"
-                        accessible={true}
-                        style={
-                          Array [
-                            Object {
-                              "alignItems": "center",
-                              "justifyContent": "center",
-                            },
-                            Object {
-                              "position": "relative",
-                              "top": "50%",
-                            },
-                          ]
-                        }
-                      >
-                        <View
-                          collapsable={false}
-                          style={
-                            Object {
-                              "height": 48,
-                              "opacity": 1,
-                              "width": 48,
+                      <View>
+                        <View>
+                          <RCTScrollView
+                            data={Array []}
+                            disableVirtualization={false}
+                            getItem={[Function]}
+                            getItemCount={[Function]}
+                            horizontal={false}
+                            initialNumToRender={10}
+                            keyExtractor={[Function]}
+                            maxToRenderPerBatch={10}
+                            onContentSizeChange={[Function]}
+                            onEndReachedThreshold={2}
+                            onLayout={[Function]}
+                            onMomentumScrollEnd={[Function]}
+                            onRefresh={[Function]}
+                            onScroll={[Function]}
+                            onScrollBeginDrag={[Function]}
+                            onScrollEndDrag={[Function]}
+                            refreshControl={
+                              <RefreshControlMock
+                                onRefresh={[Function]}
+                                refreshing={false}
+                              />
                             }
-                          }
-                        >
-                          <View
-                            style={
-                              Object {
-                                "alignItems": "center",
-                                "bottom": 0,
-                                "justifyContent": "center",
-                                "left": 0,
-                                "position": "absolute",
-                                "right": 0,
-                                "top": 0,
-                              }
-                            }
+                            refreshing={false}
+                            removeClippedSubviews={false}
+                            renderItem={[Function]}
+                            scrollEventThrottle={50}
+                            stickyHeaderIndices={Array []}
+                            updateCellsBatchingPeriod={50}
+                            viewabilityConfigCallbackPairs={Array []}
+                            windowSize={21}
                           >
-                            <View
-                              style={
-                                Object {
-                                  "height": 48,
-                                  "transform": Array [
-                                    Object {
-                                      "rotate": "45deg",
-                                    },
-                                  ],
-                                  "width": 48,
-                                }
-                              }
-                            >
-                              <View
-                                collapsable={false}
-                                style={
-                                  Object {
-                                    "height": 24,
-                                    "overflow": "hidden",
-                                    "width": 48,
-                                  }
-                                }
-                              >
-                                <View
-                                  style={
-                                    Object {
-                                      "height": 48,
-                                      "transform": Array [
-                                        Object {
-                                          "translateY": 0,
-                                        },
-                                        Object {
-                                          "rotate": "-165deg",
-                                        },
-                                      ],
-                                      "width": 48,
-                                    }
-                                  }
-                                >
-                                  <View
-                                    collapsable={false}
-                                    style={
-                                      Object {
-                                        "height": 24,
-                                        "overflow": "hidden",
-                                        "width": 48,
-                                      }
-                                    }
-                                  >
-                                    <View
-                                      style={
-                                        Object {
-                                          "borderColor": "#6200ee",
-                                          "borderRadius": 24,
-                                          "borderWidth": 4.8,
-                                          "height": 48,
-                                          "width": 48,
-                                        }
-                                      }
-                                    />
-                                  </View>
-                                </View>
-                              </View>
-                            </View>
-                          </View>
-                          <View
-                            style={
-                              Object {
-                                "alignItems": "center",
-                                "bottom": 0,
-                                "justifyContent": "center",
-                                "left": 0,
-                                "position": "absolute",
-                                "right": 0,
-                                "top": 0,
-                              }
-                            }
-                          >
-                            <View
-                              style={
-                                Object {
-                                  "height": 48,
-                                  "transform": Array [
-                                    Object {
-                                      "rotate": "45deg",
-                                    },
-                                  ],
-                                  "width": 48,
-                                }
-                              }
-                            >
-                              <View
-                                collapsable={false}
-                                style={
-                                  Object {
-                                    "height": 24,
-                                    "overflow": "hidden",
-                                    "top": 24,
-                                    "width": 48,
-                                  }
-                                }
-                              >
-                                <View
-                                  style={
-                                    Object {
-                                      "height": 48,
-                                      "transform": Array [
-                                        Object {
-                                          "translateY": -24,
-                                        },
-                                        Object {
-                                          "rotate": "345deg",
-                                        },
-                                      ],
-                                      "width": 48,
-                                    }
-                                  }
-                                >
-                                  <View
-                                    collapsable={false}
-                                    style={
-                                      Object {
-                                        "height": 24,
-                                        "overflow": "hidden",
-                                        "width": 48,
-                                      }
-                                    }
-                                  >
-                                    <View
-                                      style={
-                                        Object {
-                                          "borderColor": "#6200ee",
-                                          "borderRadius": 24,
-                                          "borderWidth": 4.8,
-                                          "height": 48,
-                                          "width": 48,
-                                        }
-                                      }
-                                    />
-                                  </View>
-                                </View>
-                              </View>
-                            </View>
-                          </View>
+                            <RCTRefreshControl />
+                            <View />
+                          </RCTScrollView>
                         </View>
                       </View>
                     </View>

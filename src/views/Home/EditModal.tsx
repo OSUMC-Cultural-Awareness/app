@@ -1,6 +1,14 @@
 import React, { useRef, useEffect } from "react";
+import { View } from "react-native";
+
 import { useFormik } from "formik";
-import { Dialog, TextInput, Button, useTheme } from "react-native-paper";
+import {
+  Dialog,
+  TextInput,
+  Button,
+  useTheme,
+  HelperText,
+} from "react-native-paper";
 
 import { Admin } from "../../lib";
 
@@ -10,7 +18,7 @@ import styles from "./styles";
 /**
  * Invite Email screen fields for Formik.
  */
-type EditFields = {
+type Fields = {
   email: string;
   name: string;
 };
@@ -18,7 +26,7 @@ type EditFields = {
 /**
  * Initial values for email field for Formik.
  */
-const initialValues: EditFields = {
+const initialValues: Fields = {
   // This field could be updated with useEffect to enter the user's saved email address.
   email: "",
   name: "",
@@ -33,7 +41,7 @@ type Props = {
   onRefresh: () => void;
 };
 
-export default function EditModal(props: Props) {
+export default function EditModal(props: Props): React.ReactElement {
   const { admin, token, show, onDismiss, onErr, onRefresh } = props;
   const name = useRef();
   const theme = useTheme();
@@ -45,6 +53,7 @@ export default function EditModal(props: Props) {
     errors,
     touched,
     handleSubmit,
+    setErrors,
     validateForm,
     setFieldValue,
   } = useFormik({
@@ -58,10 +67,15 @@ export default function EditModal(props: Props) {
     setFieldValue("name", admin?.name);
   }, [admin]);
 
-  const update = async (fields: EditFields) => {
+  const update = async (fields: Fields) => {
     const { name, email } = fields;
 
     await validateForm();
+
+    if (name === admin.name) {
+      setErrors({ ...errors, name: "That's your current name" });
+      return;
+    }
 
     try {
       await Admin.update(email, name, token);
@@ -82,24 +96,31 @@ export default function EditModal(props: Props) {
       <Dialog.Content>
         <TextInput
           mode="outlined"
-          style={{ paddingBottom: 10 }}
+          style={styles.editModalInput}
           left={<TextInput.Icon name="email" />}
           label="email"
           value={values.email}
           disabled={true}
         />
-        <TextInput
-          autoFocus={true}
-          textContentType="name"
-          mode="outlined"
-          left={<TextInput.Icon name="account" />}
-          error={errors.name && touched.name}
-          label="name"
-          value={values.name}
-          ref={name}
-          onBlur={handleBlur("name")}
-          onChangeText={handleChange("name")}
-        />
+        <View>
+          <TextInput
+            autoFocus={true}
+            textContentType="name"
+            mode="outlined"
+            left={<TextInput.Icon name="account" />}
+            error={errors.name && touched.name}
+            onSubmitEditing={handleSubmit}
+            returnKeyType="done"
+            label="name"
+            value={values.name}
+            ref={name}
+            onBlur={handleBlur("name")}
+            onChangeText={handleChange("name")}
+          />
+          {errors.name && touched.name && (
+            <HelperText type="error">{errors.name}</HelperText>
+          )}
+        </View>
       </Dialog.Content>
       <Dialog.Actions>
         <Button style={styles.dialogButton} onPress={onDismiss}>

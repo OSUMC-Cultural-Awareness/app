@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, FlatList } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ActivityIndicator, List, IconButton } from "react-native-paper";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { Routes } from "../../routes";
 
@@ -15,10 +16,11 @@ import styles from "./styles";
 type CultureProps = {
   navigation: StackNavigationProp<Routes, "Home">;
   token: string;
-  cultures: IterableIterator<[string, number]>;
+  readonly cultures: [string, number][];
   onRefresh: () => void;
   searchQuery?: string;
   offline: boolean;
+  onMsg: (msg: string) => void;
 };
 
 /**
@@ -28,8 +30,24 @@ type CultureProps = {
  * @returns {React.ReactElement} React component
  */
 export default function Cultures(props: CultureProps): React.ReactElement {
-  const { cultures, onRefresh, token, searchQuery, offline } = props;
+  const { cultures, onRefresh, token, searchQuery, offline, onMsg } = props;
   const [refreshing, setRefreshing] = useState(false);
+  const [ledger, setLedger] = useState(new Map());
+
+  const loadLedger = async () => {
+    try {
+      const ledger = await Ledger.list();
+      setLedger(ledger);
+    } catch (err) {
+      onMsg(err.toString());
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadLedger();
+    }, [])
+  );
 
   if (!cultures) {
     return (
@@ -37,17 +55,28 @@ export default function Cultures(props: CultureProps): React.ReactElement {
     );
   }
 
-  const deleteCulture = async (name: string) => {
+  const onDelete = async (name: string) => {
     try {
       await Culture.delete(name, token);
     } catch (err) {
+      onMsg(err.toString());
       console.error("Failed to delete culture", err);
     }
     onRefresh();
   };
 
+  const onDownload = async (name: string) => {
+    try {
+      await Ledger.add(name);
+      loadLedger();
+      onMsg(`Downloaded ${name}`);
+    } catch (err) {
+      onMsg(err.toString());
+    }
+  };
+
   const searchResults = (): [string, number][] => {
-    return Array.from(cultures).filter((culture) => {
+    return cultures.filter((culture) => {
       const [name] = culture;
       if (!searchQuery) {
         return true;
@@ -60,10 +89,12 @@ export default function Cultures(props: CultureProps): React.ReactElement {
     });
   };
 
+  const results = searchResults();
+
   return (
     <View>
       <FlatList
-        data={searchResults()}
+        data={results}
         keyExtractor={(_, index) => index.toString()}
         onRefresh={() => {
           setRefreshing(true);
@@ -80,24 +111,15 @@ export default function Cultures(props: CultureProps): React.ReactElement {
                 props.navigation.navigate("Culture", { cultureName: name })
               }
               right={() => (
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  {!offline && (
+                <View style={styles.cultureListActions}>
+                  {!offline && !ledger.has(name) && (
                     <IconButton
                       icon="download"
-                      onPress={() => Ledger.add(name)}
+                      onPress={() => onDownload(name)}
                     />
                   )}
                   {token !== "" && (
-                    <IconButton
-                      icon="delete"
-                      onPress={() => deleteCulture(name)}
-                    />
+                    <IconButton icon="delete" onPress={() => onDelete(name)} />
                   )}
                 </View>
               )}

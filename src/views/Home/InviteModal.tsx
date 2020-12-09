@@ -11,14 +11,14 @@ import styles from "./styles";
 /**
  * Invite Email screen fields for Formik.
  */
-type EmailField = {
+type Fields = {
   email: string;
 };
 
 /**
  * Initial values for email field for Formik.
  */
-const initialValues: EmailField = {
+const initialValues: Fields = {
   // This field could be updated with useEffect to enter the user's saved email address.
   email: "",
 };
@@ -30,7 +30,7 @@ type Props = {
   onErr: (err: string) => void;
 };
 
-export default function InviteModal(props: Props) {
+export default function InviteModal(props: Props): React.ReactElement {
   const { token, show, onDismiss, onErr } = props;
   const theme = useTheme();
 
@@ -49,7 +49,7 @@ export default function InviteModal(props: Props) {
     onSubmit: (values) => invite(values),
   });
 
-  const invite = async (field: EmailField) => {
+  const invite = async (field: Fields) => {
     const { email } = field;
     await validateField("email");
 
@@ -73,6 +73,8 @@ export default function InviteModal(props: Props) {
           textContentType="emailAddress"
           autoFocus={true}
           mode="outlined"
+          onSubmitEditing={handleSubmit}
+          returnKeyType="send"
           left={<TextInput.Icon name="email" />}
           error={errors.email && touched.email}
           label="email"

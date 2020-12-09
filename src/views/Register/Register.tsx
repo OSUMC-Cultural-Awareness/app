@@ -151,6 +151,15 @@ function Register(props: Props): React.ReactElement {
     }
   };
 
+  // focus the next input
+  const nextInput = (ref: React.MutableRefObject<any>): void => {
+    if (!ref) {
+      return;
+    }
+
+    ref.current.focus();
+  };
+
   return (
     <View style={styles.view}>
       <View>
@@ -158,7 +167,10 @@ function Register(props: Props): React.ReactElement {
           autoFocus={true}
           textContentType="emailAddress"
           onFocus={() => setFocused("email")}
+          onSubmitEditing={() => nextInput(name)}
+          returnKeyType="next"
           mode="outlined"
+          keyboardType="email-address"
           error={errors.email && touched.email}
           left={<TextInput.Icon name="email" />}
           label="email"
@@ -173,6 +185,8 @@ function Register(props: Props): React.ReactElement {
         <TextInput
           textContentType="name"
           onFocus={() => setFocused("name")}
+          onSubmitEditing={() => nextInput(password)}
+          returnKeyType="next"
           mode="outlined"
           error={errors.name && touched.name}
           left={<TextInput.Icon name="account" />}
@@ -189,6 +203,10 @@ function Register(props: Props): React.ReactElement {
           mode="outlined"
           label="password"
           onFocus={() => setFocused("password")}
+          onSubmitEditing={() => nextInput(passwordConfirmation)}
+          returnKeyType="next"
+          textContentType="newPassword"
+          keyboardType="visible-password"
           ref={password}
           left={<TextInput.Icon name="lock" />}
           secureTextEntry={obscurePass}
@@ -210,6 +228,10 @@ function Register(props: Props): React.ReactElement {
           mode="outlined"
           label="password confirmation"
           onFocus={() => setFocused("passwordConfirmation")}
+          onSubmitEditing={handleSubmit}
+          returnKeyType="done"
+          textContentType="password"
+          keyboardType="visible-password"
           ref={passwordConfirmation}
           left={<TextInput.Icon name="shield-lock" />}
           secureTextEntry={obscurePassConf}
