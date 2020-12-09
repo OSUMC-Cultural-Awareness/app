@@ -478,13 +478,16 @@ exports[`Register Renders 1`] = `
                                   allowFontScaling={true}
                                   autoFocus={true}
                                   editable={true}
+                                  keyboardType="email-address"
                                   multiline={false}
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
+                                  onSubmitEditing={[Function]}
                                   placeholder=""
                                   placeholderTextColor="rgba(0, 0, 0, 0.54)"
                                   rejectResponderTermination={true}
+                                  returnKeyType="next"
                                   selectionColor="#6200ee"
                                   style={
                                     Array [
@@ -792,9 +795,11 @@ exports[`Register Renders 1`] = `
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
+                                  onSubmitEditing={[Function]}
                                   placeholder=""
                                   placeholderTextColor="rgba(0, 0, 0, 0.54)"
                                   rejectResponderTermination={true}
+                                  returnKeyType="next"
                                   selectionColor="#6200ee"
                                   style={
                                     Array [
@@ -1079,13 +1084,16 @@ exports[`Register Renders 1`] = `
                                 <TextInput
                                   allowFontScaling={true}
                                   editable={true}
+                                  keyboardType="visible-password"
                                   multiline={false}
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
+                                  onSubmitEditing={[Function]}
                                   placeholder=""
                                   placeholderTextColor="rgba(0, 0, 0, 0.54)"
                                   rejectResponderTermination={true}
+                                  returnKeyType="next"
                                   secureTextEntry={true}
                                   selectionColor="#6200ee"
                                   style={
@@ -1119,6 +1127,7 @@ exports[`Register Renders 1`] = `
                                       },
                                     ]
                                   }
+                                  textContentType="newPassword"
                                   underlineColorAndroid="transparent"
                                   value=""
                                 />
@@ -1443,13 +1452,16 @@ exports[`Register Renders 1`] = `
                                 <TextInput
                                   allowFontScaling={true}
                                   editable={true}
+                                  keyboardType="visible-password"
                                   multiline={false}
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
+                                  onSubmitEditing={[Function]}
                                   placeholder=""
                                   placeholderTextColor="rgba(0, 0, 0, 0.54)"
                                   rejectResponderTermination={true}
+                                  returnKeyType="done"
                                   secureTextEntry={true}
                                   selectionColor="#6200ee"
                                   style={
@@ -1483,6 +1495,7 @@ exports[`Register Renders 1`] = `
                                       },
                                     ]
                                   }
+                                  textContentType="password"
                                   underlineColorAndroid="transparent"
                                   value=""
                                 />

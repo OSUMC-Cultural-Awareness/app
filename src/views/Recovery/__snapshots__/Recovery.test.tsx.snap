@@ -521,9 +521,11 @@ exports[`Recovery Renders 1`] = `
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
+                                  onSubmitEditing={[Function]}
                                   placeholder=""
                                   placeholderTextColor="rgba(0, 0, 0, 0.54)"
                                   rejectResponderTermination={true}
+                                  returnKeyType="next"
                                   secureTextEntry={true}
                                   selectionColor="#6200ee"
                                   style={
@@ -557,6 +559,7 @@ exports[`Recovery Renders 1`] = `
                                       },
                                     ]
                                   }
+                                  textContentType="newPassword"
                                   underlineColorAndroid="transparent"
                                   value=""
                                 />
@@ -892,9 +895,11 @@ exports[`Recovery Renders 1`] = `
                                   onBlur={[Function]}
                                   onChangeText={[Function]}
                                   onFocus={[Function]}
+                                  onSubmitEditing={[Function]}
                                   placeholder=""
                                   placeholderTextColor="rgba(0, 0, 0, 0.54)"
                                   rejectResponderTermination={true}
+                                  returnKeyType="done"
                                   secureTextEntry={true}
                                   selectionColor="#6200ee"
                                   style={
@@ -928,6 +933,7 @@ exports[`Recovery Renders 1`] = `
                                       },
                                     ]
                                   }
+                                  textContentType="password"
                                   underlineColorAndroid="transparent"
                                   value=""
                                 />
