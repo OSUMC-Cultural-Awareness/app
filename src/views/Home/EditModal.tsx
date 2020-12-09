@@ -18,7 +18,7 @@ import styles from "./styles";
 /**
  * Invite Email screen fields for Formik.
  */
-type EditFields = {
+type Fields = {
   email: string;
   name: string;
 };
@@ -26,7 +26,7 @@ type EditFields = {
 /**
  * Initial values for email field for Formik.
  */
-const initialValues: EditFields = {
+const initialValues: Fields = {
   // This field could be updated with useEffect to enter the user's saved email address.
   email: "",
   name: "",
@@ -67,7 +67,7 @@ export default function EditModal(props: Props): React.ReactElement {
     setFieldValue("name", admin?.name);
   }, [admin]);
 
-  const update = async (fields: EditFields) => {
+  const update = async (fields: Fields) => {
     const { name, email } = fields;
 
     await validateForm();
