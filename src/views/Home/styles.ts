@@ -47,6 +47,16 @@ export default StyleSheet.create({
     flexDirection: "row",
   },
 
+  editModalInput: {
+    paddingBottom: 10,
+  },
+
+  cultureListActions: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+
   dialogButton: {
     margin: 5,
   },

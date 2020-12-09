@@ -111,13 +111,7 @@ export default function Cultures(props: CultureProps): React.ReactElement {
                 props.navigation.navigate("Culture", { cultureName: name })
               }
               right={() => (
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: "flex-end",
-                  }}
-                >
+                <View style={styles.cultureListActions}>
                   {!offline && !ledger.has(name) && (
                     <IconButton
                       icon="download"

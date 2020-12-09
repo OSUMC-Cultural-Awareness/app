@@ -82,7 +82,7 @@ export default function EditModal(props: Props): React.ReactElement {
       <Dialog.Content>
         <TextInput
           mode="outlined"
-          style={{ paddingBottom: 10 }}
+          style={styles.editModalInput}
           left={<TextInput.Icon name="email" />}
           label="email"
           value={values.email}
