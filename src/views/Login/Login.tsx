@@ -164,19 +164,31 @@ function Login(props: Props): React.ReactElement {
     }
   };
 
+  // focus the next input
+  const nextInput = (ref: React.MutableRefObject<any>) => {
+    if (!ref) {
+      return;
+    }
+
+    ref.current.focus();
+  };
+
   return (
     <View style={styles.view}>
       <View>
         <TextInput
-          autoFocus={true}
           textContentType="emailAddress"
+          autoFocus={true}
+          onSubmitEditing={() => nextInput(password)}
           mode="outlined"
           error={errors.email && touched.email}
           left={<TextInput.Icon name="email" />}
+          keyboardType="email-address"
           label="email"
           ref={email}
           value={values.email}
           onBlur={handleBlur("email")}
+          returnKeyType="next"
           onChangeText={handleChange("email")}
         />
         {errors.email && touched.email && (
@@ -187,12 +199,15 @@ function Login(props: Props): React.ReactElement {
         <TextInput
           mode="outlined"
           label="password"
+          textContentType="password"
           ref={password}
           left={<TextInput.Icon name="lock" />}
           secureTextEntry={obscurePass}
+          onSubmitEditing={handleSubmit}
           error={errors.password && touched.password}
           onBlur={handleBlur("password")}
           value={values.password}
+          returnKeyType="done"
           onChangeText={handleChange("password")}
           right={
             <TextInput.Icon

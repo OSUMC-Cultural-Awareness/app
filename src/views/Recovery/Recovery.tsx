@@ -95,6 +95,15 @@ export default function Recovery(props: Props): React.ReactElement {
     }
   };
 
+  // focus the next input
+  const nextInput = (ref: React.MutableRefObject<any>) => {
+    if (!ref) {
+      return;
+    }
+
+    ref.current.focus();
+  };
+
   return (
     <View style={styles.view}>
       <Title style={styles.title}>Let's create a new password!</Title>
@@ -105,6 +114,9 @@ export default function Recovery(props: Props): React.ReactElement {
           ref={password}
           left={<TextInput.Icon name="lock" />}
           secureTextEntry={obscurePass}
+          textContentType="newPassword"
+          onSubmitEditing={() => nextInput(passwordConfirmation)}
+          returnKeyType="next"
           error={errors.password && touched.password}
           onBlur={handleBlur("password")}
           value={values.password}
@@ -124,11 +136,14 @@ export default function Recovery(props: Props): React.ReactElement {
         <TextInput
           mode="outlined"
           label="password confirmation"
+          textContentType="password"
           ref={passwordConfirmation}
           left={<TextInput.Icon name="shield-lock" />}
           secureTextEntry={obscurePassConf}
           error={errors.passwordConfirmation && touched.passwordConfirmation}
           onBlur={handleBlur("passwordConfirmation")}
+          onSubmitEditing={handleSubmit}
+          returnKeyType="done"
           value={values.passwordConfirmation}
           onChangeText={handleChange("passwordConfirmation")}
           right={

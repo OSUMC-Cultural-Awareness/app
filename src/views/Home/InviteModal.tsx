@@ -73,6 +73,8 @@ export default function InviteModal(props: Props) {
           textContentType="emailAddress"
           autoFocus={true}
           mode="outlined"
+          onSubmitEditing={handleSubmit}
+          returnKeyType="send"
           left={<TextInput.Icon name="email" />}
           error={errors.email && touched.email}
           label="email"

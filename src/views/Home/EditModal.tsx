@@ -94,6 +94,8 @@ export default function EditModal(props: Props) {
           mode="outlined"
           left={<TextInput.Icon name="account" />}
           error={errors.name && touched.name}
+          onSubmitEditing={handleSubmit}
+          returnKeyType="done"
           label="name"
           value={values.name}
           ref={name}

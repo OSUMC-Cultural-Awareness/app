@@ -87,6 +87,8 @@ export default function Feedback(): React.ReactElement {
             multiline={true}
             label="How can we improve?"
             value={feedback}
+            onSubmitEditing={() => sendFeedback()}
+            returnKeyType="send"
             onChangeText={handleInput}
             numberOfLines={4}
             right={
