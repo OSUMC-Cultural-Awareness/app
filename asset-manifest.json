@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/app/static/js/app.b4279d27.chunk.js",
-    "app.js.map": "/app/static/js/app.b4279d27.chunk.js.map",
+    "app.js": "/app/static/js/app.a4cbfd6f.chunk.js",
+    "app.js.map": "/app/static/js/app.a4cbfd6f.chunk.js.map",
     "runtime~app.js": "/app/static/js/runtime~app.291da1fd.js",
     "runtime~app.js.map": "/app/static/js/runtime~app.291da1fd.js.map",
-    "static/js/2.ac04c81f.chunk.js": "/app/static/js/2.ac04c81f.chunk.js",
-    "static/js/2.ac04c81f.chunk.js.map": "/app/static/js/2.ac04c81f.chunk.js.map",
+    "static/js/2.b6153609.chunk.js": "/app/static/js/2.b6153609.chunk.js",
+    "static/js/2.b6153609.chunk.js.map": "/app/static/js/2.b6153609.chunk.js.map",
     "fonts/MaterialCommunityIcons.ttf": "/app/./fonts/MaterialCommunityIcons.ttf",
     "favicon-16.png": "/app/favicon-16.png",
     "favicon-32.png": "/app/favicon-32.png",
@@ -13,11 +13,11 @@
     "index.html": "/app/index.html",
     "manifest.json": "/app/manifest.json",
     "serve.json": "/app/serve.json",
-    "static/js/2.ac04c81f.chunk.js.LICENSE.txt": "/app/static/js/2.ac04c81f.chunk.js.LICENSE.txt"
+    "static/js/2.b6153609.chunk.js.LICENSE.txt": "/app/static/js/2.b6153609.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime~app.291da1fd.js",
-    "static/js/2.ac04c81f.chunk.js",
-    "static/js/app.b4279d27.chunk.js"
+    "static/js/2.b6153609.chunk.js",
+    "static/js/app.a4cbfd6f.chunk.js"
   ]
 }
