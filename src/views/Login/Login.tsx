@@ -165,7 +165,7 @@ function Login(props: Props): React.ReactElement {
   };
 
   // focus the next input
-  const nextInput = (ref: React.MutableRefObject<any>) => {
+  const nextInput = (ref: React.MutableRefObject<any>): void => {
     if (!ref) {
       return;
     }

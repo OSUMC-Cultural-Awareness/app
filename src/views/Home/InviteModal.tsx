@@ -30,7 +30,7 @@ type Props = {
   onErr: (err: string) => void;
 };
 
-export default function InviteModal(props: Props) {
+export default function InviteModal(props: Props): React.ReactElement {
   const { token, show, onDismiss, onErr } = props;
   const theme = useTheme();
 

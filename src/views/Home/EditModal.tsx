@@ -33,7 +33,7 @@ type Props = {
   onRefresh: () => void;
 };
 
-export default function EditModal(props: Props) {
+export default function EditModal(props: Props): React.ReactElement {
   const { admin, token, show, onDismiss, onErr, onRefresh } = props;
   const name = useRef();
   const theme = useTheme();
