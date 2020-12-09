@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, SafeAreaView } from "react-native";
+import React, { useRef, useEffect } from "react";
+import { StyleSheet, View } from "react-native";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -8,13 +8,16 @@ import {
   TextInput,
   Divider,
   RadioButton,
+  HelperText,
   Portal,
   Title,
 } from "react-native-paper";
+import { useFormik } from "formik";
 
 import { GeneralInsight, Culture } from "../../lib";
 
 import { Routes } from "../../routes";
+import { Fields, validator } from "./validation";
 
 type Props = {
   navigation: StackNavigationProp<Routes, "EditInsight">;
@@ -30,6 +33,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     margin: 5,
   },
+
+  sourceTypeTitle: { margin: 10 },
 });
 
 const ExampleInsight = {
@@ -69,24 +74,48 @@ export default function EditInsight(props: Props): React.ReactElement {
     []
   );
 
-  const [title, setTitle] = useState<string>(category);
-  const [summary, setSummary] = useState<string>(insight.summary);
-  const [info, setInfo] = useState<string>(insight.information);
-  const [srcData, setSrcData] = useState<string>(insight.source.data);
-  const [srcType, setSrcType] = useState<string>(insight.source.type);
-  const [cultureName, setCultureName] = useState<string>(culture.name);
+  const initialValues: Fields = {
+    cultureName: culture.name,
+    title: category,
+    summary: insight.summary,
+    description: insight.information,
+    source: insight.source.data,
+    sourceType: insight.source.type,
+  };
+
+  const {
+    values,
+    handleChange,
+    handleBlur,
+    errors,
+    touched,
+    handleSubmit,
+  } = useFormik({
+    validationSchema: validator(isSpecialized ? "specialized" : "general"),
+    initialValues: initialValues,
+    onSubmit: (values) => updateCulture(values),
+  });
 
   /**
    * updateCulture updates the Culture's insight for either Specialized or General
    * screens.
    */
-  const updateCulture = () => {
+  const updateCulture = async (values: Fields) => {
+    const {
+      cultureName,
+      title,
+      summary,
+      description,
+      source,
+      sourceType,
+    } = values;
+
     const newInsight = {
       summary: summary,
-      information: info,
+      information: description,
       source: {
-        data: srcData,
-        type: srcType,
+        data: source,
+        type: sourceType,
       },
     };
 
@@ -109,9 +138,9 @@ export default function EditInsight(props: Props): React.ReactElement {
     const dirty =
       category !== title ||
       summary !== insight.summary ||
-      info !== insight.information ||
-      srcData !== insight.source.data ||
-      srcType !== insight.source.type ||
+      description !== insight.information ||
+      source !== insight.source.data ||
+      sourceType !== insight.source.type ||
       cultureName !== prevName;
 
     culture.name = cultureName;
@@ -123,68 +152,123 @@ export default function EditInsight(props: Props): React.ReactElement {
     });
   };
 
+  // focus the next input
+  const nextInput = (ref: React.MutableRefObject<any>) => {
+    if (!ref) {
+      return;
+    }
+
+    ref.current.focus();
+  };
+
+  const cultureName = useRef();
+  const title = useRef();
+  const summary = useRef();
+  const description = useRef();
+  const source = useRef();
+
   return (
-    <SafeAreaView style={styles.view}>
-      <TextInput
-        style={styles.input}
-        value={cultureName}
-        placeholder="Culture Name"
-        label="Culture Name"
-        mode="outlined"
-        onChangeText={(text) => setCultureName(text)}
-      />
-      {isSpecialized && (
+    <View style={styles.view}>
+      <View>
         <TextInput
           style={styles.input}
-          value={title}
-          placeholder="Title"
-          label="Title"
+          value={values.cultureName}
+          onBlur={handleBlur("cultureName")}
+          onSubmitEditing={() => nextInput(isSpecialized ? title : summary)}
+          ref={cultureName}
+          placeholder="Culture Name"
+          returnKeyType="next"
+          label="Culture Name"
           mode="outlined"
-          onChangeText={(text) => setTitle(text)}
+          onChangeText={handleChange("cultureName")}
         />
+        {errors.cultureName && touched.cultureName && (
+          <HelperText type="error">{errors.cultureName}</HelperText>
+        )}
+      </View>
+      {isSpecialized && (
+        <View>
+          <TextInput
+            style={styles.input}
+            value={values.title}
+            placeholder="Title"
+            onSubmitEditing={() => nextInput(summary)}
+            returnKeyType="next"
+            ref={title}
+            label="Title"
+            mode="outlined"
+            onChangeText={handleChange("title")}
+          />
+          {errors.title && touched.title && (
+            <HelperText type="error">{errors.title}</HelperText>
+          )}
+        </View>
       )}
       {isSpecialized && <Divider />}
-      <TextInput
-        style={styles.input}
-        value={summary}
-        placeholder="Summary"
-        label="Summary"
-        mode="outlined"
-        left={<TextInput.Icon name="text-short" />}
-        onChangeText={(text) => setSummary(text)}
-      />
-      <TextInput
-        style={styles.input}
-        value={info}
-        mode="outlined"
-        placeholder="Description"
-        label="Description"
-        left={<TextInput.Icon name="text-subject" />}
-        numberOfLines={5}
-        onChangeText={(text) => setInfo(text)}
-        multiline={true}
-      />
+      <View>
+        <TextInput
+          style={styles.input}
+          value={values.summary}
+          onBlur={handleBlur("summary")}
+          placeholder="Summary"
+          onSubmitEditing={() => nextInput(description)}
+          returnKeyType="next"
+          ref={summary}
+          label="Summary"
+          mode="outlined"
+          onChangeText={handleChange("summary")}
+        />
+        {errors.summary && touched.summary && (
+          <HelperText type="error">{errors.summary}</HelperText>
+        )}
+      </View>
+      <View>
+        <TextInput
+          style={styles.input}
+          value={values.description}
+          onBlur={handleBlur("description")}
+          placeholder="Description"
+          ref={description}
+          returnKeyType="next"
+          label="Description"
+          mode="outlined"
+          onChangeText={handleChange("description")}
+          multiline={true}
+          numberOfLines={5}
+        />
+        {errors.description && touched.description && (
+          <HelperText type="error">{errors.description}</HelperText>
+        )}
+      </View>
       <Divider />
-      <Title style={{ margin: 10 }}>Source Type</Title>
+      <Title style={styles.sourceTypeTitle}>Source Type</Title>
       <RadioButton.Group
-        onValueChange={(value) => setSrcType(value)}
-        value={srcType}
+        onValueChange={handleChange("sourceType")}
+        value={values.sourceType}
       >
         <RadioButton.Item label="Link" value="link" />
       </RadioButton.Group>
       <Divider />
-      <TextInput
-        style={styles.input}
-        value={srcData}
-        label="Source"
-        placeholder="Source Information"
-        left={<TextInput.Icon name="book" />}
-        mode="outlined"
-        onChangeText={(text) => setSrcData(text)}
-      />
+      <View>
+        <TextInput
+          style={styles.input}
+          value={values.source}
+          onBlur={handleBlur("source")}
+          placeholder="Source"
+          onSubmitEditing={handleSubmit}
+          ref={source}
+          returnKeyType="next"
+          label="Source"
+          mode="outlined"
+          onChangeText={handleChange("source")}
+        />
+        {errors.source && touched.source && (
+          <HelperText type="error">{errors.source}</HelperText>
+        )}
+      </View>
       <Portal>
-        <FAB style={styles.fab} icon="check" onPress={updateCulture} />
+        <FAB style={styles.fab} icon="check" onPress={handleSubmit} />
       </Portal>
-    </SafeAreaView>
+    </View>
   );
 }
